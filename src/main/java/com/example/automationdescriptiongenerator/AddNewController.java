@@ -59,10 +59,10 @@ public class AddNewController implements Initializable {
         waterRadio.setToggleGroup(typeGroup);
 
         // Initialize the ValueFactory for each Spinner
-        initializeSpinner(minSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        initializeSpinner(maxSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        initializeSpinner(offsetSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        initializeSpinner(rotationSpinner, 0, 2160, false);
+        initializeSpinner(minSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, -1, true);
+        initializeSpinner(maxSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, 1,true);
+        initializeSpinner(offsetSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, 0,true);
+        initializeSpinner(rotationSpinner, 0, 2160, 270, false);
         setSpinnerValue(maxSpinner, 1, true);
         setSpinnerValue(minSpinner, -1, true);
         setSpinnerValue(offsetSpinner, 0, true);
@@ -96,8 +96,8 @@ public class AddNewController implements Initializable {
         });
     }
 
-    private void initializeSpinner(Spinner<Double> spinner, double min, double max, boolean isDecimal) {
-        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, min, isDecimal ? 0.1 : 1);
+    private void initializeSpinner(Spinner<Double> spinner, double min, double max, double start, boolean isDecimal) {
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, start, isDecimal ? 0.1 : 1);
         spinner.setValueFactory(valueFactory);
 
         //Live validation doesn't work
@@ -126,9 +126,9 @@ public class AddNewController implements Initializable {
     private void setSteering() {
         unitChoiceBox.getItems().setAll("Value");
         unitChoiceBox.setValue("Value");
-        initializeSpinner(minSpinner, -1000.0, Double.MAX_VALUE, false);
-        initializeSpinner(maxSpinner, -1000.0, Double.MAX_VALUE, false);
-        initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE, false);
+        initializeSpinner(minSpinner, -1000.0, Double.MAX_VALUE, -1000, false);
+        initializeSpinner(maxSpinner, -1000.0, Double.MAX_VALUE, 1000, false);
+        initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE, 0,false);
         setSpinnerValue(minSpinner, -1000, true);
         setSpinnerValue(maxSpinner, 1000, true);
         setSpinnerValue(offsetSpinner, 0, true);
@@ -141,9 +141,9 @@ public class AddNewController implements Initializable {
     private void setSpeed() {
         unitChoiceBox.getItems().setAll("KPH", "MPH");
         unitChoiceBox.setValue("KPH");
-        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, false);
-        initializeSpinner(maxSpinner, 0.0, Double.MAX_VALUE, false);
-        initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE, false);
+        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE,0, false);
+        initializeSpinner(maxSpinner, 0.0, Double.MAX_VALUE, 200,false);
+        initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE,0, false);
         setSpinnerValue(minSpinner, 0, true);
         setSpinnerValue(maxSpinner, 200, false);
         setSpinnerValue(offsetSpinner, 0, false);
@@ -154,9 +154,9 @@ public class AddNewController implements Initializable {
     private void setRpm() {
         unitChoiceBox.getItems().setAll("RPM");
         unitChoiceBox.setValue("RPM");
-        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, false);
-        initializeSpinner(maxSpinner, 0.0, 20000, false);
-        initializeSpinner(offsetSpinner, -5000.0, Double.MAX_VALUE, false);
+        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, 0, false);
+        initializeSpinner(maxSpinner, 0.0, 20000, 6000,false);
+        initializeSpinner(offsetSpinner, -5000.0, Double.MAX_VALUE,0, false);
         setSpinnerValue(minSpinner, 0, false);
         setSpinnerValue(maxSpinner, 6000, false);
         setSpinnerValue(offsetSpinner, 0, false);
@@ -167,9 +167,9 @@ public class AddNewController implements Initializable {
     private void setFuel() {
         unitChoiceBox.getItems().setAll("Value");
         unitChoiceBox.setValue("Value");
-        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, false);
-        initializeSpinner(maxSpinner, 0.0, 1, false);
-        initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE, false);
+        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, 0,false);
+        initializeSpinner(maxSpinner, 0.0, 1, 1,false);
+        initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE, 0,false);
         setSpinnerValue(minSpinner, 0, true);
         setSpinnerValue(maxSpinner, 1, true);
         setSpinnerValue(offsetSpinner, 0, true);
@@ -180,9 +180,9 @@ public class AddNewController implements Initializable {
     private void setBoost() {
         unitChoiceBox.getItems().setAll("bar", "psi", "kPa");
         unitChoiceBox.setValue("bar");
-        initializeSpinner(minSpinner, -20.0, Double.MAX_VALUE, true);
-        initializeSpinner(maxSpinner, 0.0, Double.MAX_VALUE, true);
-        initializeSpinner(offsetSpinner, -20.0, Double.MAX_VALUE, true);
+        initializeSpinner(minSpinner, -20.0, Double.MAX_VALUE,0.0, true);
+        initializeSpinner(maxSpinner, 0.0, Double.MAX_VALUE, 1.0,true);
+        initializeSpinner(offsetSpinner, -20.0, Double.MAX_VALUE,0.0, true);
         setSpinnerValue(minSpinner, 0.0, false);
         setSpinnerValue(maxSpinner, 1.0, false);
         setSpinnerValue(offsetSpinner, 0.0, false);
@@ -193,10 +193,10 @@ public class AddNewController implements Initializable {
     private void setWater() {
         unitChoiceBox.getItems().setAll("°C", "°F");
         unitChoiceBox.setValue("°C");
-        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, false);
-        initializeSpinner(maxSpinner, 0.0, Double.MAX_VALUE, false);
-        initializeSpinner(offsetSpinner, -200.0, Double.MAX_VALUE, false);
-        setSpinnerValue(minSpinner, 60, false);
+        initializeSpinner(minSpinner, 0.0, Double.MAX_VALUE, 60,false);
+        initializeSpinner(maxSpinner, 0.0, Double.MAX_VALUE,120, false);
+        initializeSpinner(offsetSpinner, -200.0, Double.MAX_VALUE,60, false);
+        setSpinnerValue(minSpinner, 60.0, false);
         setSpinnerValue(maxSpinner, 120, false);
         setSpinnerValue(offsetSpinner, -60, false);
         counterClockwiseRadio.setDisable(false);
@@ -204,7 +204,9 @@ public class AddNewController implements Initializable {
     }
 
     private void setSpinnerValue(Spinner<Double> spinner, double value, boolean isLocked) {
-        spinner.getValueFactory().setValue(value);
+        if (spinner.getValueFactory() != null) {
+            spinner.getValueFactory().setValue(value);
+        }
         spinner.setEditable(!isLocked);
         spinner.setDisable(isLocked);
     }
@@ -229,7 +231,7 @@ public class AddNewController implements Initializable {
 
         // 1. Check if one of the radio buttons in typeGroup is selected
         if (typeGroup.getSelectedToggle() == null) {
-            showAlert("Validation Error", "Please select a type.", "red");
+            showAlert("Validation Error - ", "Please select a type.", "red");
             return;
         }
 
@@ -237,7 +239,7 @@ public class AddNewController implements Initializable {
         try {
             int propValue = Integer.parseInt(propTextField.getText());
             if (propValue <= 0) {
-                showAlert("Validation Error", "The prop value must be a positive integer.", "red");
+                showAlert("Validation Error - ", "The prop value must be a positive integer.", "red");
                 return;
             }
         } catch (NumberFormatException e) {
@@ -247,13 +249,13 @@ public class AddNewController implements Initializable {
 
         // 3. Check if one of the radio buttons in rotationGroup is selected
         if (rotationGroup.getSelectedToggle() == null) {
-            showAlert("Validation Error", "Please select a rotation direction.", "red");
+            showAlert("Validation Error - ", "Please select a rotation direction.", "red");
             return;
         }
 
         // 4. Check if the value in the rotationSpinner is an integer greater than 0
         if (!isValidPositiveInteger(rotationSpinner.getEditor().getText())) {
-            showAlert("Validation Error", "The rotation value must be a positive integer.", "red");
+            showAlert("Validation Error - ", "The rotation value must be a positive integer.", "red");
             return;
         }
 
@@ -261,7 +263,7 @@ public class AddNewController implements Initializable {
         if (!isValidNumeric(minSpinner.getEditor().getText()) ||
                 !isValidNumeric(maxSpinner.getEditor().getText()) ||
                 !isValidNumeric(offsetSpinner.getEditor().getText())) {
-            showAlert("Validation Error", "Invalid values in min, max, or offset spinners. They must be numeric.", "red");
+            showAlert("Validation Error - ", "Invalid values in min, max, or offset spinners. They must be numeric.", "red");
             return;
         }
 
@@ -388,7 +390,7 @@ public class AddNewController implements Initializable {
         String finalString = "~prop:" + propValue + "," + typeSelection + ",0," + rotationY + ",0,0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~";
 
         // Display the result
-        showAlert("Animation string", finalString, "black");
+        showAlert("", finalString, "black");
     }
     private static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
@@ -398,7 +400,7 @@ public class AddNewController implements Initializable {
         return bd.doubleValue();
     }
     private void showAlert(String title, String message, String colour) {
-        descriptionTextArea.setText(title + ": " + message);
+        descriptionTextArea.setText(title + message);
         if (colour.equals("red"))
             descriptionTextArea.setStyle("-fx-text-fill: red;");
         else if (colour.equals("black")) {
