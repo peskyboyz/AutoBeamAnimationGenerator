@@ -126,12 +126,13 @@ public class AddNewController implements Initializable {
     private void setSteering() {
         unitChoiceBox.getItems().setAll("Value");
         unitChoiceBox.setValue("Value");
-        initializeSpinner(minSpinner, -1000.0, Double.MAX_VALUE, -1000, false);
-        initializeSpinner(maxSpinner, -1000.0, Double.MAX_VALUE, 1000, false);
+        initializeSpinner(minSpinner, -1000.0, Double.MAX_VALUE, -900, false);
+        initializeSpinner(maxSpinner, -1000.0, Double.MAX_VALUE, 900, false);
         initializeSpinner(offsetSpinner, 0.0, Double.MAX_VALUE, 0,false);
-        setSpinnerValue(minSpinner, -1000, true);
-        setSpinnerValue(maxSpinner, 1000, true);
+        setSpinnerValue(minSpinner, -900, true);
+        setSpinnerValue(maxSpinner, 900, true);
         setSpinnerValue(offsetSpinner, 0, true);
+        setSpinnerValue(rotationSpinner, 900, false);
         // Ensure counterClockwiseRadio is selected and locked
         rotationGroup.selectToggle(counterClockwiseRadio);
         counterClockwiseRadio.setDisable(true);
@@ -318,7 +319,7 @@ public class AddNewController implements Initializable {
             calcMinValue = minValue;
             calcMaxValue = maxValue;
             calcOffsetValue = offsetValue;
-            rotationY = 1;
+            rotationY = round((rotationValue*2)/(calcMaxValue-calcMinValue)*rotationDirection, 2);
         }
         else if (selectedType.equals(speedRadio)) {
             typeSelection = "wheelspeed";
@@ -337,7 +338,7 @@ public class AddNewController implements Initializable {
             rotationY = round(rotationValue/(calcMaxValue-calcMinValue)*rotationDirection, 2);
         }
         else if (selectedType.equals(rpmRadio)) {
-            typeSelection = "rpm";
+            typeSelection = "rpmTacho";
             calcMinValue = minValue;
             calcMaxValue = maxValue;
             calcOffsetValue = offsetValue;
