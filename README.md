@@ -23,7 +23,7 @@ https://documentation.beamng.com/modding/vehicle/sections/props/
 The tool operates by allowing the user to enter general parameters of an animation and outputs the completed line to be 
 added to Automation.
 The correct format for the line is as follows: </br>
-**~prop:[Fixture number],[Function],[Rotation X],[Rotation Y],[Rotation Z],[Translation X],[Translation Y],[Translation Z],[Min],[Max],[Offset],[Multiplier]~**
+`~prop:[Fixture number],[Function],[Rotation X],[Rotation Y],[Rotation Z],[Translation X],[Translation Y],[Translation Z],[Min],[Max],[Offset],[Multiplier]~`
 </br>  
 Depending on the function chosen, the user will have to enter the prop ID, the direction of rotation, the range of 
 rotation (in degrees), the measurement unit, the minimum, maximum and the offset value for the prop. These will be 
@@ -49,7 +49,7 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Select Calculate.
 - Example: Using the default value of 900° we get 1.5 rotations of the wheel each way.
 </br>![Screenshot of Steering example](/README%20Assets/Steering%20Example.png)
-</br> ~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~
+</br> `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
   
 ### Speed
 
@@ -62,9 +62,8 @@ and set the other ones base to be invisible. This second one will be the moving 
 - The Offset should be left alone unless the needle needs to drop below the min when off
 - Select Calculate.
 - Example: Based on the test gauge cluster above the units are set to MPH, the max to 200, and the offset at 0 
-since the gauge starts at 0.</br>![Screenshot of Speed example](/README%20Assets/Speed%20Example.png)
-</br>
-~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~ *NOTE: The values in the description are in m/s*
+since the gauge starts at 0.</br>![Screenshot of Speed example](/README%20Assets/Speed%20Example.png)  
+`~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~` *NOTE: The values in the description are in m/s*
 
 ### RPM
 
@@ -79,7 +78,7 @@ since the gauge starts at 0.</br>![Screenshot of Speed example](/README%20Assets
 - Example: Based on the test gauge cluster above the min is left alone, the max to 9000 and the offset at 0
 since the gauge starts at 0.</br>![Screenshot of RPM example](/README%20Assets/RPM%20Example.png)
   </br>
-  ~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~ *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the rpmTacho with rpm*
+  `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~` *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the rpmTacho with rpm*
 
 ### Fuel
 
@@ -91,7 +90,7 @@ since the gauge starts at 0.</br>![Screenshot of RPM example](/README%20Assets/R
 - Select Calculate.
 - Example: </br>![Screenshot of Fuel example](/README%20Assets/Fuel%20Example.png)
   </br>
-  ~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~ 
+  `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~` 
 
 ### Boost
 
@@ -108,7 +107,7 @@ since the gauge starts at 0.</br>![Screenshot of RPM example](/README%20Assets/R
 and the offset at 1 to compensate for the -1 for the min
   </br>![Screenshot of Boost example](/README%20Assets/Boost%20Example.png)
   </br>
-  ~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~ *NOTE: The values in the description are in psi*
+  `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
 
 ### Water Temp
 
@@ -127,7 +126,7 @@ and the offset at 1 to compensate for the -1 for the min
   and the offset at -60 to compensate for the 60 for the min. This results in the middle of the gauge being at 90°C
   </br>![Screenshot of Boost example](/README%20Assets/Water%20Example.png)
   </br>
-  ~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~ *NOTE: The values in the description are in psi*
+  `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
 
 ### Adding Description
 
@@ -138,6 +137,9 @@ Now add all the lines you have generated to the description field in Automation 
 The vehicle with animations will now be present in BeamNG.drive
 
 ## Updates  
+Version 0.3.1 - 1 August 2024
+- Corrected README.md formatting
+- Added missing Description Location.png for README.md
 
 Version 0.3 - 1 August 2024
 - Improvement to error message and generated description (moved space and dash to error message title, cleared title from generated string)
