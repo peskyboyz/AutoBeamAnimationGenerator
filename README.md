@@ -13,7 +13,7 @@ The tool can currently generate the lines needed for the following animations:
 
 Note that these animation are currently only for rotations. While linear animations are possible, they are not currently supported by this tool.
 
-Many other animations are possible and details can be found in the BeamNG.drive documentation 
+Many other animations are possible and details can be found in the BeamNG.drive documentation </br>
 https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/  
 https://documentation.beamng.com/modding/vehicle/vehicle_system/controller/main/vehiclecontroller/
 https://documentation.beamng.com/modding/vehicle/sections/props/
