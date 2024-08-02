@@ -1,14 +1,17 @@
-package com.example.automationdescriptiongenerator;
+package com.example.automationdescgen;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import java.awt.Desktop;
 
 public class AddNewController implements Initializable {
     @FXML
@@ -224,6 +227,12 @@ public class AddNewController implements Initializable {
                 maxSpinner.getValueFactory().setValue(oldValue); // Revert to previous valid value
             }
         });
+    }
+
+    @FXML protected void loadHelpFile(ActionEvent event) throws IOException {
+        System.out.println("Loading README");
+        Desktop desktop = Desktop.getDesktop();
+        desktop.browse(java.net.URI.create("https://github.com/peskyboyz/AutomationDescriptionGenerator/blob/master/README.md"));
     }
 
     @FXML

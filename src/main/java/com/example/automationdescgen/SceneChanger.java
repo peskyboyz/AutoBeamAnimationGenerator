@@ -1,4 +1,4 @@
-package com.example.automationdescriptiongenerator;
+package com.example.automationdescgen;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;

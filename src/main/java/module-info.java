@@ -1,8 +1,9 @@
-module com.example.automationdescriptiongenerator {
+module com.example.automationdescgen {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
 
-    opens com.example.automationdescriptiongenerator to javafx.fxml;
-    exports com.example.automationdescriptiongenerator;
+    opens com.example.automationdescgen to javafx.fxml;
+    exports com.example.automationdescgen;
 }

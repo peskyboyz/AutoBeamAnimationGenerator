@@ -15,7 +15,7 @@ Note that these animation are currently only for rotations. While linear animati
 
 Many other animations are possible and details can be found in the BeamNG.drive documentation </br>
 https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/  
-https://documentation.beamng.com/modding/vehicle/vehicle_system/controller/main/vehiclecontroller/
+https://documentation.beamng.com/modding/vehicle/vehicle_system/controller/main/vehiclecontroller/  
 https://documentation.beamng.com/modding/vehicle/sections/props/
 
 ## How to Use
@@ -137,6 +137,12 @@ Now add all the lines you have generated to the description field in Automation 
 The vehicle with animations will now be present in BeamNG.drive
 
 ## Updates  
+Version 0.4 - 1 August 2024
+- Moved project to JDK 21 along with dependencies
+- Hid Start Menu page (Is currently incomplete). Now goes directly to tool
+- Added Help button which will open README.md in browser via GitHub page
+- Renamed several files
+
 Version 0.3.1 - 1 August 2024
 - Corrected README.md formatting
 - Added missing Description Location.png for README.md
@@ -150,5 +156,5 @@ Version 0.3 - 1 August 2024
 - Created README.md guide and added images for guide
 
 Version 0.2 - 30 July 2024
-- Barebones functional program that allows the user to generate the descriptions that allow Automation car animation to work in BeamNG.drive.
+- Bare bones functional program that allows the user to generate the descriptions that allow Automation car animation to work in BeamNG.drive.
 - Currently missing help screen, ability to save list of generations, and other details

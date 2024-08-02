@@ -1,4 +1,4 @@
-package com.example.automationdescriptiongenerator;
+package com.example.automationdescgen;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ import java.io.IOException;
 public class AutoAnimationApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(AutoAnimationApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(AutoAnimationApplication.class.getResource("AddNew.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Automation Animation Tool");
         stage.setScene(scene);
