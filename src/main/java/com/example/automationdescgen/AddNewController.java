@@ -1,6 +1,5 @@
 package com.example.automationdescgen;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -229,7 +228,7 @@ public class AddNewController implements Initializable {
         });
     }
 
-    @FXML protected void loadHelpFile(ActionEvent event) throws IOException {
+    @FXML protected void loadHelpFile() throws IOException {
         System.out.println("Loading README");
         Desktop desktop = Desktop.getDesktop();
         desktop.browse(java.net.URI.create("https://github.com/peskyboyz/AutomationDescriptionGenerator/blob/master/README.md"));
@@ -270,9 +269,9 @@ public class AddNewController implements Initializable {
         }
 
         // 5. Check if minSpinner, maxSpinner, and offsetSpinner have valid numeric values
-        if (!isValidNumeric(minSpinner.getEditor().getText()) ||
-                !isValidNumeric(maxSpinner.getEditor().getText()) ||
-                !isValidNumeric(offsetSpinner.getEditor().getText())) {
+        if (isInvalidNumeric(minSpinner.getEditor().getText()) ||
+                isInvalidNumeric(maxSpinner.getEditor().getText()) ||
+                isInvalidNumeric(offsetSpinner.getEditor().getText())) {
             showAlert("Validation Error - ", "Invalid values in min, max, or offset spinners. They must be numeric.", "red");
             return;
         }
@@ -289,14 +288,14 @@ public class AddNewController implements Initializable {
         }
     }
 
-    private boolean isValidNumeric(String text) {
+    private boolean isInvalidNumeric(String text) {
         // Check if the text is a valid double
         try {
             Double.parseDouble(text);
             // Ensure text does not contain any illegal characters
-            return text.matches("-?\\d*(\\.\\d+)?");
+            return !text.matches("-?\\d*(\\.\\d+)?");
         } catch (NumberFormatException e) {
-            return false;
+            return true;
         }
     }
 
@@ -351,7 +350,7 @@ public class AddNewController implements Initializable {
             calcMinValue = minValue;
             calcMaxValue = maxValue;
             calcOffsetValue = offsetValue;
-            rotationY = round(rotationValue/(calcMaxValue-calcMinValue)*rotationDirection, 2);
+            rotationY = round(rotationValue/(calcMaxValue-calcMinValue)*rotationDirection, 4);
         }
         else if (selectedType.equals(fuelRadio)) {
             typeSelection = "fuel";

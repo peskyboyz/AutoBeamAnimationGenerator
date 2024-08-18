@@ -18,6 +18,36 @@ https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/
 https://documentation.beamng.com/modding/vehicle/vehicle_system/controller/main/vehiclecontroller/  
 https://documentation.beamng.com/modding/vehicle/sections/props/
 
+Animations that I have successfully used:
+- steering
+  - `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
+- rpmTacho (and rpm)
+  - `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0.0,9000.0,0.0,1~`
+- wheelspeed (airspeed and airflowspeed functions the same way)
+  - `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0.0,89.4,0.0,1~`
+- watertemp (oiltemp functions the same way)
+  - `~prop:44,watertemp,0,-1.83,0,0,0,0,60.0,120.0,-60.0,1~`
+- fuel
+  - `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~`
+- turboBoost
+  - `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~`
+- radiatorFanSpin (Note that this only turns on when coolant reaches 105°C)
+  - `~prop:17,radiatorFanSpin,0,1,0,0,0,0,0,360,0,1~`
+- rpmspin (for pulleys, crank driven fans, or other rpm dependent constantly spinning while the engine is on)
+  - `~prop:23,rpmspin,0,1,0,0,0,0,-360,360,0,1~`
+- throttle, brake, clutch
+  - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
+- lowhighbeam (is on for both low and high beam lights)
+  - `~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~`
+- lights (three setting positions; off, low, high)
+  - `~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~`
+- turnsignal (set to middle as the value will go positive and negative)
+  - `~prop:63,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~`
+- ignition (off and on; no start setting)
+  - `~prop:69,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~`
+- parkingbrake
+  - `~prop:62,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~`
+  
 ## How to Use
 
 The tool operates by allowing the user to enter general parameters of an animation and outputs the completed line to be 
@@ -25,6 +55,15 @@ added to Automation.
 The correct format for the line is as follows: </br>
 `~prop:[Fixture number],[Function],[Rotation X],[Rotation Y],[Rotation Z],[Translation X],[Translation Y],[Translation Z],[Min],[Max],[Offset],[Multiplier]~`
 </br>  
+
+`~prop:135,rpmspin,1,0,0,0,0,0,-360,360,0.05,1~` clockwise around red arrow pointing away </br>
+`~prop:136,rpmspin,0,1,0,0,0,0,-360,360,0.05,1~` clockwise around green arrow pointing away </br>
+`~prop:137,rpmspin,0,0,1,0,0,0,-360,360,0.05,1~` clockwise around blue arrow pointing away </br>
+
+`~prop:135,throttle,0,0,0,1,0,0,0,240,0.0,1~` moves positive red </br>
+`~prop:136,throttle,0,0,0,0,1,0,0,240,0.0,1~` moves positive blue </br>
+`~prop:137,throttle,0,0,0,0,0,1,0,240,0.0,1~` moves positive green </br>
+
 Depending on the function chosen, the user will have to enter the prop ID, the direction of rotation, the range of 
 rotation (in degrees), the measurement unit, the minimum, maximum and the offset value for the prop. These will be 
 further described in their respective sections.
@@ -35,7 +74,26 @@ The Prop ID can be found on the left side of the "Fixtures" tab as seen below. T
 When all fields have been entered select Calculate. If there are no issues, the string will appear below. 
 Copy it and paste it in the description field in Automation
 
-All below descriptions will include an example based on this gauge cluster  
+Here is an example of a completed animation list for a car. </br>
+`~prop:8,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
+`~prop:16,rpmTacho,0,-0.045,0,0,0,0,0.0,6000.0,0.0,1~` </br>
+`~prop:17,wheelspeed,0,-3.78,0,0,0,0,0.0,71.5,0.0,1~` </br>
+`~prop:18,watertemp,0,-0.98,0,0,0,0,60.0,121.11,-60.0,1~` </br>
+`~prop:19,fuel,0,-60.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
+`~prop:20,oiltemp,0,0.98,0,0,0,0,60.0,121.11,-60.0,1~` </br>
+`~prop:21,steering,0,0.8,0,0,0,0,-900.0,900.0,0.0,1~` </br>
+`~prop:29,lowhighbeam,0,-60.0,0,-0.8,-1.4,0,0.0,1.0,0.0,1~` </br>
+`~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~` </br>
+`~prop:62,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
+`~prop:63,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~` </br>
+`~prop:69,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
+`~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~` </br>
+`~prop:113,brake,22,0,0,0,0,0,0,1.0,0.0,1~` </br>
+`~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~` </br>
+`~prop:115,clutch,22,0,0,0,0,0,0,240,0.0,1~` </br>
+`~prop:129,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
+
+All following descriptions will include an example based on this gauge cluster  
 ![Screenshot of gauge cluster in Automation](/README%20Assets/Test%20Gauge%20Cluster.png)
 
 ### Steering
