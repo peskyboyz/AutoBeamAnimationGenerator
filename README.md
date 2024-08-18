@@ -195,6 +195,10 @@ Now add all the lines you have generated to the description field in Automation 
 The vehicle with animations will now be present in BeamNG.drive
 
 ## Updates  
+Version 0.41 - 18 August 2024
+- Corrected rounding issue where rotationY could be inaccurate for certain RPM dials
+- Added information to README.md regarding other types of animation
+
 Version 0.4 - 1 August 2024
 - Moved project to JDK 21 along with dependencies
 - Hid Start Menu page (Is currently incomplete). Now goes directly to tool
