@@ -35,6 +35,9 @@ Animations that I have successfully used:
   - `~prop:17,radiatorFanSpin,0,1,0,0,0,0,0,360,0,1~`
 - rpmspin (for pulleys, crank driven fans, or other rpm dependent constantly spinning while the engine is on)
   - `~prop:23,rpmspin,0,1,0,0,0,0,-360,360,0,1~`
+  - For rpmspin, the prop will move the amount stated in the [Max] field as the engine rotates, then will reset to the starting position. Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
+    The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time alloted. If it was set to 0.25, the prop would only rotate 90° before reset.
+    The [Multiplier] field does not affect the rotation at all.
 - throttle, brake, clutch
   - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
 - lowhighbeam (is on for both low and high beam lights)
@@ -47,6 +50,26 @@ Animations that I have successfully used:
   - `~prop:69,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~`
 - parkingbrake
   - `~prop:62,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~`
+- gear_A (Automatic gearbox)
+  - `~prop:135,gear_A,0,-25,0,0,0,0,-2,3,0,1~` For column shifter </br>
+    `~prop:143,gear_A,0,0,0,-0.9,0,0,-2,3,0,1~` For dash indicator 
+  - Default position is park; Auto goes P, R, N, D, 2, 1
+  - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear' 
+    and the manual gears following resulting in a very long linear movement.
+- gearIndex (for creating manual gearbox shifters ie: H-pattern)
+  - `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
+    `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
+    `~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
+    `~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
+    `~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
+    `~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
+  - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral. 
+    Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...),
+    then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console. 
+    As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, 
+    before moving the commanded gear's shifter. </br>
+    ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
+
   
 ## How to Use
 
@@ -56,9 +79,9 @@ The correct format for the line is as follows: </br>
 `~prop:[Fixture number],[Function],[Rotation X],[Rotation Y],[Rotation Z],[Translation X],[Translation Y],[Translation Z],[Min],[Max],[Offset],[Multiplier]~`
 </br>  
 
-`~prop:135,rpmspin,1,0,0,0,0,0,-360,360,0.05,1~` clockwise around red arrow pointing away </br>
-`~prop:136,rpmspin,0,1,0,0,0,0,-360,360,0.05,1~` clockwise around green arrow pointing away </br>
-`~prop:137,rpmspin,0,0,1,0,0,0,-360,360,0.05,1~` clockwise around blue arrow pointing away </br>
+`~prop:135,rpmspin,1,0,0,0,0,0,-360,360,0,1~` clockwise around red arrow pointing away </br>
+`~prop:136,rpmspin,0,1,0,0,0,0,-360,360,0,1~` clockwise around green arrow pointing away </br>
+`~prop:137,rpmspin,0,0,1,0,0,0,-360,360,0,1~` clockwise around blue arrow pointing away </br>
 
 `~prop:135,throttle,0,0,0,1,0,0,0,240,0.0,1~` moves positive red </br>
 `~prop:136,throttle,0,0,0,0,1,0,0,240,0.0,1~` moves positive blue </br>
@@ -75,23 +98,29 @@ When all fields have been entered select Calculate. If there are no issues, the 
 Copy it and paste it in the description field in Automation
 
 Here is an example of a completed animation list for a car. </br>
-`~prop:8,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
-`~prop:16,rpmTacho,0,-0.045,0,0,0,0,0.0,6000.0,0.0,1~` </br>
-`~prop:17,wheelspeed,0,-3.78,0,0,0,0,0.0,71.5,0.0,1~` </br>
-`~prop:18,watertemp,0,-0.98,0,0,0,0,60.0,121.11,-60.0,1~` </br>
-`~prop:19,fuel,0,-60.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
-`~prop:20,oiltemp,0,0.98,0,0,0,0,60.0,121.11,-60.0,1~` </br>
-`~prop:21,steering,0,0.8,0,0,0,0,-900.0,900.0,0.0,1~` </br>
-`~prop:29,lowhighbeam,0,-60.0,0,-0.8,-1.4,0,0.0,1.0,0.0,1~` </br>
-`~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~` </br>
-`~prop:62,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
-`~prop:63,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~` </br>
-`~prop:69,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
-`~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~` </br>
-`~prop:113,brake,22,0,0,0,0,0,0,1.0,0.0,1~` </br>
-`~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~` </br>
-`~prop:115,clutch,22,0,0,0,0,0,0,240,0.0,1~` </br>
-`~prop:129,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
+`~prop:7,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
+`~prop:15,rpmTacho,0,-0.03,0,0,0,0,0.0,9000.0,0.0,1~` </br>
+`~prop:16,wheelspeed,0,-3.35,0,0,0,0,0.0,80.5,0.0,1~` </br>
+`~prop:17,watertemp,0,-0.98,0,0,0,0,60.0,121.11,-60.0,1~` </br>
+`~prop:18,fuel,0,-60.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
+`~prop:19,oiltemp,0,0.98,0,0,0,0,60.0,121.11,-60.0,1~` </br>
+`~prop:20,steering,0,0.8,0,0,0,0,-900.0,900.0,0.0,1~` </br>
+`~prop:26,lowhighbeam,0,-60.0,0,-0.8,-1.4,0,0.0,1.0,0.0,1~` </br>
+`~prop:27,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~` </br>
+`~prop:55,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
+`~prop:56,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~` </br>
+`~prop:62,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~` </br>
+`~prop:66,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~` </br>
+`~prop:104,brake,22,0,0,0,0,0,0,1.0,0.0,1~` </br>
+`~prop:105,throttle,22,0,0,0,0,0,0,240,0.0,1~` </br>
+`~prop:119,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
+`~prop:125,clutch,22,0,0,0,0,0,0,240,0.0,1~` </br>
+`~prop:128,gearIndex,0,180,0,0,0,0,-1,1,0,1~` </br>
+`~prop:129,gearIndex,0,180,0,0,0,0,-1,0,0,1~` </br>
+`~prop:130,gearIndex,0,180,0,0,0,0,0,2,0,1~` </br>
+`~prop:131,gearIndex,0,180,0,0,0,0,1,3,-1,1~` </br>
+`~prop:132,gearIndex,0,180,0,0,0,0,2,4,-2,1~` </br>
+`~prop:133,gearIndex,0,180,0,0,0,0,3,5,-3,1~` </br>
 
 All following descriptions will include an example based on this gauge cluster  
 ![Screenshot of gauge cluster in Automation](/README%20Assets/Test%20Gauge%20Cluster.png)
