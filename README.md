@@ -18,59 +18,6 @@ https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/
 https://documentation.beamng.com/modding/vehicle/vehicle_system/controller/main/vehiclecontroller/  
 https://documentation.beamng.com/modding/vehicle/sections/props/
 
-Animations that I have successfully used:
-- steering
-  - `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
-- rpmTacho (and rpm)
-  - `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0.0,9000.0,0.0,1~`
-- wheelspeed (airspeed and airflowspeed functions the same way)
-  - `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0.0,89.4,0.0,1~`
-- watertemp (oiltemp functions the same way)
-  - `~prop:44,watertemp,0,-1.83,0,0,0,0,60.0,120.0,-60.0,1~`
-- fuel
-  - `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~`
-- turboBoost
-  - `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~`
-- radiatorFanSpin (Note that this only turns on when coolant reaches 105°C)
-  - `~prop:17,radiatorFanSpin,0,1,0,0,0,0,0,360,0,1~`
-- rpmspin (for pulleys, crank driven fans, or other rpm dependent constantly spinning while the engine is on)
-  - `~prop:23,rpmspin,0,1,0,0,0,0,-360,360,0,1~`
-  - For rpmspin, the prop will move the amount stated in the [Max] field as the engine rotates, then will reset to the starting position. Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
-    The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time alloted. If it was set to 0.25, the prop would only rotate 90° before reset.
-    The [Multiplier] field does not affect the rotation at all.
-- throttle, brake, clutch
-  - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
-- lowhighbeam (is on for both low and high beam lights)
-  - `~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~`
-- lights (three setting positions; off, low, high)
-  - `~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~`
-- turnsignal (set to middle as the value will go positive and negative)
-  - `~prop:63,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~`
-- ignition (off and on; no start setting)
-  - `~prop:69,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~`
-- parkingbrake
-  - `~prop:62,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~`
-- gear_A (Automatic gearbox)
-  - `~prop:135,gear_A,0,-25,0,0,0,0,-2,3,0,1~` For column shifter </br>
-    `~prop:143,gear_A,0,0,0,-0.9,0,0,-2,3,0,1~` For dash indicator 
-  - Default position is park; Auto goes P, R, N, D, 2, 1
-  - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear' 
-    and the manual gears following resulting in a very long linear movement.
-- gearIndex (for creating manual gearbox shifters ie: H-pattern)
-  - `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
-    `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
-    `~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
-    `~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
-    `~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
-    `~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
-  - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral. 
-    Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...),
-    then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console. 
-    As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, 
-    before moving the commanded gear's shifter. </br>
-    ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
-
-  
 ## How to Use
 
 The tool operates by allowing the user to enter general parameters of an animation and outputs the completed line to be 
@@ -87,6 +34,30 @@ The correct format for the line is as follows: </br>
 `~prop:136,throttle,0,0,0,0,1,0,0,240,0.0,1~` moves positive blue </br>
 `~prop:137,throttle,0,0,0,0,0,1,0,240,0.0,1~` moves positive green </br>
 
+### Calculations
+To calculate the values for the three Rotations and Translations, you must figure out how far the prop will move per unit
+of the function selected. For example, a tachometer (RPM) has a total angle of rotation on the dial of 270°. 
+The minimum RPM listed is 0 and the maximum RPM listed is 6000.  </br>
+To find the max range we do `[Max] - [Min] = Total Range` which in this case is `6000 - 0 = 6000` </br>
+Therefore, we can do `Angle of Rotation / Total Range = Step Value` which in this case is `270 / 6000 = 0.045`
+Now we need to know if the needle will be moving clockwise or counter-clockwise.
+
+By referring to the following handy rules we can figure out if the value should be positive or negative: </br>
+[Rotation X]: positive is clockwise around red arrow pointing away </br>
+[Rotation Y]: positive is clockwise around green arrow pointing away </br>
+[Rotation Z]: positive is clockwise around blue arrow pointing away </br>
+[Translation X]: positive moves positive red </br>
+[Translation Y]: positive moves positive blue </br>
+[Translation Z]: positive moves positive green
+
+In the case of the tachometer, the dial rotates counter-clockwise about the green arrow so the value will be negative in the [Rotation Y] field. </br>
+With the values calculated we can write the final description string. </br>
+`~prop:[Fixture number],rpmTacho,0,-0.045,0,0,0,0,0,6000,0,1~` </br>
+
+It is important to note that several function are based on specific units, such as speed being based on meters per second (m/s),
+and as such will require conversion from MPH or KPH, before doing the calculations above
+
+### Using the Tool
 Depending on the function chosen, the user will have to enter the prop ID, the direction of rotation, the range of 
 rotation (in degrees), the measurement unit, the minimum, maximum and the offset value for the prop. These will be 
 further described in their respective sections.
@@ -223,7 +194,65 @@ Now add all the lines you have generated to the description field in Automation 
 
 The vehicle with animations will now be present in BeamNG.drive
 
+## List of Possible Animations
+
+Animations that I have successfully used. When looking at the examples, the important parts to look at are the [Function],
+[Min], [Max], [Offset].
+- steering
+  - `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
+- rpmTacho (and rpm)
+  - `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0.0,9000.0,0.0,1~`
+- wheelspeed (airspeed and airflowspeed functions the same way)
+  - `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0.0,89.4,0.0,1~`
+- watertemp (oiltemp` functions the same way)
+  - `~prop:44,watertemp,0,-1.83,0,0,0,0,60.0,120.0,-60.0,1~`
+- fuel
+  - `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~`
+- turboBoost
+  - `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~`
+- radiatorFanSpin (Note that this only turns on when coolant reaches 105°C)
+  - `~prop:17,radiatorFanSpin,0,1,0,0,0,0,0,360,0,1~`
+- rpmspin (for pulleys, crank driven fans, or other rpm dependent constantly spinning while the engine is on)
+  - `~prop:23,rpmspin,0,1,0,0,0,0,-360,360,0,1~`
+  - For rpmspin, the prop will move the amount stated in the [Max] field as the engine rotates, then will reset to the starting position. Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
+    The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time alloted. If it was set to 0.25, the prop would only rotate 90° before reset.
+    The [Multiplier] field does not affect the rotation at all.
+- throttle, brake, clutch
+  - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
+- lowhighbeam (is on for both low and high beam lights)
+  - `~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~`
+- lights (three setting positions; off, low, high)
+  - `~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~`
+- turnsignal (set to middle as the value will go positive and negative)
+  - `~prop:63,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~`
+- ignition (off and on; no start setting)
+  - `~prop:69,ignition,0,25.0,0,0,0,0,0.0,1.0,0.0,1~`
+- parkingbrake
+  - `~prop:62,parkingbrake,-23,0.0,0,0,0,0,0.0,1.0,0.0,1~`
+- gear_A (Automatic gearbox)
+  - `~prop:135,gear_A,0,-25,0,0,0,0,-2,3,0,1~` For column shifter </br>
+    `~prop:143,gear_A,0,0,0,-0.9,0,0,-2,3,0,1~` For dash indicator
+  - Default position is park; Auto goes P, R, N, D, 2, 1
+  - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear'
+    and the manual gears following resulting in a very long linear movement.
+- gearIndex (for creating manual gearbox shifters ie: H-pattern)
+  - `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
+    `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
+    `~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
+    `~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
+    `~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
+    `~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
+  - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral.
+    Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...),
+    then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console.
+    As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter,
+    before moving the commanded gear's shifter. </br>
+    ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
+
 ## Updates  
+Version 0.42 - 23 August 2024
+- Added information to README.md regarding other types of animation
+
 Version 0.41 - 18 August 2024
 - Corrected rounding issue where rotationY could be inaccurate for certain RPM dials
 - Added information to README.md regarding other types of animation
