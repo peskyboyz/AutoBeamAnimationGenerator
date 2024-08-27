@@ -7,7 +7,8 @@ The tool can currently generate the lines needed for the following animations:
  - Steering
  - Speedometer
  - Tachometer
- - Water temperature (radiator)
+ - Water temperature gauge (radiator)
+ - Oil temperature gauge
  - Fuel gauge
  - Boost gauge
 
@@ -26,45 +27,47 @@ The correct format for the line is as follows: </br>
 `~prop:[Fixture number],[Function],[Rotation X],[Rotation Y],[Rotation Z],[Translation X],[Translation Y],[Translation Z],[Min],[Max],[Offset],[Multiplier]~`
 </br>  
 
-`~prop:135,rpmspin,1,0,0,0,0,0,-360,360,0,1~` clockwise around red arrow pointing away </br>
-`~prop:136,rpmspin,0,1,0,0,0,0,-360,360,0,1~` clockwise around green arrow pointing away </br>
-`~prop:137,rpmspin,0,0,1,0,0,0,-360,360,0,1~` clockwise around blue arrow pointing away </br>
+Here is a guide to the 6 movement options: </br>
+`~prop:[Fixture number],[Function],1,0,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation X] - rotation clockwise around red arrow pointing away </br>
+`~prop:[Fixture number],[Function],0,1,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Y] - rotation clockwise around green arrow pointing away </br>
+`~prop:[Fixture number],[Function],0,0,1,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Z] - rotation clockwise around blue arrow pointing away </br>
 
-`~prop:135,throttle,0,0,0,1,0,0,0,240,0.0,1~` moves positive red </br>
-`~prop:136,throttle,0,0,0,0,1,0,0,240,0.0,1~` moves positive blue </br>
-`~prop:137,throttle,0,0,0,0,0,1,0,240,0.0,1~` moves positive green </br>
+`~prop:[Fixture number],[Function],0,0,0,1,0,0,[Min],[Max],[Offset],[Multiplier]~` [Translation X] - translation moving positive red </br>
+`~prop:[Fixture number],[Function],0,0,0,0,1,0,[Min],[Max],[Offset],[Multiplier]~` [Translation Y] - translation moving positive blue </br>
+`~prop:[Fixture number],[Function],0,0,0,0,0,1,[Min],[Max],[Offset],[Multiplier]~` [Translation Z] - translation moving positive green </br>
 
 ### Calculations
-To calculate the values for the three Rotations and Translations, you must figure out how far the prop will move per unit
+To manually calculate the values for the three Rotations and Translations, you must figure out how far the prop will move per unit
 of the function selected. For example, a tachometer (RPM) has a total angle of rotation on the dial of 270°. 
 The minimum RPM listed is 0 and the maximum RPM listed is 6000.  </br>
-To find the max range we do `[Max] - [Min] = Total Range` which in this case is `6000 - 0 = 6000` </br>
-Therefore, we can do `Angle of Rotation / Total Range = Step Value` which in this case is `270 / 6000 = 0.045`
-Now we need to know if the needle will be moving clockwise or counter-clockwise.
 
-By referring to the following handy rules we can figure out if the value should be positive or negative: </br>
-[Rotation X]: positive is clockwise around red arrow pointing away </br>
-[Rotation Y]: positive is clockwise around green arrow pointing away </br>
-[Rotation Z]: positive is clockwise around blue arrow pointing away </br>
-[Translation X]: positive moves positive red </br>
-[Translation Y]: positive moves positive blue </br>
-[Translation Z]: positive moves positive green
-
-In the case of the tachometer, the dial rotates counter-clockwise about the green arrow so the value will be negative in the [Rotation Y] field. </br>
-With the values calculated we can write the final description string. </br>
-`~prop:[Fixture number],rpmTacho,0,-0.045,0,0,0,0,0,6000,0,1~` </br>
-
-It is important to note that several function are based on specific units, such as speed being based on meters per second (m/s),
-and as such will require conversion from MPH or KPH, before doing the calculations above
-
-### Using the Tool
-Depending on the function chosen, the user will have to enter the prop ID, the direction of rotation, the range of 
-rotation (in degrees), the measurement unit, the minimum, maximum and the offset value for the prop. These will be 
-further described in their respective sections.
-</br></br>
 The Prop ID can be found on the left side of the "Fixtures" tab as seen below. The prop ID for this steering wheel, which in this case is 98.   
 ![Screenshot of the location of Prop ID in Automation](/README%20Assets/Prop%20ID.png)
 </br>
+
+To find the total range we do `[Max] - [Min] = Total Range` which in this case is `6000 - 0 = 6000` </br>
+Therefore, we can do `Angle of Rotation / Total Range = Step Value` which in this case is `270 / 6000 = 0.045`
+Now we need to know if the needle will be moving clockwise or counter-clockwise.
+
+By referring to the handy rules above we can figure out if the value should be positive or negative.
+
+In the case of the tachometer, the dial rotates counter-clockwise about the green arrow so the value will be negative in the [Rotation Y] field. </br>
+With the values calculated we can write the final description string. </br>
+
+
+`~prop:[Fixture number],rpmTacho,0,-0.045,0,0,0,0,0,6000,0,1~` </br>
+
+It is important to note that several function are based on specific units, such as speed being based on meters per second (m/s),
+and as such will require conversion from MPH or KPH, before doing the calculations above.
+
+### Using the Tool
+
+![Screenshot of tool with all options](/README%20Assets/AppStart.png) </br>
+Depending on the function chosen, the user will have to enter the prop ID, the rotation axes, the direction of rotation, the range of 
+rotation (in degrees), the measurement unit, the minimum, maximum and the offset value for the prop. These will be 
+further described in their respective sections.
+</br>
+
 When all fields have been entered select Calculate. If there are no issues, the string will appear below. 
 Copy it and paste it in the description field in Automation
 
@@ -106,7 +109,6 @@ and set the other ones base to be invisible. This second one will be the moving 
 - The direction of rotation, the Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - Select Calculate.
 - Example: Using the default value of 900° we get 1.5 rotations of the wheel each way.
-</br>![Screenshot of Steering example](/README%20Assets/Steering%20Example.png)
 </br> `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
   
 ### Speed
@@ -115,13 +117,12 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Enter your prop ID for the speedometer needle
 - Enter the range of rotation (This should be the angle of rotation of the speedometer dial)
 - Select the direction of rotation
-- The Min Value is locked
+- The Min Value should be set to the minimum value on the speedometer. Note that this could be higher than 0 if the gauge start at a different value.
 - The Max Value should be the highest speed that is available on the speedometer, not the top speed of the car
-- The Offset should be left alone unless the needle needs to drop below the min when off
+- The Offset should be left alone.
 - Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to MPH, the max to 200, and the offset at 0 
-since the gauge starts at 0.</br>![Screenshot of Speed example](/README%20Assets/Speed%20Example.png)  
-`~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~` *NOTE: The values in the description are in m/s*
+- Example: Based on the test gauge cluster above the units are set to MPH, the startMax to 200, and the startOffset at 0
+  </br> `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~` *NOTE: The values in the description are in m/s*
 
 ### RPM
 
@@ -130,13 +131,11 @@ since the gauge starts at 0.</br>![Screenshot of Speed example](/README%20Assets
 - Enter the range of rotation (This should be the angle of rotation of the tachometer dial)
 - Select the direction of rotation
 - It is recommended that the Min Value is left at 0. If the tachometer starts higher than 0, set it here.
-- The Max Value should be the highest RPM that is available at the end of the tachometer not the max RPM's of the engine
-- The Offset should be left alone unless the needle needs to drop below the min when off
+- The Max Value should be the highest RPM that is available at the end of the tachometer not the startMax RPM's of the engine
+- The Offset should be left alone unless the needle needs to drop below the startMin when off
 - Select Calculate.
-- Example: Based on the test gauge cluster above the min is left alone, the max to 9000 and the offset at 0
-since the gauge starts at 0.</br>![Screenshot of RPM example](/README%20Assets/RPM%20Example.png)
-  </br>
-  `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~` *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the rpmTacho with rpm*
+- Example: Based on the test gauge cluster above the startMin is left alone, the startMax to 9000 and the startOffset at 0
+  </br> `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~` *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the rpmTacho with rpm*
 
 ### Fuel
 
@@ -146,9 +145,7 @@ since the gauge starts at 0.</br>![Screenshot of RPM example](/README%20Assets/R
 - Select the direction of rotation
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - Select Calculate.
-- Example: </br>![Screenshot of Fuel example](/README%20Assets/Fuel%20Example.png)
-  </br>
-  `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~` 
+  </br> `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~` 
 
 ### Boost
 
@@ -159,13 +156,11 @@ since the gauge starts at 0.</br>![Screenshot of RPM example](/README%20Assets/R
 - Select the appropriate unit for boost (bar, psi, kPa)
 - The Min Value is set to the lowest value that can be shown on the gauge
 - The Max Value should be the highest value that can be shown on the gauge
-- The Offset should be the opposite value of the min to compensate and move the starting point of the dial to 0 bar instead of -1 bar
+- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to 0 bar instead of -1 bar
 - Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to "bar", the min to -1, the max to 2, 
-and the offset at 1 to compensate for the -1 for the min
-  </br>![Screenshot of Boost example](/README%20Assets/Boost%20Example.png)
-  </br>
-  `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
+- Example: Based on the test gauge cluster above the units are set to "bar", the startMin to -1, the startMax to 2, 
+and the startOffset at 1 to compensate for the -1 for the startMin
+  </br>`~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
 
 ### Water Temp
 
@@ -178,13 +173,11 @@ and the offset at 1 to compensate for the -1 for the min
 (**IMPORTANT:** This value depends on the lowest you want to show. Most cars cannot show values from freezing)
 - The Max Value should be the highest value that should be shown on the gauge
 (**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
-- The Offset should be the opposite value of the min to compensate and move the starting point of the dial to the min
+- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
 - Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to "°C", the min to 60, the max to 120,
-  and the offset at -60 to compensate for the 60 for the min. This results in the middle of the gauge being at 90°C
-  </br>![Screenshot of Boost example](/README%20Assets/Water%20Example.png)
-  </br>
-  `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
+- Example: Based on the test gauge cluster above the units are set to "°C", the startMin to 60, the startMax to 120,
+  and the startOffset at -60 to compensate for the 60 for the startMin. This results in the middle of the gauge being at 90°C
+  </br> `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
 
 ### Adding Description
 
@@ -204,7 +197,7 @@ Animations that I have successfully used. When looking at the examples, the impo
   - `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0.0,9000.0,0.0,1~`
 - wheelspeed (airspeed and airflowspeed functions the same way)
   - `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0.0,89.4,0.0,1~`
-- watertemp (oiltemp` functions the same way)
+- watertemp (oiltemp functions the same way)
   - `~prop:44,watertemp,0,-1.83,0,0,0,0,60.0,120.0,-60.0,1~`
 - fuel
   - `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~`
@@ -215,10 +208,11 @@ Animations that I have successfully used. When looking at the examples, the impo
 - rpmspin (for pulleys, crank driven fans, or other rpm dependent constantly spinning while the engine is on)
   - `~prop:23,rpmspin,0,1,0,0,0,0,-360,360,0,1~`
   - For rpmspin, the prop will move the amount stated in the [Max] field as the engine rotates, then will reset to the starting position. Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
-    The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time alloted. If it was set to 0.25, the prop would only rotate 90° before reset.
+    The value set for the rotation controls both the speed of rotation and the startMax angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time alloted. If it was set to 0.25, the prop would only rotate 90° before reset.
     The [Multiplier] field does not affect the rotation at all.
 - throttle, brake, clutch
   - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
+  - Note that the these appear to have their rotation reversed. Further testing need to confirm
 - lowhighbeam (is on for both low and high beam lights)
   - `~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~`
 - lights (three setting positions; off, low, high)
@@ -250,6 +244,18 @@ Animations that I have successfully used. When looking at the examples, the impo
     ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
 
 ## Updates  
+Version 0.5 - 25 August 2024
+- Rewrote AddNewController to handle more types of function types with one set of methods for all types. Now uses a single ComboBox instead of radio buttons.
+- Added ability to make animation for X, Y, and/or Z rotations via changes to AddNew.fxml and AddNewController.java.
+- Created Function.java to create the class for all functions.
+- Created FunctionDataProvider.java to generate all function types according to Function class.
+- Created ConversionProvider.java to provide conversion factors for all unit types (exception is °F due to subtraction needed to convert to °C).
+- Set minimum window size for application.
+- Added button to show the explanation of the chosen function.
+- Fixed backwards logic for rotation direction
+- Added function for oiltemp, engineLoad, radiatorFanSpin, rpmSpin, parkingbrake,throttle, brake, clutch
+- Updated README.md for new version
+
 Version 0.42 - 23 August 2024
 - Added information to README.md regarding other types of animation
 

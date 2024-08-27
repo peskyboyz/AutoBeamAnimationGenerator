@@ -15,6 +15,9 @@ public class AutoAnimationApplication extends Application {
         stage.setTitle("Automation Animation Tool");
         stage.setScene(scene);
         stage.show();
+        stage.minHeightProperty();
+        stage.setMinHeight(485);
+        stage.setMinWidth(630);
     }
 
     public static void main(String[] args) {
