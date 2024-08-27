@@ -28,9 +28,11 @@ The correct format for the line is as follows: </br>
 </br>  
 
 Here is a guide to the 6 movement options: </br>
-`~prop:[Fixture number],[Function],1,0,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation X] - rotation clockwise around red arrow pointing away </br>
-`~prop:[Fixture number],[Function],0,1,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Y] - rotation clockwise around green arrow pointing away </br>
-`~prop:[Fixture number],[Function],0,0,1,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Z] - rotation clockwise around blue arrow pointing away </br>
+** IMPORTANT: NOTE THE DIRECTION OF THE ARROWS WHEN CHOOSING A DIRECTION OF ROTATION ** </BR>
+** IF THE ARROW IS FACING YOU, YOU MUST SELECT THE OPPOSITE DIRECTION OF ROTATION ** </BR> 
+`~prop:[Fixture number],[Function],1,0,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation X] - rotation clockwise around red **arrow pointing away** </br>
+`~prop:[Fixture number],[Function],0,1,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Y] - rotation clockwise around green **arrow pointing away** </br>
+`~prop:[Fixture number],[Function],0,0,1,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Z] - rotation clockwise around blue **arrow pointing away** </br>
 
 `~prop:[Fixture number],[Function],0,0,0,1,0,0,[Min],[Max],[Offset],[Multiplier]~` [Translation X] - translation moving positive red </br>
 `~prop:[Fixture number],[Function],0,0,0,0,1,0,[Min],[Max],[Offset],[Multiplier]~` [Translation Y] - translation moving positive blue </br>
@@ -51,7 +53,7 @@ Now we need to know if the needle will be moving clockwise or counter-clockwise.
 
 By referring to the handy rules above we can figure out if the value should be positive or negative.
 
-In the case of the tachometer, the dial rotates counter-clockwise about the green arrow so the value will be negative in the [Rotation Y] field. </br>
+In the case of the tachometer, the dial rotates counter-clockwise about the green arrow pointing away, so the value will be negative in the [Rotation Y] field. </br>
 With the values calculated we can write the final description string. </br>
 
 
