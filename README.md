@@ -1,5 +1,5 @@
-# Automation to BeamNG Animation Description Tool 
-Created by peskyboyz</br>  
+# AutoBeam Animation Generator
+Automation to BeamNG.drive animation description tool Created by peskyboyz</br>  
 ## Description
 This tool allows you to quickly generate the lines needed to animated basic props in cars exported from Automation to BeamNG.drive. 
 
@@ -11,6 +11,13 @@ The tool can currently generate the lines needed for the following animations:
  - Oil temperature gauge
  - Fuel gauge
  - Boost gauge
+ - Engine load
+ - Radiator fan
+ - Engine pulleys
+ - Parking brake
+ - Throttle
+ - Brake
+ - Clutch
 
 Note that these animation are currently only for rotations. While linear animations are possible, they are not currently supported by this tool.
 
@@ -27,8 +34,11 @@ The correct format for the line is as follows: </br>
 `~prop:[Fixture number],[Function],[Rotation X],[Rotation Y],[Rotation Z],[Translation X],[Translation Y],[Translation Z],[Min],[Max],[Offset],[Multiplier]~`
 </br>  
 
+Note that no prop can have two animations. Only the second will work in BeamNG, although it may function unusually, sometimes starting the animation in the wrong position.
+
 Here is a guide to the 6 movement options: </br>
-** IMPORTANT: NOTE THE DIRECTION OF THE ARROWS WHEN CHOOSING A DIRECTION OF ROTATION ** </BR>
+### **Important**
+** NOTE THE DIRECTION OF THE ARROWS WHEN CHOOSING A DIRECTION OF ROTATION ** </BR>
 ** IF THE ARROW IS FACING YOU, YOU MUST SELECT THE OPPOSITE DIRECTION OF ROTATION ** </BR> 
 `~prop:[Fixture number],[Function],1,0,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation X] - rotation clockwise around red **arrow pointing away** </br>
 `~prop:[Fixture number],[Function],0,1,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Y] - rotation clockwise around green **arrow pointing away** </br>
@@ -98,12 +108,12 @@ Here is an example of a completed animation list for a car. </br>
 `~prop:132,gearIndex,0,180,0,0,0,0,2,4,-2,1~` </br>
 `~prop:133,gearIndex,0,180,0,0,0,0,3,5,-3,1~` </br>
 
-All following descriptions will include an example based on this gauge cluster  
+All following descriptions that are based on a gauge cluster will include an example based on this car.  
 ![Screenshot of gauge cluster in Automation](/README%20Assets/Test%20Gauge%20Cluster.png)
 
-### Steering
+#### Steering
 
-- Select the "Steering" type
+- Select the "steering" type
 - Enter your prop ID for the moving part of the steering wheel. (With several steering wheels in which the base and 
 the wheel are one fixture, you will have to duplicate the fixture, set the wheel of one to be invisible via the material,
 and set the other ones base to be invisible. This second one will be the moving fixture while the first one will remain still)
@@ -113,9 +123,9 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Example: Using the default value of 900° we get 1.5 rotations of the wheel each way.
 </br> `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
   
-### Speed
+#### Speed
 
-- Select the "Speed" type
+- Select the "wheelpeed" type
 - Enter your prop ID for the speedometer needle
 - Enter the range of rotation (This should be the angle of rotation of the speedometer dial)
 - Select the direction of rotation
@@ -126,9 +136,9 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Example: Based on the test gauge cluster above the units are set to MPH, the startMax to 200, and the startOffset at 0
   </br> `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~` *NOTE: The values in the description are in m/s*
 
-### RPM
+#### RPM
 
-- Select the "RPM" type
+- Select the "rpmTacho" type
 - Enter your prop ID for the tachometer needle
 - Enter the range of rotation (This should be the angle of rotation of the tachometer dial)
 - Select the direction of rotation
@@ -136,12 +146,12 @@ and set the other ones base to be invisible. This second one will be the moving 
 - The Max Value should be the highest RPM that is available at the end of the tachometer not the startMax RPM's of the engine
 - The Offset should be left alone unless the needle needs to drop below the startMin when off
 - Select Calculate.
-- Example: Based on the test gauge cluster above the startMin is left alone, the startMax to 9000 and the startOffset at 0
-  </br> `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~` *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the rpmTacho with rpm*
+- Example: Based on the test gauge cluster above the Min is left alone, the Max to 9000 and the Offset at 0
+  </br> `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~` *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the `rpmTacho` with `rpm`*
 
-### Fuel
+#### Fuel
 
-- Select the "Fuel" type
+- Select the "fuel" type
 - Enter your prop ID for the fuel gauge needle
 - Enter the range of rotation (This should be the angle of rotation of the fuel gauge dial)
 - Select the direction of rotation
@@ -149,9 +159,9 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Select Calculate.
   </br> `~prop:43,fuel,0,-110.0,0,0,0,0,0.0,1.0,0.0,1~` 
 
-### Boost
+#### Boost
 
-- Select the "Speed" type
+- Select the "turboBoost" type
 - Enter your prop ID for the speedometer needle
 - Enter the range of rotation (This should be the angle of rotation of the boost gauge dial)
 - Select the direction of rotation
@@ -160,13 +170,13 @@ and set the other ones base to be invisible. This second one will be the moving 
 - The Max Value should be the highest value that can be shown on the gauge
 - The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to 0 bar instead of -1 bar
 - Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to "bar", the startMin to -1, the startMax to 2, 
-and the startOffset at 1 to compensate for the -1 for the startMin
+- Example: Based on the test gauge cluster above the units are set to "bar", the Min to -1, the Max to 2, 
+and the Offset at 1 to compensate for the -1 for the startMin
   </br>`~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
 
-### Water Temp
+#### Water Temp
 
-- Select the "Water Temp" type
+- Select the "watertemp" type
 - Enter your prop ID for the water temperature needle
 - Enter the range of rotation (This should be the angle of rotation of the water temperature dial)
 - Select the direction of rotation
@@ -177,9 +187,88 @@ and the startOffset at 1 to compensate for the -1 for the startMin
 (**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
 - The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
 - Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to "°C", the startMin to 60, the startMax to 120,
-  and the startOffset at -60 to compensate for the 60 for the startMin. This results in the middle of the gauge being at 90°C
-  </br> `~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
+- Example: Based on the test gauge cluster above the units are set to "°C", the Min to 60, the Max to 120,
+  and the Offset at -60 to compensate for the 60 for the startMin. This results in the middle of the gauge being at 90°C
+  </br> `~prop:45,watertemp,0.0,-1.83,0.0,0,0,0,60.0,120.0,-60.0,1~` *NOTE: The values in the description are in °C*
+
+#### Oil Temp
+
+- Select the "oiltemp" type
+- Enter your prop ID for the oil temperature needle
+- Enter the range of rotation (This should be the angle of rotation of the oil temperature dial)
+- Select the direction of rotation
+- Select the appropriate unit for temperature (°C, °F)
+- The Min Value is set to the lowest value that should be shown on the gauge
+  (**IMPORTANT:** This value depends on the lowest you want to show. Most cars cannot show values from freezing)
+- The Max Value should be the highest value that should be shown on the gauge
+  (**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
+- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
+- Select Calculate.
+- Example: With the oil gauge the units are set to "°C", the Min to 80, the Max to 120,
+  and the Offset at -80 to compensate for the 80 for the startMin. This results in the middle of the gauge being at 100°C
+  </br> `~prop:1,oiltemp,0.0,2.75,0.0,0,0,0,80.0,120.0,-80.0,1~` *NOTE: The values in the description are in °C
+
+#### Engine Load (Torque)
+
+- Engine load percentage,based on current torque compared to the maximum amount of torque the engine can produce.
+- Select the "engineLoad" type
+- Enter the prop id
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- Enter the direction and range of rotation.
+- NOTE: Doesn't seem to work as described in documentation. Seems to show load percentage,based on current torque compared 
+to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
+</br> `~prop:1,engineLoad,0.0,270.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+
+#### Electric Radiator Fan
+
+- Select the "radiatorFanSpin" type
+- Spin function for the radiator fan,which activates when the radiator fan turns on. Used for props.
+- Note that this only turns on when coolant reaches 105°C
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- Recommended to leave the range of rotation to 360°.
+</br> `~prop:1,radiatorFanSpin,0.0,1.0,0.0,0,0,0,0.0,360.0,0.0,1~`
+
+#### RPM Spin (Pulleys)
+
+- Select the "rpmspin"
+- Spin function based on engine RPM. Used for spinning pulley props or crank driven fans.
+- The Min Value, the Max Value, and the Offset are locked as a change will result in significant changes for the animation.
+- For rpmspin, the prop will move the amount stated in the [Max] field (with the opposite in [Min] as the engine rotates, then will reset to the starting position.
+- Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
+  The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets.
+- For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed.
+  However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time allotted. If it was set to 0.25, the prop would only rotate 90° before reset.
+</br> `~prop:1,rpmspin,0.0,1.0,0.0,0,0,0,-360.0,360.0,0.0,1~`
+
+#### Parking/Hand Brake
+
+- Select the "parkingbrake" type.
+- Parking brake input.
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+</br> `~prop:1,parkingbrake,0.0,-30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+
+#### Throttle
+
+- Select the "throttle" type.
+- Throttle percentage. Affected by things like rev matching and throttle cut in the transmission shift logic.
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+  </br> `~prop:1,throttle,0.0,-30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+
+#### Brake
+
+- Select the "brake" type.
+- Brake input percentage.
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+  </br> `~prop:1,brake,0.0,30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+
+#### Clutch
+
+- Select the "clutch" type.
+- Clutch input percentage.
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+  </br> `~prop:1,clutch,0.0,30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+
+#### Others to be added
 
 ### Adding Description
 
@@ -191,8 +280,8 @@ The vehicle with animations will now be present in BeamNG.drive
 
 ## List of Possible Animations
 
-Animations that I have successfully used. When looking at the examples, the important parts to look at are the [Function],
-[Min], [Max], [Offset].
+Some of the animations that I have successfully used. When looking at the examples, the important parts to look at are the [Function],
+[Min], [Max] and [Offset].
 - steering
   - `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
 - rpmTacho (and rpm)
@@ -214,11 +303,10 @@ Animations that I have successfully used. When looking at the examples, the impo
     The [Multiplier] field does not affect the rotation at all.
 - throttle, brake, clutch
   - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
-  - Note that the these appear to have their rotation reversed. Further testing need to confirm
 - lowhighbeam (is on for both low and high beam lights)
-  - `~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~`
+  - `~prop:30,lowhighbeam,0,60.0,0,0.8,-1.4,0,0.0,1.0,0.0,1~` - Movement and rotation used in example
 - lights (three setting positions; off, low, high)
-  - `~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~`
+  - `~prop:73,lights,0,0,0,0,0,-0.006,0.0,2.0,0.0,1~` - Movement only use in example
 - turnsignal (set to middle as the value will go positive and negative)
   - `~prop:63,turnsignal,0,-18.0,0,0,0,0,-1.0,1.0,0.0,1~`
 - ignition (off and on; no start setting)
@@ -228,9 +316,11 @@ Animations that I have successfully used. When looking at the examples, the impo
 - gear_A (Automatic gearbox)
   - `~prop:135,gear_A,0,-25,0,0,0,0,-2,3,0,1~` For column shifter </br>
     `~prop:143,gear_A,0,0,0,-0.9,0,0,-2,3,0,1~` For dash indicator
+  - For creating Automatic gearbox shifters and dash gear indicators
   - Default position is park; Auto goes P, R, N, D, 2, 1
-  - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear'
-    and the manual gears following resulting in a very long linear movement.
+  - Set the Min to 0 which will be Park, then set the max to the amount of gears after P. For example with a typical "P, R, N, D, 2, 1" there are 5 gears after park.
+  - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear' and the manual gears following resulting in very small steps or very long movement.
+  - Note that the range of rotation is not divided by the number of available positions. This is intended and necessary for the gear_A function only.
 - gearIndex (for creating manual gearbox shifters ie: H-pattern)
   - `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
     `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
@@ -242,10 +332,20 @@ Animations that I have successfully used. When looking at the examples, the impo
     Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...),
     then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console.
     As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter,
-    before moving the commanded gear's shifter. </br>
-    ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
+    before moving the commanded gear's shifter.
+  - IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360
+    is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
+    </br> ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
 
 ## Updates  
+Version 0.6 - 28 August 2024
+- First public release
+- Add new name to app "AutoBeam Animation Generator"
+- Added all current functions to README.md
+- Removed old screenshots from README assets
+- Added icons for app
+- Added function for turnsignal, lowhighbeam, lights, gear_A, gearIndex
+
 Version 0.5 - 25 August 2024
 - Rewrote AddNewController to handle more types of function types with one set of methods for all types. Now uses a single ComboBox instead of radio buttons.
 - Added ability to make animation for X, Y, and/or Z rotations via changes to AddNew.fxml and AddNewController.java.

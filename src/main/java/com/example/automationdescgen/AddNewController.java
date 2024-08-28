@@ -345,14 +345,24 @@ public class AddNewController implements Initializable {
             rotationX = rotationXBool * round((rotationValueX * 2) / (calcMaxValue - calcMinValue) * rotationDirectionX, selectedFunction.getDecimalPlaces());
             rotationY = rotationYBool * round((rotationValueY * 2) / (calcMaxValue - calcMinValue) * rotationDirectionY, selectedFunction.getDecimalPlaces());
             rotationZ = rotationZBool * round((rotationValueZ * 2) / (calcMaxValue - calcMinValue) * rotationDirectionZ, selectedFunction.getDecimalPlaces());
+        } else if (typeSelection.equals("gear_A")) {
+            rotationX = rotationXBool * round(rotationValueX * rotationDirectionX, selectedFunction.getDecimalPlaces());
+            rotationY = rotationYBool * round(rotationValueY * rotationDirectionY, selectedFunction.getDecimalPlaces());
+            rotationZ = rotationZBool * round(rotationValueZ * rotationDirectionZ, selectedFunction.getDecimalPlaces());
         } else {
             rotationX = rotationXBool * round((rotationValueX) / (calcMaxValue - calcMinValue) * rotationDirectionX, selectedFunction.getDecimalPlaces());
             rotationY = rotationYBool * round((rotationValueY) / (calcMaxValue - calcMinValue) * rotationDirectionY, selectedFunction.getDecimalPlaces());
             rotationZ = rotationZBool * round((rotationValueZ) / (calcMaxValue - calcMinValue) * rotationDirectionZ, selectedFunction.getDecimalPlaces());
         }
 
-        // Perform the required calculations
-        String finalString = "~prop:" + propValue + "," + typeSelection + "," + rotationX + "," + rotationY + "," + rotationZ + ",0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~";
+        String finalString;
+        if (typeSelection.equals("gearIndex")){
+            // For future special display of gearIndex result
+            finalString = "~prop:" + propValue + "," + typeSelection + "," + rotationX + "," + rotationY + "," + rotationZ + ",0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~"
+                    + "\n NOTE about is only for 1 gear out of gearbox";
+        } else {// Perform the regular required calculations
+            finalString = "~prop:" + propValue + "," + typeSelection + "," + rotationX + "," + rotationY + "," + rotationZ + ",0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~";
+        }
 
         // Display the result
         showAlert("", finalString, "black", true);

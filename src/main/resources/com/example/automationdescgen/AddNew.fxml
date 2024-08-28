@@ -11,7 +11,7 @@
          <children>
             <HBox alignment="CENTER">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Automation Description Tool" underline="true" HBox.hgrow="ALWAYS">
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="376.0" text="AutoBeam Animation Generator" underline="true" HBox.hgrow="ALWAYS">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
