@@ -117,7 +117,8 @@ All following descriptions that are based on a gauge cluster will include an exa
 - Enter your prop ID for the moving part of the steering wheel. (With several steering wheels in which the base and 
 the wheel are one fixture, you will have to duplicate the fixture, set the wheel of one to be invisible via the material,
 and set the other ones base to be invisible. This second one will be the moving fixture while the first one will remain still)
-- Enter a range of rotation (It is recommended to leave this set to 900. This value can be set to a different value if desired)
+- Enter a range of rotation; It is recommended to leave this set to 900° which means 450° each way. Changing the value here will change the ratio between the physical prop and BeamNG's steering wheel, providing the appearance of the correct rotation for the steering wheel.
+- The default steering rotation in BeamNG is 900°. If you desire this can be changed by selecting the "Advanced Tuning Parameters" in BeamNG's "Vehicle Config" and changing it under "Tuning". If you do change the steering angle in BeamNG, ensure that the step value for the rotation is set to 1
 - The direction of rotation, the Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - Select Calculate.
 - Example: Using the default value of 900° we get 1.5 rotations of the wheel each way.
@@ -233,7 +234,7 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - Select the "rpmspin"
 - Spin function based on engine RPM. Used for spinning pulley props or crank driven fans.
 - The Min Value, the Max Value, and the Offset are locked as a change will result in significant changes for the animation.
-- For rpmspin, the prop will move the amount stated in the [Max] field (with the opposite in [Min] as the engine rotates, then will reset to the starting position.
+- For rpmspin, the prop will move the amount stated in the [Max] field (with the opposite in [Min] as the engine rotates, then will reset to the starting position.)
 - Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
   The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets.
 - For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed.
@@ -299,7 +300,7 @@ Some of the animations that I have successfully used. When looking at the exampl
 - rpmspin (for pulleys, crank driven fans, or other rpm dependent constantly spinning while the engine is on)
   - `~prop:23,rpmspin,0,1,0,0,0,0,-360,360,0,1~`
   - For rpmspin, the prop will move the amount stated in the [Max] field as the engine rotates, then will reset to the starting position. Therefore, if you enter 180 instead of the default 360, the prop will rotate 180° at the same rate as the engine, then stop and wait for the engine to complete its revolution before resetting to the starting point.
-    The value set for the rotation controls both the speed of rotation and the startMax angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time alloted. If it was set to 0.25, the prop would only rotate 90° before reset.
+    The value set for the rotation controls both the speed of rotation and the startMax angle of movement before it resets. For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed. However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time allotted. If it was set to 0.25, the prop would only rotate 90° before reset.
     The [Multiplier] field does not affect the rotation at all.
 - throttle, brake, clutch
   - `~prop:114,throttle,22,0,0,0,0,0,0,240,0.0,1~`
@@ -337,7 +338,12 @@ Some of the animations that I have successfully used. When looking at the exampl
     is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
     </br> ![Screenshot of an example manual shifter setup in Automation](/README%20Assets/Manual%20shifter%20example.png)
 
-## Updates  
+## Updates
+Version 0.6.1 - 29 August 2024
+- Fixed Back to Explanation button appearing when the calculate button was clicked before selecting a function
+- Added logic to prevent unwanted values in the spinners.
+- Fixed an issue where null values would not be caught
+
 Version 0.6 - 28 August 2024
 - First public release
 - Add new name to app "AutoBeam Animation Generator"
@@ -358,10 +364,10 @@ Version 0.5 - 25 August 2024
 - Added function for oiltemp, engineLoad, radiatorFanSpin, rpmSpin, parkingbrake,throttle, brake, clutch
 - Updated README.md for new version
 
-Version 0.42 - 23 August 2024
+Version 0.4.2 - 23 August 2024
 - Added information to README.md regarding other types of animation
 
-Version 0.41 - 18 August 2024
+Version 0.4.1 - 18 August 2024
 - Corrected rounding issue where rotationY could be inaccurate for certain RPM dials
 - Added information to README.md regarding other types of animation
 

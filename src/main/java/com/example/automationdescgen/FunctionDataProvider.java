@@ -29,7 +29,8 @@ public class FunctionDataProvider {
                         """
                                 - Enter your prop ID for the moving part of the steering wheel. (With several steering wheels in which the base and the wheel are one fixture, you will have to duplicate the fixture, set the wheel of one to be invisible via the material, and set the other ones base to be invisible. This second one will be the moving fixture while the first one will remain still)
                                 - IMPORTANT: The steering rotation is always counter clockwise if the green arrow is pointing from the steering column to the face of the driver. The option has been left enabled to allow other uses.
-                                - Enter a range of rotation (It is recommended to leave this set to 900° which means 450° each way. This value can be set to a different value if desired)
+                                - Enter a range of rotation; It is recommended to leave this set to 900° which means 450° each way. Changing the value here will change the ratio between the physical prop and BeamNG's steering wheel, providing the appearance of the correct rotation for the steering wheel.)
+                                - The default steering rotation in BeamNG is 900°. If you desire this can be changed by selecting the "Advanced Tuning Parameters" in BeamNG's "Vehicle Config" and changing it under "Tuning".
                                 - The Min Value, the Max Value, and the Offset are locked as a change will have no effect or result in errors for the animation.""",
                         1,
                         2

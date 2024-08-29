@@ -1,5 +1,7 @@
 package com.example.automationdescgen;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -78,6 +80,14 @@ public class AddNewController implements Initializable {
     @FXML
     public Button explanationButton;
 
+    private DoubleProperty minDefaultValueProperty = new SimpleDoubleProperty();
+    private DoubleProperty maxDefaultValueProperty = new SimpleDoubleProperty();
+    private DoubleProperty offsetDefaultValueProperty = new SimpleDoubleProperty();
+    private DoubleProperty rotationXDefaultValueProperty = new SimpleDoubleProperty();
+    private DoubleProperty rotationYDefaultValueProperty = new SimpleDoubleProperty();
+    private DoubleProperty rotationZDefaultValueProperty = new SimpleDoubleProperty();
+
+
     ToggleGroup rotationGroupX = new ToggleGroup();
     ToggleGroup rotationGroupY = new ToggleGroup();
     ToggleGroup rotationGroupZ = new ToggleGroup();
@@ -124,17 +134,6 @@ public class AddNewController implements Initializable {
         });
         functionComboBox.setOnAction(this::handleFunctionSelection);
 
-        // Initialize the ValueFactory for each Spinner and ensure maxSpinner is always larger than minSpinner without moving the other value
-        initializeSpinner(minSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, -1, true);
-        initializeSpinner(maxSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, true);
-        initializeSpinner(offsetSpinner, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, true);
-        initializeSpinner(rotationSpinnerX, 0, 2160, 270, false);
-        initializeSpinner(rotationSpinnerY, 0, 2160, 270, false);
-        initializeSpinner(rotationSpinnerZ, 0, 2160, 270, false);
-        setSpinnerValue(maxSpinner, 1, true);
-        setSpinnerValue(minSpinner, -1, true);
-        setSpinnerValue(offsetSpinner, 0, true);
-
         enforceMinMaxConstraints(minSpinner, maxSpinner);
 
         propTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -176,6 +175,9 @@ public class AddNewController implements Initializable {
             explanationButton.setVisible(false);
             explanationButton.setManaged(false);
 
+            initializeSpinner(rotationSpinnerX, 0, 2160, selectedFunction.getRangeAngle(), false, true);
+            initializeSpinner(rotationSpinnerY, 0, 2160, selectedFunction.getRangeAngle(), false, true);
+            initializeSpinner(rotationSpinnerZ, 0, 2160, selectedFunction.getRangeAngle(), false, true);
             // Set rotationSpinner
             setSpinnerValue(rotationSpinnerY, selectedFunction.getRangeAngle(), false);
             // Populate the ChoiceBox with units from the selected Function
@@ -185,14 +187,18 @@ public class AddNewController implements Initializable {
                 unitChoiceBox.setValue(selectedFunction.getUnit().getFirst());
             }
             // Set three spinner values
-            initializeSpinner(minSpinner, selectedFunction.getMin(), selectedFunction.getMax(), selectedFunction.getStartMin(), selectedFunction.getDecimal());
-            initializeSpinner(maxSpinner, selectedFunction.getMin(), selectedFunction.getMax(), selectedFunction.getStartMax(), selectedFunction.getDecimal());
-            initializeSpinner(offsetSpinner, selectedFunction.getOffset() * -1, selectedFunction.getOffset(), selectedFunction.getStartOffset(), selectedFunction.getDecimal());
+            initializeSpinner(minSpinner, selectedFunction.getMin(), selectedFunction.getMax(), selectedFunction.getStartMin(), selectedFunction.getDecimal(), false);
+            initializeSpinner(maxSpinner, selectedFunction.getMin(), selectedFunction.getMax(), selectedFunction.getStartMax(), selectedFunction.getDecimal(), false);
+            initializeSpinner(offsetSpinner, selectedFunction.getOffset() * -1, selectedFunction.getOffset(), selectedFunction.getStartOffset(), selectedFunction.getDecimal(), false);
             setSpinnerValue(minSpinner, selectedFunction.getStartMin(), false);
             setSpinnerValue(maxSpinner, selectedFunction.getStartMax(), false);
             setSpinnerValue(offsetSpinner, selectedFunction.getStartOffset(), false);
             // Set descriptionTestArea
             showAlert("", selectedFunction.getDescription(), "black", false);
+
+            functionComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldFunction, newFunction) -> {
+                updateDefaultValue();
+            });
 
 
             switch (selectedFunction.getSpecial()) {
@@ -238,7 +244,7 @@ public class AddNewController implements Initializable {
         Function selectedFunction = functionComboBox.getSelectionModel().getSelectedItem();
         // 1. Check if one of the radio buttons in typeGroup is selected
         if (selectedFunction == null) {
-            showAlert("Validation Error - ", "Please select a type.", "red", true);
+            showAlert("Validation Error - ", "Please select a type.", "red", false);
             return;
         }
 
@@ -256,7 +262,7 @@ public class AddNewController implements Initializable {
                 return;
             }
         } catch (NumberFormatException e) {
-            showAlert("Validation Error", "The prop value must be a positive integer.", "red", true);
+            showAlert("Validation Error - ", "The prop value must be a positive integer.", "red", true);
             return;
         }
 
@@ -356,10 +362,9 @@ public class AddNewController implements Initializable {
         }
 
         String finalString;
-        if (typeSelection.equals("gearIndex")){
+        if (typeSelection.equals("gearIndex")) {
             // For future special display of gearIndex result
-            finalString = "~prop:" + propValue + "," + typeSelection + "," + rotationX + "," + rotationY + "," + rotationZ + ",0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~"
-                    + "\n NOTE about is only for 1 gear out of gearbox";
+            finalString = "~prop:" + propValue + "," + typeSelection + "," + rotationX + "," + rotationY + "," + rotationZ + ",0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~" + "\n NOTE about is only for 1 gear out of gearbox";
         } else {// Perform the regular required calculations
             finalString = "~prop:" + propValue + "," + typeSelection + "," + rotationX + "," + rotationY + "," + rotationZ + ",0,0,0," + calcMinValue + "," + calcMaxValue + "," + calcOffsetValue + ",1~";
         }
@@ -369,39 +374,97 @@ public class AddNewController implements Initializable {
     }
 
     @FXML
-    private void explanationButtonClick(ActionEvent event) {
+    private void explanationButtonClick() {
         Function selectedFunction = functionComboBox.getSelectionModel().getSelectedItem();
         showAlert("", selectedFunction.getDescription(), "black", false);
     }
 
 // Helper functions
 
-    private void initializeSpinner(Spinner<Double> spinner, double min, double max, double start, boolean isDecimal) {
+    private void initializeSpinner(Spinner<Double> spinner, double min, double max, double start, boolean isDecimal, boolean isRotation) {
         SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, start, isDecimal ? 0.1 : 1);
         spinner.setValueFactory(valueFactory);
 
-        //Live validation doesn't work
-//        // Validate text input based on whether decimals are allowed
-//        spinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-//            if (isDecimal) {
-//                // Allow only numbers and one decimal point
-//                if (!newValue.matches("-?\\d*\\.?\\d*")) {
-//                    spinner.getEditor().setText(oldValue); // Revert to old value if invalid
-//                }
-//
-//                // Ensure only one decimal point
-//                int decimalIndex = newValue.indexOf('.');
-//                if (decimalIndex != -1 && newValue.length() - decimalIndex > 2) {
-//                    spinner.getEditor().setText(oldValue); // Revert to old value if too many decimals
-//                }
-//            } else {
-//                // Allow only whole numbers
-//                if (!newValue.matches("-?\\d*")) {
-//                    spinner.getEditor().setText(oldValue); // Revert to old value if invalid
-//                }
-//            }
-//        });
+        // Add a TextFormatter to the spinner's editor to prevent non-numeric input
+        TextFormatter<Double> textFormatter = createNumericTextFormatter(isDecimal, isRotation);
+        spinner.getEditor().setTextFormatter(textFormatter);
+
+        // Determine the default value for this spinner
+        DoubleProperty defaultValueProperty = switch (spinner.getId()) {
+            case "minSpinner" -> minDefaultValueProperty;
+            case "maxSpinner" -> maxDefaultValueProperty;
+            case "offsetSpinner" -> offsetDefaultValueProperty;
+            case "rotationSpinnerX" -> rotationXDefaultValueProperty;
+            case "rotationSpinnerY" -> rotationYDefaultValueProperty;
+            case "rotationSpinnerZ" -> rotationZDefaultValueProperty;
+            default -> new SimpleDoubleProperty(0); // Fallback default value
+        };
+
+        // Add a listener to handle null values when the value changes
+        spinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null) {
+                handleNullSpinnerValue(spinner, defaultValueProperty.get()); // Handle null value when the spinner value changes
+            }
+        });
+
+        // Also handle null value when the spinner loses focus
+        spinner.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                handleNullSpinnerValue(spinner, defaultValueProperty.get());
+            }
+        });
     }
+
+    private void updateDefaultValue() {
+        Function selectedFunction = functionComboBox.getSelectionModel().getSelectedItem();
+        if (selectedFunction != null) {
+            double minDefaultValue = selectedFunction.getStartMin();
+            double maxDefaultValue = selectedFunction.getStartMax();
+            double offsetDefaultValue = selectedFunction.getStartOffset();
+            double rotationDefaultValue = selectedFunction.getRangeAngle();
+
+            minDefaultValueProperty.set(minDefaultValue);
+            maxDefaultValueProperty.set(maxDefaultValue);
+            offsetDefaultValueProperty.set(offsetDefaultValue);
+            rotationXDefaultValueProperty.set(rotationDefaultValue);
+            rotationYDefaultValueProperty.set(rotationDefaultValue);
+            rotationZDefaultValueProperty.set(rotationDefaultValue);
+        }
+    }
+
+    private void handleNullSpinnerValue(Spinner<Double> spinner, double defaultValue) {
+        if (spinner.getValue() == null) {
+            spinner.getValueFactory().setValue(defaultValue); // Set to default value if null
+        }
+    }
+
+    private TextFormatter<Double> createNumericTextFormatter(boolean isDecimal, boolean isRotation) {
+        return new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+
+            String regex;
+
+            // Determine the regex based on the options provided
+            if (isRotation) {
+                // Only allow positive integers
+                regex = "\\d*";
+            } else if (isDecimal) {
+                // Allow negative sign and numbers with a decimal point
+                regex = "-?\\d*(\\.\\d*)?";
+            } else {
+                // Allow negative sign and integers only
+                regex = "-?\\d*";
+            }
+
+            if (newText.matches(regex)) {
+                return change;
+            } else {
+                return null; // Reject the change
+            }
+        });
+    }
+
+
 
     private void setSpinnerValue(Spinner<Double> spinner, double value, boolean isLocked) {
         if (spinner.getValueFactory() != null) {
@@ -415,12 +478,14 @@ public class AddNewController implements Initializable {
         minSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && maxSpinner.getValue() != null && newValue >= maxSpinner.getValue()) {
                 minSpinner.getValueFactory().setValue(oldValue); // Revert to previous valid value
+                System.out.printf("Set min spinner from %,.2f to %,.2f \n", newValue, oldValue);
             }
         });
 
         maxSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && minSpinner.getValue() != null && newValue <= minSpinner.getValue()) {
                 maxSpinner.getValueFactory().setValue(oldValue); // Revert to previous valid value
+                System.out.printf("Set max spinner from %,.2f to %,.2f \n", newValue, oldValue);
             }
         });
     }
