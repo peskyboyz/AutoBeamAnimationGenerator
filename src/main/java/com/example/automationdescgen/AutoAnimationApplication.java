@@ -16,9 +16,10 @@ public class AutoAnimationApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("AutoBeam Animation Generator");
         stage.minHeightProperty();
-        stage.setMinHeight(485);
-        stage.setMinWidth(630);
+        stage.setMinHeight(625);
+        stage.setMinWidth(740);
         stage.getIcons().add(new Image(Objects.requireNonNull(AutoAnimationApplication.class.getResourceAsStream("/icons/AutoBeam.png"))));
+//        scene.getStylesheets().add("DarkMode.css");
         stage.setScene(scene);
         stage.show();
     }

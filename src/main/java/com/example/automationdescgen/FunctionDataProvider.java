@@ -15,6 +15,7 @@ public class FunctionDataProvider {
                  Special value of 3 - Disable all options
                  */
                 new Function(
+                        "Steering (Wheel)",
                         "steering",
                         900.0,
                         -900.0,
@@ -37,6 +38,7 @@ public class FunctionDataProvider {
 
                 ),
                 new Function(
+                        "RPM",
                         "rpmTacho",
                         270,
                         0,
@@ -44,7 +46,7 @@ public class FunctionDataProvider {
                         0,
                         -100,
                         20000,
-                        3000,
+                        20000,
                         false,
                         4,
                         List.of("RPM"),
@@ -57,6 +59,7 @@ public class FunctionDataProvider {
                         0
                 ),
                 new Function(
+                        "Wheel Speed",
                         "wheelspeed",
                         270,
                         0,
@@ -64,19 +67,20 @@ public class FunctionDataProvider {
                         0,
                         0,
                         1000,
-                        100,
+                        1000,
                         false,
-                        2,
+                        3,
                         List.of("KPH", "MPH"),
                         """
                                 - Speed of the car measured at the wheels.
                                 - It is recommended that the Min Value is left at 0. If the speedometer starts higher than 0, set it here.
-                                - The Max Value should be the highest RPM that is available at the end of the tachometer not the startMax RPM's of the engine.
+                                - The Max Value should be the highest speed that is available at the end of the speedometer not the max speed of the car.
                                 - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.""",
                         0,
                         0
                 ),
                 new Function(
+                        "Coolant Temp",
                         "watertemp",
                         110,
                         60,
@@ -97,6 +101,7 @@ public class FunctionDataProvider {
                         0
                 ),
                 new Function(
+                        "Oil Temp",
                         "oiltemp",
                         110,
                         80,
@@ -118,6 +123,7 @@ public class FunctionDataProvider {
                         0
                 ),
                 new Function(
+                        "Fuel",
                         "fuel",
                         110,
                         0,
@@ -137,6 +143,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Boost",
                         "turboBoost",
                         110,
                         -15,
@@ -157,6 +164,7 @@ public class FunctionDataProvider {
                         0
                 ),
                 new Function(
+                        "Engine Load",
                         "engineLoad",
                         110,
                         0,
@@ -178,6 +186,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Radiator Fan",
                         "radiatorFanSpin",
                         360,
                         0,
@@ -199,6 +208,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "RPM Spin (pulleys)",
                         "rpmspin",
                         720,
                         -360,
@@ -222,6 +232,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Parking Brake",
                         "parkingbrake",
                         30,
                         0,
@@ -241,6 +252,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Throttle",
                         "throttle",
                         30,
                         0,
@@ -260,6 +272,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Brake",
                         "brake",
                         30,
                         0,
@@ -279,6 +292,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Clutch",
                         "clutch",
                         30,
                         0,
@@ -298,6 +312,81 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Automatic Shifter",
+                        "gear_A",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        15,
+                        0,
+                        false,
+                        2,
+                        List.of("Gears"),
+                        """
+                                - For creating Automatic gearbox shifters and dash gear indicators
+                                - Default position is park; Auto goes P, R, N, D, 2, 1
+                                - The Min will be 0 which is Park, and the max will be 1.
+                                - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear' and the manual gears following resulting in very small steps or very long movement.
+                                - Enter the range of movement as the entire movement range
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Manual Shifter",
+                        "gearIndex",
+                        180,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        11,
+                        0,
+                        false,
+                        2,
+                        List.of("Gear Positions"),
+                        """
+                                - For creating manual gearbox shifters ie: H-pattern
+                                - IMPORTANT: READ THROUGH THE README OR THE ENTIRE EXPLANATION FOR THIS ANIMATION BY CLICKING THE HELP BUTTON. REFERENCE SCREENSHOT AVAILABLE IN README.
+                                - This tool will only create one line of the gearbox per use. Each gear follows a pattern where Neutral has a min and max of -1 and 1, First has a min and max of 0 and 2, Second is 1 and 3 but with a offset of -1, Third, is 2 and 4 with and offset of -2 and so on going up. Reverse must have a min and max of -1 and 0 with an offset of 0.
+                                `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
+                                `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
+                                `~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
+                                `~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
+                                `~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
+                                `~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
+                                - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral.
+                                - Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...), then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console. As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, before moving the commanded gear's shifter.
+                                - IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
+                                """,
+                        0,
+                        0
+                ),
+                new Function(
+                        "Mode Shifter (Auto Manual/DCT)",
+                        "gearModeIndex",
+                        30,
+                        -1,
+                        5,
+                        -1,
+                        -1,
+                        5,
+                        1,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For creating Automatic gearbox shifters and dash gear indicators when the gearbox can be manually shifted like a DCT transmission
+                                - Default position is park; Auto goes P, R, N, D, S
+                                -
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Turn Signal (2 way)",
                         "turnsignal",
                         30,
                         -1,
@@ -321,6 +410,47 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Hazards Switch",
+                        "hazard_enabled",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Indicates the hazards have been turned on
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Hazards Flashing",
+                        "hazard",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Flashing function when hazards are on.
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Headlights (off/on)",
                         "lowhighbeam",
                         30,
                         0,
@@ -342,6 +472,7 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Headlights (3 way)",
                         "lights",
                         30,
                         0,
@@ -363,60 +494,302 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
-                        "gear_A",
+                        "Fog Lights",
+                        "fog",
                         30,
                         0,
-                        5,
+                        1,
                         0,
                         0,
-                        15,
+                        1,
                         0,
                         false,
                         2,
-                        List.of("Gears"),
+                        List.of("Unit"),
                         """
-                                - For creating Automatic gearbox shifters and dash gear indicators
-                                - Default position is park; Auto goes P, R, N, D, 2, 1
-                                - Set the Min to 0 which will be Park, then set the max to the amount of gears after P. For example with a typical "P, R, N, D, 2, 1" there are 5 gears after park.
-                                - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear' and the manual gears following resulting in very small steps or very long movement.
-                                - Note that the range of rotation is not divided by the number of available positions. This is intended and necessary for the gear_A function only.
+                                - Indicates the fog lights are turned on.
+                                - Can be used for special function since fog light cannot currently export
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Altitude",
+                        "altitude",
+                        30,
+                        0,
+                        100,
+                        0,
+                        -500,
+                        5000,
+                        5000,
+                        false,
+                        5,
+                        List.of("Meters", "Feet"),
+                        """
+                                - Altitude of the vehicle
+                                - Set [Min] to the lowest value on the gauge; Set [Max] to the highest value on the gauge; Set [Offset] to the opposite value of the [Min] to bring the start to 0;
+                                - Set the needle to the lowest position on the gauge.
                                 """,
                         0,
                         0
                 ),
                 new Function(
-                        "gearIndex",
-                        180,
+                        "Air Speed",
+                        "airspeed",
+                        30,
+                        0,
+                        200,
+                        0,
+                        0,
+                        1000,
+                        1000,
+                        false,
+                        3,
+                        List.of("KPH", "MPH"),
+                        """
+                                - Speed of the vehicle compared to the world.
+                                - It is recommended that the Min Value is left at 0. If the speedometer starts higher than 0, set it here.
+                                - The Max Value should be the highest speed that is available at the end of the speedometer not the max speed of the car.
+                                - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.
+                                """,
+                        0,
+                        0
+                ),
+                new Function(
+                        "Air Speed + Wind",
+                        "airflowspeed",
+                        30,
+                        0,
+                        200,
+                        0,
+                        0,
+                        1000,
+                        1000,
+                        false,
+                        3,
+                        List.of("KPH", "MPH"),
+                        """
+                                - Speed of the vehicle compared to the airflow, taking into account wind.
+                                - It is recommended that the Min Value is left at 0. If the speedometer starts higher than 0, set it here.
+                                - The Max Value should be the highest speed that is available at the end of the speedometer not the max speed of the car.
+                                - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.""\",
+                                """,
+                        0,
+                        0
+                ),
+                new Function(
+                        "Steering (Percentage)",
+                        "steering_input",
+                        10,
                         -1,
                         1,
                         0,
                         -1,
-                        11,
-                        0,
-                        false,
+                        1,
+                        1,
+                        true,
                         2,
-                        List.of("Gear Positions"),
+                        List.of("Unit"),
                         """
-                                - For creating manual gearbox shifters ie: H-pattern
-                                - IMPORTANT: READ THROUGH THE README OR THE ENTIRE EXPLANATION FOR THIS ANIMATION BY CLICKING THE HELP BUTTON. REFERENCE SCREENSHOT AVAILABLE IN README.
-                                - This tool will only create one line of the gearbox per use. Each gear follows a pattern where Neutral has a min and max of -1 and 1,
-                                First has a min and max of 0 and 2, Second is 1 and 3 but with a offset of -1, Third, is 2 and 4 with and offset of -2 and so on going up.
-                                Reverse must have a min and max of -1 and 0 with an offset of 0.
-                                `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
-                                `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
-                                `~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
-                                `~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
-                                `~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
-                                `~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
-                                - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral.
-                                - Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...), then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console.
-                                  As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, before moving the commanded gear's shifter.
-                                - IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
+                                - Steering input percentage.
                                 """,
                         0,
                         0
                 )
+/*),
+                new Function(
+                        "Sequential Lever Shifter",
+                        "sequentialLeverY",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For creating sequential gearbox shifters
+                                """,
+                        0,
+                        0
 
+),
+                new Function(
+                        "Display Park (Auto)",
+                        "disp_Pa",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying park gear indicator with an automatic transmission
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Reverse (Manual)",
+                        "disp_R",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying reverse gear indicator with a manual transmission
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Reverse (Auto)",
+                        "disp_Ra",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying reverse gear indicator with an automatic transmission
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Neutral (Manual)",
+                        "disp_N",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying neutral gear indicator with a manual transmission
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Neutral (Auto)",
+                        "disp_Na",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying neutral gear indicator with a automatic transmission
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Drive (Auto)",
+                        "disp_Da",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying drive gear indicator with a automatic transmission
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display First",
+                        "disp_1",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying first gear indicator
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Second",
+                        "disp_2",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying second gear indicator
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Display Third",
+                        "disp_3",
+                        10,
+                        -1,
+                        1,
+                        0,
+                        -1,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For displaying third gear indicator
+                                """,
+                        0,
+                        2
+ // Not working*/ // Not working
 
                 // Add more functions here...
         );

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="650.0" maxWidth="1000.0" minWidth="630.0" prefHeight="550.0" prefWidth="675.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.automationdescgen.AddNewController">
+<AnchorPane maxHeight="770.0" maxWidth="1000.0" minWidth="740.0" prefHeight="625.0" prefWidth="740.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.automationdescgen.AddNewController">
    <children>
       <VBox prefHeight="560.0" prefWidth="1003.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -26,7 +26,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
                <children>
-                  <ComboBox fx:id="functionComboBox" prefWidth="150.0" promptText="Select a function" />
+                  <ComboBox fx:id="functionComboBox" prefHeight="25.0" prefWidth="224.0" promptText="Select a function" />
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
                   <Label text="Prop ID">
                      <padding>
@@ -40,6 +40,9 @@
                   <CheckBox fx:id="rotationXCheckBox" mnemonicParsing="false" text="Rotation X (Red)" />
                   <CheckBox fx:id="rotationYCheckBox" mnemonicParsing="false" text="Rotation Y (Green)" />
                   <CheckBox fx:id="rotationZCheckBox" mnemonicParsing="false" text="Rotation Z (Blue)" />
+                  <CheckBox fx:id="transXCheckBox" mnemonicParsing="false" text="Trans X (Red)" />
+                  <CheckBox fx:id="transYCheckBox" mnemonicParsing="false" text="Trans Y (Blue)" />
+                  <CheckBox fx:id="transZCheckBox" mnemonicParsing="false" text="Trans Z (Green)" />
                </children>
                <VBox.margin>
                   <Insets />
@@ -61,7 +64,7 @@
             <Separator fx:id="rotationXSeparator" prefWidth="200.0" />
             <HBox fx:id="rotationXHbox" minHeight="-Infinity" prefHeight="45.0">
                <children>
-                  <Label minWidth="95.0" prefHeight="37.0" prefWidth="117.0" text="Rotation X" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
+                  <Label minWidth="95.0" text="Rotation X" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -124,6 +127,78 @@
                               <Separator orientation="VERTICAL" prefHeight="200.0" />
                               <Label text="Range of Rotation (Degrees)" />
                               <Spinner fx:id="rotationSpinnerZ" editable="true" prefWidth="100.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></HBox>
+            <Separator fx:id="transXSeparator" prefWidth="200.0" />
+            <HBox fx:id="transXHbox" minHeight="-Infinity" prefHeight="45.0">
+               <children>
+                  <Label minWidth="95.0" text="Translation X" underline="true">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+                  <VBox prefHeight="100.0" prefWidth="600.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <RadioButton fx:id="negativeRadioX" mnemonicParsing="false" text="Negative" />
+                              <RadioButton fx:id="positiveRadioX" mnemonicParsing="false" text="Positive" />
+                              <Separator orientation="VERTICAL" prefHeight="200.0" />
+                              <Label text="Distance (cm)" />
+                              <Spinner fx:id="distanceSpinnerX" editable="true" prefWidth="100.0" />
+                              <Label text="Scaling" />
+                              <Spinner fx:id="scalingSpinnerX" editable="true" prefWidth="100.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></HBox>
+            <Separator fx:id="transYSeparator" prefWidth="200.0" />
+            <HBox fx:id="transYHbox" minHeight="-Infinity" prefHeight="45.0">
+               <children>
+                  <Label minWidth="95.0" text="Translation Y" underline="true">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+                  <VBox prefHeight="100.0" prefWidth="600.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <RadioButton fx:id="negativeRadioY" mnemonicParsing="false" text="Negative" />
+                              <RadioButton fx:id="positiveRadioY" mnemonicParsing="false" text="Positive" />
+                              <Separator orientation="VERTICAL" prefHeight="200.0" />
+                              <Label text="Distance (cm)" />
+                              <Spinner fx:id="distanceSpinnerY" editable="true" prefWidth="100.0" />
+                              <Label text="Scaling" />
+                              <Spinner fx:id="scalingSpinnerY" editable="true" prefWidth="100.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></HBox>
+            <Separator fx:id="transZSeparator" prefWidth="200.0" />
+            <HBox fx:id="transZHbox" minHeight="-Infinity" prefHeight="45.0">
+               <children>
+                  <Label minWidth="95.0" text="Translation Z" underline="true">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+                  <VBox prefHeight="100.0" prefWidth="600.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <RadioButton fx:id="negativeRadioZ" mnemonicParsing="false" text="Negative" />
+                              <RadioButton fx:id="positiveRadioZ" mnemonicParsing="false" text="Positive" />
+                              <Separator orientation="VERTICAL" prefHeight="200.0" />
+                              <Label text="Distance (cm)" />
+                              <Spinner fx:id="distanceSpinnerZ" editable="true" prefWidth="100.0" />
+                              <Label text="Scaling" />
+                              <Spinner fx:id="scalingSpinnerZ" editable="true" prefWidth="100.0" />
                            </children>
                         </HBox>
                      </children>

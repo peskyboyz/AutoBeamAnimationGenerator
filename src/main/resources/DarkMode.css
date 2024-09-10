@@ -1,0 +1,39 @@
+.root {
+    -fx-background-color: #2e2e2e; /* Dark gray background */
+    -fx-text-fill: white; /* Default text color */
+}
+
+.label, .button, .radio-button, .check-box, .combo-box, .spinner, .toggle-button {
+    -fx-text-fill: white; /* White text on buttons and labels */
+}
+
+.text-field, .spinner {
+    -fx-background-color: #4b4b4b; /* Darker gray for text fields */
+    -fx-text-fill: white; /* White text in text fields */
+    -fx-border-color: #6d6d6d; /* Border color */
+}
+
+.combo-box {
+    -fx-background-color: #4b4b4b; /* ComboBox background */
+    -fx-mark-color: white; /* ComboBox arrow color */
+}
+
+.text-area {
+    -fx-background-color: #4b4b4b; /* Darker gray background */
+    -fx-text-fill: white; /* White text */
+}
+
+.button {
+    -fx-background-color: #3b3b3b; /* Darker buttons */
+    -fx-border-color: #6d6d6d; /* Button border */
+}
+
+.radio-button .radio,
+.check-box .box {
+    -fx-mark-color: white; /* White tick mark or radio button indicator */
+}
+
+.spinner .increment-arrow-button, .spinner .decrement-arrow-button {
+    -fx-background-color: #3b3b3b; /* Dark background for spinners */
+    -fx-text-fill: white; /* White spinner text */
+}

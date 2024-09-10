@@ -11,6 +11,7 @@ public class ConversionProvider {
         conversionFactors.put("MPH", 1 / 2.237); // Convert to m/s from MPH
         conversionFactors.put("bar", 14.5038); // Convert to psi from bar
         conversionFactors.put("kPa", 1 / 6.895); // Convert to psi from kPa
+        conversionFactors.put("Feet", 0.3048); // Convert to meters from feet
 
         // Add more units and their conversion factors as needed
     }
