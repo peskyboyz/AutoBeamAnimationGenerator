@@ -473,6 +473,14 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.7.0 - 10 September 2024
+- Added translation animations
+- Fixed the minimum propID from 1 to 0
+- Fixed the default values not being set for the first function choice
+- Finished adding validation for every field
+- Added many new function types
+- Updated README.md
+
 Version 0.6.1 - 29 August 2024
 - Fixed Back to Explanation button appearing when the calculate button was clicked before selecting a function
 - Added logic to prevent unwanted values in the spinners.
