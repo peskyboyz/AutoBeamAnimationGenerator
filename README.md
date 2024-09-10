@@ -479,6 +479,7 @@ Version 0.7.0 - 10 September 2024
 - Fixed the default values not being set for the first function choice
 - Finished adding validation for every field
 - Added many new function types
+- Added the ability to check for an update on launch and offer the update to the user
 - Updated README.md
 
 Version 0.6.1 - 29 August 2024
