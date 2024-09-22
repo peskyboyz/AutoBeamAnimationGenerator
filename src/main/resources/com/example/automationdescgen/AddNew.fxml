@@ -210,6 +210,7 @@
                   <Button fx:id="calculateButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#calculateButtonClick" prefWidth="100.0" text="Calculate" />
                   <Button fx:id="helpButton" alignment="CENTER" contentDisplay="CENTER" layoutX="260.0" layoutY="32.0" mnemonicParsing="false" onAction="#loadHelpFile" prefWidth="100.0" text="Help" />
                   <Button fx:id="explanationButton" mnemonicParsing="false" onAction="#explanationButtonClick" text="Back to explanation" />
+                  <Button fx:id="openTransformCalculatorBtn" text="Open Transform Calculator" onAction="#openTransformCalculator"/>
                </children>
                <VBox.margin>
                   <Insets top="10.0" />

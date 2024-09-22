@@ -7,12 +7,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.awt.*;
@@ -84,6 +88,8 @@ public class AddNewController implements Initializable {
     public CheckBox rotationZCheckBox;
     @FXML
     public Button explanationButton;
+    @FXML
+    public Button openTransformCalculatorBtn;
 
     @FXML
     public CheckBox transXCheckBox;
@@ -589,6 +595,34 @@ public class AddNewController implements Initializable {
     private void explanationButtonClick() {
         Function selectedFunction = functionComboBox.getSelectionModel().getSelectedItem();
         showAlert("", selectedFunction.getDescription(), "black", false);
+    }
+
+    // This method opens the TransformCalculator window
+    public void openTransformCalculator() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("TransformCalculator.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Transformation Calculator");
+            stage.setScene(new Scene(loader.load()));
+
+            // Make it modal (optional if you want the user to finish with this window before returning)
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            // Get the controller and set a callback for returning data
+            TransformCalculatorController transformController = loader.getController();
+            transformController.setOnConfirmCallback(this::handleTransformResult);
+
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace(); //Temporary
+        }
+    }
+
+    // Method to handle the result sent back from TransformCalculatorController
+    private void handleTransformResult(String transformData) {
+        // Process the result from the transform calculator
+        System.out.println("Received transform data: " + transformData);
+        // You can now use this data for further calculations in your AddNew logic
     }
 
 // Helper functions
