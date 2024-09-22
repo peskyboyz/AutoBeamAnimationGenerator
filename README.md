@@ -112,7 +112,7 @@ The vehicle with animations will now be present in BeamNG.drive
 - First select a function type in the dropdown. Depending on the function chosen, some of the values may be autofilled and locked. </br>
 - Now enter your prop ID found in Automation on the left side of the Fixtures tab. </br>
 - Now select the type of transformation desired (rotation or translation). </br>
-- Select the direction of the transformation by referring to the guide above [here](#important). </br>
+- Select the direction of the transformation by referring to the guide above in the "Important" section . </br>
 - If a rotation is selected, enter the range of rotation in degrees. </br>
 - If a translation is selected, enter the distance that you want the prop to move in centimeters (use the ruler fixture under Misc).
 - Enter the scaling in the selected axis. If you want movement in the X axis (red), enter the X axis (red) scaling value. </br>
