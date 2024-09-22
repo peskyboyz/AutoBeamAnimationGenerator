@@ -51,7 +51,7 @@ Here is a guide to the 6 movement options: </br>
 ### **Important**
 ** NOTE THE DIRECTION OF THE ARROWS WHEN CHOOSING A DIRECTION OF ROTATION ** </BR>
 ** IF THE ARROW IS FACING YOU, YOU MUST SELECT THE OPPOSITE DIRECTION OF ROTATION ** </BR> 
-`~prop:[Fixture number],[Function],1,0,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation X] - rotation clockwise around red **arrow pointing away** </br>
+`~prop:[Fixture number],[Function],-1,0,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation X] - rotation clockwise around red **arrow pointing away** (NOTE THAT THIS IS NEGATIVE)</br>
 `~prop:[Fixture number],[Function],0,1,0,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Y] - rotation clockwise around green **arrow pointing away** </br>
 `~prop:[Fixture number],[Function],0,0,1,0,0,0,[Min],[Max],[Offset],[Multiplier]~` [Rotation Z] - rotation clockwise around blue **arrow pointing away** </br>
 
@@ -473,6 +473,10 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.7.1 - 21 September 2024
+- Fixed settings for Manual Gearbox which would prevent setting any offset
+- Fixed the logic for rotation about X being backwards
+
 Version 0.7.0 - 10 September 2024
 - Added translation animations
 - Fixed the minimum propID from 1 to 0

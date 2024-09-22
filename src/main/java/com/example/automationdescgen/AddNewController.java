@@ -493,8 +493,8 @@ public class AddNewController implements Initializable {
 
         String unit = unitChoiceBox.getValue();
 
-        if (selectedRotationX.equals(clockwiseRadioX)) rotationDirectionX = 1;
-        else if (selectedRotationX.equals(counterClockwiseRadioX)) rotationDirectionX = -1;
+        if (selectedRotationX.equals(clockwiseRadioX)) rotationDirectionX = -1;
+        else if (selectedRotationX.equals(counterClockwiseRadioX)) rotationDirectionX = 1;
         if (selectedRotationY.equals(clockwiseRadioY)) rotationDirectionY = 1;
         else if (selectedRotationY.equals(counterClockwiseRadioY)) rotationDirectionY = -1;
         if (selectedRotationZ.equals(clockwiseRadioZ)) rotationDirectionZ = 1;

@@ -337,7 +337,7 @@ public class FunctionDataProvider {
                 new Function(
                         "Manual Shifter",
                         "gearIndex",
-                        180,
+                        360,
                         -1,
                         1,
                         0,
