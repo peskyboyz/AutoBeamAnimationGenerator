@@ -351,12 +351,12 @@ public class FunctionDataProvider {
                                 - For creating manual gearbox shifters ie: H-pattern
                                 - IMPORTANT: READ THROUGH THE README OR THE ENTIRE EXPLANATION FOR THIS ANIMATION BY CLICKING THE HELP BUTTON. REFERENCE SCREENSHOT AVAILABLE IN README.
                                 - This tool will only create one line of the gearbox per use. Each gear follows a pattern where Neutral has a min and max of -1 and 1, First has a min and max of 0 and 2, Second is 1 and 3 but with a offset of -1, Third, is 2 and 4 with and offset of -2 and so on going up. Reverse must have a min and max of -1 and 0 with an offset of 0.
-                                `~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
-                                `~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
-                                `~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
-                                `~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
-                                `~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
-                                `~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
+                                ~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~ Neutral
+                                ~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~ 1st gear
+                                ~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~ 2nd gear
+                                ~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~ 3rd gear
+                                ~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~ 4th gear
+                                ~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~ Reverse gear
                                 - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral.
                                 - Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...), then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console. As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, before moving the commanded gear's shifter.
                                 - IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
