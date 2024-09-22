@@ -5,44 +5,36 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="TransCalcAnchorPane" prefHeight="500.0" prefWidth="600.0" style="-fx-font-family: Segoe UI, Arial" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.automationdescgen.TransformCalculatorController">
-    <VBox layoutY="106.0" prefHeight="500.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="600.0">
-            <Label text="Transformation Calculator">
-                <font>
-                    <Font name="System Bold" size="18.0" />
-                </font>
-            </Label>
-        </HBox>
-        <HBox alignment="CENTER" prefHeight="40.0" prefWidth="600.0" spacing="15.0">
-            <Button fx:id="startPositionBtn" onAction="#addStartPosition" text="Add Start Position" />
-         <Button fx:id="resetButton" mnemonicParsing="false" onAction="#clearUI" text="Reset" />
-            <Button fx:id="endPositionBtn" onAction="#addEndPosition" text="Add End Position" />
-         <padding>
-            <Insets right="6.0" />
-         </padding>
-        </HBox>
-        <HBox alignment="CENTER" prefHeight="180.0" prefWidth="600.0" spacing="20.0">
-            <padding>
-                <Insets bottom="15.0" />
-            </padding>
-            <TextArea fx:id="startTextArea" editable="false" focusTraversable="false" prefHeight="255.0" prefWidth="275.0" />
-            <TextArea fx:id="endTextArea" editable="false" focusTraversable="false" prefHeight="255.0" prefWidth="275.0" />
-        </HBox>
-        <VBox fx:id="rotationChoicesVBox" alignment="CENTER" prefWidth="600.0" spacing="10.0">
-            <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.automationdescgen.TransformCalculatorController">
+    <children>
+        <VBox layoutY="106.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+            <HBox alignment="CENTER" prefHeight="51.0" prefWidth="600.0">
+               <children>
+                  <Label text="Transformation Caluculator">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+                <HBox alignment="CENTER" prefHeight="99.0" prefWidth="600.0" spacing="15.0">
+                    <children>
+                        <Button fx:id="startPositionBtn" onAction="#addStartPosition" text="Add Start Position" />
+                        <Button fx:id="endPositionBtn" onAction="#addEndPosition" text="Add End Position" />
+                        <Button fx:id="confirmBtn" onAction="#confirmTransformation" text="Confirm and Send" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="255.0" prefWidth="600.0" spacing="20.0">
+                    <children>
+                        <TextArea fx:id="startTextArea" prefHeight="255.0" prefWidth="275.0" />
+                        <TextArea fx:id="endTextArea" prefHeight="255.0" prefWidth="275.0" />
+                    </children>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+                </HBox>
+            </children>
         </VBox>
-        <HBox alignment="CENTER" prefHeight="131.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-            <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" />
-            </padding>
-            <TextArea fx:id="messageTextArea" editable="false" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="15.0">
-            <Button fx:id="confirmBtn" onAction="#confirmTransformation" text="Confirm" />
-            <Button mnemonicParsing="false" onAction="#backToAddNew" text="Back" />
-        </HBox>
-    </VBox>
+    </children>
 </AnchorPane>
