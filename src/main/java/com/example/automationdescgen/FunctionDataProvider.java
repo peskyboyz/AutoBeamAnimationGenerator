@@ -343,7 +343,7 @@ public class FunctionDataProvider {
                         0,
                         -1,
                         11,
-                        0,
+                        10,
                         false,
                         2,
                         List.of("Gear Positions"),
