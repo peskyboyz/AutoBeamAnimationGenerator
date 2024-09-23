@@ -1,5 +1,9 @@
 # AutoBeam Animation Generator
 Automation to BeamNG.drive animation description tool</br> Created by peskyboyz</br>  
+
+I have created a YouTube video to explain the program and calculations. </br>
+[![Link to YouTube video](/README%20Assets/Thumbnail%20YouTube.png)](https://youtu.be/c_fVPpet7Og)
+
 ## Description
 This tool allows you to quickly generate the lines needed to animated basic props in cars exported from Automation to BeamNG.drive. 
 
