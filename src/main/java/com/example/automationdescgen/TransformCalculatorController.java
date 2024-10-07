@@ -173,6 +173,8 @@ public class TransformCalculatorController {
         resetUI();
         startTextArea.setText("");
         endTextArea.setText("");
+        startPositionString = null;
+        endPositionString = null;
         messageTextArea.setText("");
     }
 
