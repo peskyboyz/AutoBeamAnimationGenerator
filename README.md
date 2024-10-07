@@ -2,6 +2,7 @@
 Automation to BeamNG.drive animation description tool</br> Created by peskyboyz</br>  
 
 I have created a YouTube video to explain the program and calculations. </br>
+Note that the video is showing version 0.7.1 </br>
 [![Link to YouTube video](/README%20Assets/Thumbnail%20YouTube.png)](https://youtu.be/c_fVPpet7Og)
 
 ## Description
@@ -22,7 +23,7 @@ The tool can currently generate the lines needed for the following animations:
  - Throttle
  - Brake
  - Clutch
- - Gear selector for Auto, Manual and Auto Manual/DCT transmission (Sequential and paddles shifters not supported)
+ - Gear selector for Auto, Manual, Auto Manual, DCT and CVT (Sequential and paddles shifters not supported)
  - Turn Signal
  - Hazards
  - Headlight switch
@@ -112,18 +113,29 @@ The vehicle with animations will now be present in BeamNG.drive
 
 ## Using the Tool
 
-<img src="/README%20Assets/AppStart.png" alt="Screenshot of tool with all options" width="734">
+<img src="/README%20Assets/AppStart.png" alt="Screenshot of tool with all options" width="734"> </br>
 - First select a function type in the dropdown. Depending on the function chosen, some of the values may be autofilled and locked. </br>
 - Now enter your prop ID found in Automation on the left side of the Fixtures tab. </br>
+- Enter the measurement unit (if available), the minimum, maximum and the offset value for the prop. These will be further described in their respective sections.</br>
 - Now select the type of transformation desired (rotation or translation). </br>
 - Select the direction of the transformation by referring to the guide above in the "Important" section . </br>
 - If a rotation is selected, enter the range of rotation in degrees. </br>
 - If a translation is selected, enter the distance that you want the prop to move in centimeters (use the ruler fixture under Misc).
 - Enter the scaling in the selected axis. If you want movement in the X axis (red), enter the X axis (red) scaling value. </br>
-- Enter the measurement unit (if available), the minimum, maximum and the offset value for the prop. These will be further described in their respective sections.</br>
 
 When all fields have been entered select Calculate. If there are no issues, the string will appear below. 
-Copy it and paste it in the description field in Automation
+Copy it and paste it in the description field in Automation</br>
+
+New for version 0.8.0, the transform calculator allows the user to copy and paste a fixture's coordinates directly from Automation. </br>
+<img src="/README%20Assets/App%20Transform%20Calculator.png" alt="Screenshot of tool's transform calculator" width="734"> </br>
+
+Copy the fixture transform of the using the button in Automation, then click the Add Start Position button.</br>
+Then clone the fixture and move it to the end position. Copy the new fixture transform and click the Add End Position. </br>
+<img src="/README%20Assets/Automation%20Copy%20Coordinates.png" alt="Screenshot of tool's transform calculator" width="734"> </br>
+
+Once both are entered, click the Confirm button. Then, if a rotation is needed, select the range of rotation for each axis and hit Apply Choices. </br>
+The Transform Calculator will then close, and all the transformation will be auto entered into the main screen. </br>
+You can now click Calculate. </br>
 
 If you want to return to the description once an error is present or a completed , click the "Back to explanation" button.
 
@@ -158,7 +170,7 @@ Here is an example of a completed animation list for a car. </br>
 
 All following descriptions that are based on a gauge cluster will include an example based on this car.  
 <img src="/README%20Assets/Test%20Gauge%20Cluster.png" alt="Screenshot of gauge cluster in Automation">
-#### Steering
+#### Steering (Wheel)
 
 - Enter your prop ID for the moving part of the steering wheel. (With several steering wheels in which the base and 
 the wheel are one fixture, you will have to duplicate the fixture, set the wheel of one to be invisible via the material,
@@ -169,18 +181,6 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Select Calculate.
 - Example: Using the default value of 900° we get 1.5 rotations of the wheel each way.
 </br> `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
-  
-#### Speed
-
-- Enter your prop ID for the speedometer needle
-- Enter the range of rotation (This should be the angle of rotation of the speedometer dial)
-- Select the direction of rotation
-- The Min Value should be set to the minimum value on the speedometer. Note that this could be higher than 0 if the gauge start at a different value.
-- The Max Value should be the highest speed that is available on the speedometer, not the top speed of the car
-- The Offset should be left alone.
-- Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to MPH, the startMax to 200, and the startOffset at 0
-  </br> `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~` *NOTE: The values in the description are in m/s*
 
 #### RPM
 
@@ -193,6 +193,50 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Select Calculate.
 - Example: Based on the test gauge cluster above the Min is left alone, the Max to 9000 and the Offset at 0
   </br> `~prop:41,rpmTacho,0,-0.03,0,0,0,0,0,9000,0,1~` *NOTE: The rpmTacho function shows a smoothed RPM. If you want it to be instantaneous replace the `rpmTacho` with `rpm`*
+
+#### Speed
+
+- Enter your prop ID for the speedometer needle
+- Enter the range of rotation (This should be the angle of rotation of the speedometer dial)
+- Select the direction of rotation
+- The Min Value should be set to the minimum value on the speedometer. Note that this could be higher than 0 if the gauge start at a different value.
+- The Max Value should be the highest speed that is available on the speedometer, not the top speed of the car
+- The Offset should be left alone.
+- Select Calculate.
+- Example: Based on the test gauge cluster above the units are set to MPH, the startMax to 200, and the startOffset at 0
+  </br> `~prop:40,wheelspeed,0,-3.02,0,0,0,0,0,89.4,0,1~` *NOTE: The values in the description are in m/s*
+
+#### Water Temp
+
+- Enter your prop ID for the water temperature needle
+- Enter the range of rotation (This should be the angle of rotation of the water temperature dial)
+- Select the direction of rotation
+- Select the appropriate unit for temperature (°C, °F)
+- The Min Value is set to the lowest value that should be shown on the gauge
+  (**IMPORTANT:** This value depends on the lowest you want to show. Most cars cannot show values from freezing)
+- The Max Value should be the highest value that should be shown on the gauge
+  (**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
+- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
+- Select Calculate.
+- Example: Based on the test gauge cluster above the units are set to "°C", the Min to 60, the Max to 120,
+  and the Offset at -60 to compensate for the 60 for the startMin. This results in the middle of the gauge being at 90°C
+  </br> `~prop:45,watertemp,0.0,-1.83,0.0,0,0,0,60.0,120.0,-60.0,1~` *NOTE: The values in the description are in °C*
+
+#### Oil Temp
+
+- Enter your prop ID for the oil temperature needle
+- Enter the range of rotation (This should be the angle of rotation of the oil temperature dial)
+- Select the direction of rotation
+- Select the appropriate unit for temperature (°C, °F)
+- The Min Value is set to the lowest value that should be shown on the gauge
+  (**IMPORTANT:** This value depends on the lowest you want to show. Most cars cannot show values from freezing)
+- The Max Value should be the highest value that should be shown on the gauge
+  (**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
+- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
+- Select Calculate.
+- Example: With the oil gauge the units are set to "°C", the Min to 80, the Max to 120,
+  and the Offset at -80 to compensate for the 80 for the startMin. This results in the middle of the gauge being at 100°C
+  </br> `~prop:1,oiltemp,0.0,2.75,0.0,0,0,0,80.0,120.0,-80.0,1~` *NOTE: The values in the description are in °C
 
 #### Fuel
 
@@ -216,38 +260,6 @@ and set the other ones base to be invisible. This second one will be the moving 
 - Example: Based on the test gauge cluster above the units are set to "bar", the Min to -1, the Max to 2, 
 and the Offset at 1 to compensate for the -1 for the startMin
   </br>`~prop:44,turboBoost,0,-6.205,0,0,0,0,-14.5038,29.0076,14.5038,1~` *NOTE: The values in the description are in psi*
-
-#### Water Temp
-
-- Enter your prop ID for the water temperature needle
-- Enter the range of rotation (This should be the angle of rotation of the water temperature dial)
-- Select the direction of rotation
-- Select the appropriate unit for temperature (°C, °F)
-- The Min Value is set to the lowest value that should be shown on the gauge 
-(**IMPORTANT:** This value depends on the lowest you want to show. Most cars cannot show values from freezing)
-- The Max Value should be the highest value that should be shown on the gauge
-(**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
-- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
-- Select Calculate.
-- Example: Based on the test gauge cluster above the units are set to "°C", the Min to 60, the Max to 120,
-  and the Offset at -60 to compensate for the 60 for the startMin. This results in the middle of the gauge being at 90°C
-  </br> `~prop:45,watertemp,0.0,-1.83,0.0,0,0,0,60.0,120.0,-60.0,1~` *NOTE: The values in the description are in °C*
-
-#### Oil Temp
-
-- Enter your prop ID for the oil temperature needle
-- Enter the range of rotation (This should be the angle of rotation of the oil temperature dial)
-- Select the direction of rotation
-- Select the appropriate unit for temperature (°C, °F)
-- The Min Value is set to the lowest value that should be shown on the gauge
-  (**IMPORTANT:** This value depends on the lowest you want to show. Most cars cannot show values from freezing)
-- The Max Value should be the highest value that should be shown on the gauge
-  (**IMPORTANT:** This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
-- The Offset should be the opposite value of the startMin to compensate and move the starting point of the dial to the startMin
-- Select Calculate.
-- Example: With the oil gauge the units are set to "°C", the Min to 80, the Max to 120,
-  and the Offset at -80 to compensate for the 80 for the startMin. This results in the middle of the gauge being at 100°C
-  </br> `~prop:1,oiltemp,0.0,2.75,0.0,0,0,0,80.0,120.0,-80.0,1~` *NOTE: The values in the description are in °C
 
 #### Engine Load (Torque)
 
@@ -328,12 +340,26 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
   </br> <img src="/README%20Assets/Manual%20shifter%20example.png" alt="Screenshot of an example manual shifter setup in Automation" width="500px">
 
-#### Mode Shifter (Auto Manual/DCT)
+#### Mode Shifter (Adv Auto/DCT)
 
-- For creating Automatic gearbox shifters and dash gear indicators when the gearbox can be manually shifted like a DCT transmission
+- For creating Advanced Automatic or DCT gearbox shifters and dash gear indicators when the gearbox can be manually shifted. The movement on moves through the automatic portion of the gearbox, not the manual gears.
 - Default position is park; Auto goes P, R, N, D, S
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - `~prop:1,gearModeIndex,0.0,45.0,0.0,0,0,0,-1.0,5.0,-1.0,1~`
+
+#### Mode Shifter (Auto Manual)
+
+- For creating Auto Manual gearbox shifters and dash gear indicators
+- Default position is reverse; Auto portion goes R, N, D, S
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- `~prop:1,gearModeIndex,0,-60.0,0,0,0,0,-1.00,4.00,-1.00,1~`
+
+#### Mode Shifter (CVT)
+
+- For creating CVT shifters and dash gear indicators
+- Default position is park; Pattern goes P, R, N, D
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- `~prop:1,gearModeIndex,0,-60.0,0,0,0,0,-1.00,4.00,-1.00,1~`
 
 #### Turn Signal (2 way)
 
@@ -410,6 +436,12 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - For example, the below string move a prop 30° starting at 20% right and ending at 30% right.
 - `~prop:1,steering_input,0.0,300.0,0.0,0,0,0,0.2,0.3,-0.2,1~`
 
+#### Blank / Dummy
+
+- A blank function for use where one of the others is too restricted
+- Be sure to replace the "dummy" with the desired function type
+- `~prop:1,dummy,0,0,0,0,0,0,0,1.00,0,1~`
+
 ### Special uses
 
 #### Shift Lights
@@ -477,6 +509,21 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.8.0 - 7 October 2024
+- Added the TransformationCalculator which is opened from the main screen using a button. This takes the copy coordinates from automation and computes the necessary transformations to move from the start to end position
+- Added a checkbox to link the Offset value to the Min value. If linked, the Offset will be the equal but opposite value of the Min.
+- Added dynamic rounding based on value which provides more accurate step values.
+- Added unique functions for shifters of each gearbox type (except sequential)
+- Added blank function for use of the calculations without restrictions seen on other functions in the program
+- Added separate functions for all gearbox types (expect sequential); Auto, Manual, Adv Auto, Auto Manual, DCT, CVT;
+- Fixed the step values sometimes being negative 0
+- Fixed (possibly) the program not displaying the font correctly
+- Modified scene to load the AddNew.fxml and TransformCalculator.fxml in the same window
+- Modified AddNewController to lock all inputs until a function has been selected
+- Cleaned up all files
+- Removed unused SceneChanger.java
+- Updated README
+
 Version 0.7.1 - 21 September 2024
 - Fixed settings for Manual Gearbox which would prevent setting any offset
 - Fixed the logic for rotation about X being backwards

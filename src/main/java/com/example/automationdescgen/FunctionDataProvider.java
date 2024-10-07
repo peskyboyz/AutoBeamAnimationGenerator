@@ -13,6 +13,7 @@ public class FunctionDataProvider {
                  Special value of 1 - Disable all options except rotation
                  Special value of 2 - Disable value spinners
                  Special value of 3 - Disable all options
+                 Special value of 4 - Disable value spinners and translations
                  */
                 new Function(
                         "Steering (Wheel)",
@@ -227,7 +228,7 @@ public class FunctionDataProvider {
                                 The value set for the rotation controls both the speed of rotation and the max angle of movement before it resets.
                                 - For example if the value is set to 0.5, instead of the default 1, the prop will rotate at half the normal speed.
                                 However, since the position resets once the engine completes a revolution, the prop will only have time to rotate 180° in the time allotted. If it was set to 0.25, the prop would only rotate 90° before reset.
-                                """,
+                                - Note that this doesn't work for exhausts""",
                         0,
                         2
                 ),
@@ -328,7 +329,6 @@ public class FunctionDataProvider {
                                 - For creating Automatic gearbox shifters and dash gear indicators
                                 - Default position is park; Auto goes P, R, N, D, 2, 1
                                 - The Min will be 0 which is Park, and the max will be 1.
-                                - This sort of works for Auto with manual. It will move through the auto portion, then will also move for the Sport 'gear' and the manual gears following resulting in very small steps or very long movement.
                                 - Enter the range of movement as the entire movement range
                                 """,
                         0,
@@ -365,9 +365,9 @@ public class FunctionDataProvider {
                         0
                 ),
                 new Function(
-                        "Mode Shifter (Auto Manual/DCT)",
+                        "Mode Shifter (Adv Auto/DCT)",
                         "gearModeIndex",
-                        30,
+                        180,
                         -1,
                         5,
                         -1,
@@ -378,9 +378,48 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For creating Automatic gearbox shifters and dash gear indicators when the gearbox can be manually shifted like a DCT transmission
-                                - Default position is park; Auto goes P, R, N, D, S
-                                -
+                                - For creating DCT gearbox shifters and dash gear indicators for a DCT transmission
+                                - Default position is park; Auto portion goes P, R, N, D, S
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Mode Shifter (Auto Manual)",
+                        "gearModeIndex",
+                        180,
+                        -1,
+                        4,
+                        -1,
+                        -1,
+                        4,
+                        1,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For creating Auto Manual gearbox shifters and dash gear indicators
+                                - Default position is reverse; Auto portion goes R, N, D, S
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "CVT Shifter",
+                        "gearModeIndex",
+                        180,
+                        -1,
+                        4,
+                        -1,
+                        -1,
+                        4,
+                        1,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - For creating CVT shifters and dash gear indicators
+                                - Default position is park; Pattern goes P, R, N, D
                                 """,
                         0,
                         2
@@ -597,8 +636,104 @@ public class FunctionDataProvider {
                                 """,
                         0,
                         0
+                ),
+                new Function(
+                        "Blank",
+                        "dummy",
+                        30,
+                        0,
+                        1,
+                        0,
+                        -10000,
+                        20000,
+                        2000,
+                        true,
+                        3,
+                        List.of("Default", "Meters", "Feet", "KPH", "MPH", "psi", "bar", "kPa", "°C", "°F"),
+                        """
+                                - A blank function for use where one of the others is too restricted
+                                - Be sure to replace the "dummy" with the desired function type
+                                """,
+                        0,
+                        0
                 )
-/*),
+/*                ),
+                new Function(
+                        "Volts",
+                        "volts",
+                        110,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Voltage of the vehicle
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Flywheel Torque",
+                        "flywheelTorque",
+                        270,
+                        0,
+                        500,
+                        0,
+                        0,
+                        500,
+                        0,
+                        false,
+                        2,
+                        List.of("Torque"),
+                        """
+                                - Engine output torque.
+                                """,
+                        0,
+                        0
+                ),
+                new Function(
+                        "Clock Hour",
+                        "clockh",
+                        10,
+                        0,
+                        360,
+                        -360,
+                        0,
+                        360,
+                        360,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Clock hour position
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Clock Minute",
+                        "clockmin",
+                        10,
+                        0,
+                        360,
+                        -360,
+                        0,
+                        360,
+                        360,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Clock minute position
+                                """,
+                        0,
+                        2
+                ),
                 new Function(
                         "Sequential Lever Shifter",
                         "sequentialLeverY",
@@ -617,8 +752,7 @@ public class FunctionDataProvider {
                                 """,
                         0,
                         0
-
-),
+                ),
                 new Function(
                         "Display Park (Auto)",
                         "disp_Pa",
@@ -789,9 +923,7 @@ public class FunctionDataProvider {
                                 """,
                         0,
                         2
- // Not working*/ // Not working
-
-                // Add more functions here...
+                )*/
         );
     }
 }

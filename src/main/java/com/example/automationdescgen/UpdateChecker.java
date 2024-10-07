@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class UpdateChecker {
     private static final String REPO_API_URL = "https://api.github.com/repos/peskyboyz/AutoBeamAnimationGenerator/releases/latest";
-    private static final String CURRENT_VERSION = "v0.7.1";
+    private static final String CURRENT_VERSION = "v0.8.0";
 
     public static void checkForUpdates() {
         new Thread(() -> {
