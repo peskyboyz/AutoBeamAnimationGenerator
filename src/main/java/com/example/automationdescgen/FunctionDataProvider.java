@@ -9,8 +9,8 @@ public class FunctionDataProvider {
     public static ObservableList<Function> getFunctions() {
         return FXCollections.observableArrayList(
                 /*
-                 Special value of 0 - Enable all options
-                 Special value of 1 - Disable all options except rotation
+                 Special value of 0 - Enable all options with link offset not selected
+                 Special value of 1 - Enable all options with link offset selected
                  Special value of 2 - Disable value spinners
                  Special value of 3 - Disable all options
                  Special value of 4 - Disable value spinners and translations
@@ -57,7 +57,7 @@ public class FunctionDataProvider {
                                 - The Max Value should be the highest RPM that is available at the end of the tachometer not the startMax RPM's of the engine.
                                 - The Offset should be left alone unless the Min has been raised above 0, and the needle needs to drop back to the start position. In this case the Offset should be equal and opposite of the Min""",
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Wheel Speed",
@@ -78,7 +78,7 @@ public class FunctionDataProvider {
                                 - The Max Value should be the highest speed that is available at the end of the speedometer not the max speed of the car.
                                 - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.""",
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Coolant Temp",
@@ -99,7 +99,7 @@ public class FunctionDataProvider {
                                 - The Max Value should be the highest value that should be shown on the gauge (IMPORTANT: This value depends on the highest you want to show. Most cars do not show values past overheating. In BeamNG this occurs at 120°C)
                                 - The Offset should be the opposite value of the Min to compensate and move the starting point of the dial to the Min""",
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Oil Temp",
@@ -121,7 +121,7 @@ public class FunctionDataProvider {
                                 - Note that the normal operating temperature for the oil is 100°C so it is recommended to have 100 be the center of the gauge.
                                 - The Offset should be the opposite value of the Min to compensate and move the starting point of the dial to the Min""",
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Fuel",
@@ -162,7 +162,7 @@ public class FunctionDataProvider {
                                 - The Max Value should be the highest value that can be shown on the gauge
                                 - The Offset should be the opposite value of the Min to compensate and move the starting point of the dial to 0""",
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Engine Load",
@@ -572,7 +572,7 @@ public class FunctionDataProvider {
                                 - Set the needle to the lowest position on the gauge.
                                 """,
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Air Speed",
@@ -594,7 +594,7 @@ public class FunctionDataProvider {
                                 - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.
                                 """,
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Air Speed + Wind",
@@ -616,7 +616,7 @@ public class FunctionDataProvider {
                                 - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.""\",
                                 """,
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Steering (Percentage)",
@@ -635,7 +635,7 @@ public class FunctionDataProvider {
                                 - Steering input percentage.
                                 """,
                         0,
-                        0
+                        1
                 ),
                 new Function(
                         "Blank",
@@ -655,7 +655,7 @@ public class FunctionDataProvider {
                                 - Be sure to replace the "dummy" with the desired function type
                                 """,
                         0,
-                        0
+                        1
                 )
 /*                ),
                 new Function(

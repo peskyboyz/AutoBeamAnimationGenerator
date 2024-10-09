@@ -509,6 +509,11 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.8.1 - 8 October 2024
+- Completely rewrote the TransformationCalculator. It was returning incorrect values for a wide variety of cases.
+- Corrected the AddNewController for the correct output from the TransformCalculatorController
+- Set Link Offset checkbox to be set on by default for certain functions
+
 Version 0.8.0 - 7 October 2024
 - Added the TransformationCalculator which is opened from the main screen using a button. This takes the copy coordinates from automation and computes the necessary transformations to move from the start to end position
 - Added a checkbox to link the Offset value to the Min value. If linked, the Offset will be the equal but opposite value of the Min.

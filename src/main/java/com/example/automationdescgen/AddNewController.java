@@ -374,7 +374,7 @@ public class AddNewController implements Initializable {
             functionComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldFunction, newFunction) -> updateDefaultValue());
 
             switch (selectedFunction.getSpecial()) {
-                case 0 -> {// Enable all options
+                case 0 -> {// Enable all options with link offset not selected
                     counterClockwiseRadioY.setDisable(false);
                     clockwiseRadioY.setDisable(false);
                     rotationSpinnerY.setDisable(false);
@@ -385,18 +385,20 @@ public class AddNewController implements Initializable {
                     transYCheckBox.setDisable(false);
                     transZCheckBox.setDisable(false);
                     equalOppositeCheckBox.setDisable(false);
+                    equalOppositeCheckBox.setSelected(false);
                 }
-                case 1 -> {// Disable all options except rotation
-                    counterClockwiseRadioY.setDisable(true);
-                    clockwiseRadioY.setDisable(true);
+                case 1 -> {// Enable all options with link offset selected
+                    counterClockwiseRadioY.setDisable(false);
+                    clockwiseRadioY.setDisable(false);
                     rotationSpinnerY.setDisable(false);
-                    minSpinner.setDisable(true);
-                    maxSpinner.setDisable(true);
-                    offsetSpinner.setDisable(true);
+                    minSpinner.setDisable(false);
+                    maxSpinner.setDisable(false);
+                    offsetSpinner.setDisable(false);
                     transXCheckBox.setDisable(false);
                     transYCheckBox.setDisable(false);
                     transZCheckBox.setDisable(false);
-                    equalOppositeCheckBox.setDisable(true);
+                    equalOppositeCheckBox.setDisable(false);
+                    equalOppositeCheckBox.setSelected(true);
                 }
                 case 2 -> { // Disable value spinners
                     counterClockwiseRadioY.setDisable(false);
@@ -409,6 +411,7 @@ public class AddNewController implements Initializable {
                     transYCheckBox.setDisable(false);
                     transZCheckBox.setDisable(false);
                     equalOppositeCheckBox.setDisable(true);
+                    equalOppositeCheckBox.setSelected(false);
                 }
                 case 3 -> { // Disable all options
                     counterClockwiseRadioY.setDisable(true);
@@ -421,6 +424,7 @@ public class AddNewController implements Initializable {
                     transYCheckBox.setDisable(true);
                     transZCheckBox.setDisable(true);
                     equalOppositeCheckBox.setDisable(true);
+                    equalOppositeCheckBox.setSelected(false);
                 }
                 case 4 -> { // Disable value spinners and translations
                     counterClockwiseRadioY.setDisable(false);
@@ -433,6 +437,7 @@ public class AddNewController implements Initializable {
                     transYCheckBox.setDisable(true);
                     transZCheckBox.setDisable(true);
                     equalOppositeCheckBox.setDisable(true);
+                    equalOppositeCheckBox.setSelected(false);
                 }
             }
         }
@@ -712,6 +717,8 @@ public class AddNewController implements Initializable {
     private void performCalculations(double transX, double transY, double transZ,
                                      double rotPitch, double rotYaw, double rotRoll,
                                      double scaleX, double scaleY, double scaleZ) {
+        System.out.println("Perform Calculations Data: \ntX: " + transX + "; tY: " + transY + "; tZ: " + transZ + ";\nrP: " + rotPitch + "; rY: " + rotYaw + "; rZ: " + rotRoll + ";\n sX: " + scaleX + "; sY: " + scaleY + "; sZ: " + scaleZ);
+
         transX = round(transX, 2);
         transY = round(transY, 2);
         transZ = round(transZ, 2);
@@ -721,7 +728,7 @@ public class AddNewController implements Initializable {
         scaleX = round(scaleX, 3);
         scaleY = round(scaleY, 3);
         scaleZ = round(scaleZ, 3);
-//        System.out.println("Perform Calculations Data: \ntX: " + transX + "; tY: " + transY + "; tZ: " + transZ + ";\nrP: " + rotPitch + "; rY: " + rotYaw + "; rZ: " + rotRoll);
+        System.out.println("Perform Calculations Data: \ntX: " + transX + "; tY: " + transY + "; tZ: " + transZ + ";\nrP: " + rotPitch + "; rY: " + rotYaw + "; rZ: " + rotRoll + "; sX: " + scaleX + "; sY: " + scaleY + "; sZ: " + scaleZ);
 
         // Perform your calculations here using the parsed values
         if (transX != 0) {
@@ -754,10 +761,10 @@ public class AddNewController implements Initializable {
                 translationGroupZ.selectToggle(negativeRadioZ);
         } else
             transZCheckBox.setSelected(false);
-        if (rotPitch != 0) {
+        if (rotRoll != 0) {
             rotationXCheckBox.setSelected(true);
-            setSpinnerValue(rotationSpinnerX, abs(rotPitch));
-            if (rotPitch > 0) {
+            setSpinnerValue(rotationSpinnerX, abs(rotRoll));
+            if (rotRoll > 0) {
                 clockwiseRadioX.setSelected(true);
                 counterClockwiseRadioX.setSelected(false);
             } else {
@@ -766,10 +773,10 @@ public class AddNewController implements Initializable {
             }
         } else
             rotationXCheckBox.setSelected(false);
-        if (rotYaw != 0) {
+        if (rotPitch != 0) {
             rotationYCheckBox.setSelected(true);
-            setSpinnerValue(rotationSpinnerY, abs(rotYaw));
-            if (rotYaw > 0) {
+            setSpinnerValue(rotationSpinnerY, abs(rotPitch));
+            if (rotPitch > 0) {
                 clockwiseRadioY.setSelected(true);
                 counterClockwiseRadioY.setSelected(false);
             } else {
@@ -778,10 +785,10 @@ public class AddNewController implements Initializable {
             }
         } else
             rotationYCheckBox.setSelected(false);
-        if (rotRoll != 0) {
+        if (rotYaw != 0) {
             rotationZCheckBox.setSelected(true);
-            setSpinnerValue(rotationSpinnerZ, abs(rotRoll));
-            if (rotRoll < 0) {
+            setSpinnerValue(rotationSpinnerZ, abs(rotYaw));
+            if (rotYaw > 0) {
                 clockwiseRadioZ.setSelected(true);
                 counterClockwiseRadioZ.setSelected(false);
             } else {
