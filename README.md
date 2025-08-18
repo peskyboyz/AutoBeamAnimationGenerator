@@ -509,6 +509,11 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.8.4 - 18 August 2025
+- Updated pom.xml
+- Added workaround for gimbal lock situation. Will now slightly nudge the rotations to clear the conversion code
+- Added release note parsing to UpdateChecker
+
 Version 0.8.3 - 18 August 2025
 - Added IgnitionLevel and Ignition
 - Fixed incorrect rotations for steering and gearModeIndex

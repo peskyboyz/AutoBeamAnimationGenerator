@@ -742,6 +742,29 @@ public class AddNewController implements Initializable {
             while (normalizedInput[i] < -180) normalizedInput[i] += 360;
         }
 
+        // Detect if we are very close to multiples of 90° or 270° on Y (the middle axis in XYZ)
+        double fudgeThreshold = 0.01;  // how close to count as "at risk"
+        double fudgeAmount = 0.001;      // amount to nudge the angles
+
+        boolean nearGimbalLock =
+                (Math.abs(Math.abs(normalizedInput[1]) - 90) < fudgeThreshold) ||
+                        (Math.abs(Math.abs(normalizedInput[1]) - 270) < fudgeThreshold);
+
+        if (nearGimbalLock) {
+            System.out.printf("⚠ Gimbal lock risk detected at Y=%.2f°. Applying fudge of ±%.4f°...\n",
+                    normalizedInput[1], fudgeAmount);
+
+            // Apply small nudges to ALL axes so the math stays consistent
+            for (int i = 0; i < 3; i++) {
+                if (normalizedInput[i] > 0) {
+                    normalizedInput[i] -= fudgeAmount;
+                } else if (normalizedInput[i] <= 0){
+                    normalizedInput[i] += fudgeAmount;
+                }
+            }
+            System.out.printf("%f, %f, %f %n", normalizedInput[0], normalizedInput[1], normalizedInput[2]);
+        }
+
         // Convert normalized input (XYZ order) to radians
         double rx = Math.toRadians(normalizedInput[0]);
         double ry = Math.toRadians(normalizedInput[1]);
