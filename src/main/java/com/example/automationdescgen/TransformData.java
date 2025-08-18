@@ -4,9 +4,9 @@ public class TransformData {
     private final double translationX;
     private final double translationY;
     private final double translationZ;
-    private final double rotationPitch;
-    private final double rotationYaw;
-    private final double rotationRoll;
+    private double rotationPitch;
+    private double rotationYaw;
+    private double rotationRoll;
     private final double scaleX;
     private final double scaleY;
     private final double scaleZ;
@@ -36,4 +36,16 @@ public class TransformData {
     public double getScaleX() { return scaleX; }
     public double getScaleY() { return scaleY; }
     public double getScaleZ() { return scaleZ; }
+
+    public void setRotationPitch(double rotationPitch) {
+        this.rotationPitch = rotationPitch;
+    }
+
+    public void setRotationYaw(double rotationYaw) {
+        this.rotationYaw = rotationYaw;
+    }
+
+    public void setRotationRoll(double rotationRoll) {
+        this.rotationRoll = rotationRoll;
+    }
 }
