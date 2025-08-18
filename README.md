@@ -509,6 +509,12 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.8.3 - 18 August 2025
+- Added IgnitionLevel and Ignition
+- Fixed incorrect rotations for steering and gearModeIndex
+- Fixed incorrect rotations when larger than 180° in single axis
+- Cleaned up AddNewController.java
+
 Version 0.8.2 - 17 August 2025
 - Fixed TransformCalculatorController to properly return translations and rotations
 - Fixed AddNewController.java to correctly convert rotations from an XYZ matrix to a YZX for export to BeamNG

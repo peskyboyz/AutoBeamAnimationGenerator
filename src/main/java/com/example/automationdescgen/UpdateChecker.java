@@ -1,23 +1,26 @@
 package com.example.automationdescgen;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Hyperlink;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class UpdateChecker {
     private static final String REPO_API_URL = "https://api.github.com/repos/peskyboyz/AutoBeamAnimationGenerator/releases/latest";
-    private static final String CURRENT_VERSION = "v0.8.2";
+    private static final String CURRENT_VERSION = "v0.8.3";
 
     public static void checkForUpdates() {
         new Thread(() -> {

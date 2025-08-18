@@ -313,6 +313,47 @@ public class FunctionDataProvider {
                         2
                 ),
                 new Function(
+                        "Ignition (On/Off+Starter)",
+                        "ignitionLevel",
+                        30,
+                        0,
+                        3,
+                        0,
+                        0,
+                        3,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Ignition state.
+                                - 0 = ignition off, 1 = accessory only, 2 = ignition on (engine running or not), 3 = starter running.
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
+                        "Ignition (On/Off)",
+                        "ignition",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Ignition state (on or off).
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                """,
+                        0,
+                        2
+                ),
+                new Function(
                         "Automatic Shifter",
                         "gear_A",
                         30,

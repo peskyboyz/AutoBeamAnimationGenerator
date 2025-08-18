@@ -177,7 +177,6 @@ public class AddNewController implements Initializable {
         UpdateChecker.checkForUpdates();
 
         ObservableList<Function> functions = FunctionDataProvider.getFunctions();
-//        FXCollections.sort(functions, Comparator.comparing(Function::getName));
         functionComboBox.setItems(functions);
 
         checkboxList = List.of(rotationXCheckBox, rotationYCheckBox, rotationZCheckBox, transXCheckBox, transYCheckBox, transZCheckBox);
@@ -297,10 +296,6 @@ public class AddNewController implements Initializable {
         transZCheckBox.setDisable(true);
         explanationButton.setDisable(true);
         openTransformCalculatorBtn.setDisable(true);
-
-//        runConversionTests();
-        testRotationConversion();
-
     }
 
     /**
@@ -579,10 +574,10 @@ public class AddNewController implements Initializable {
         int translationYBool = transYCheckBox.isSelected() ? 1 : 0;
         int translationZBool = transZCheckBox.isSelected() ? 1 : 0;
 
-        // Determine rotation directions for final calculation
+/*        // Determine rotation directions for final calculation
         int rotationDirectionX = rotationGroupX.getSelectedToggle().equals(clockwiseRadioX) ? -1 : 1;
         int rotationDirectionY = rotationGroupY.getSelectedToggle().equals(clockwiseRadioY) ? 1 : -1;
-        int rotationDirectionZ = rotationGroupZ.getSelectedToggle().equals(clockwiseRadioZ) ? 1 : -1;
+        int rotationDirectionZ = rotationGroupZ.getSelectedToggle().equals(clockwiseRadioZ) ? 1 : -1;*/
 
         // Determine translation directions
         int translationDirectionX = translationGroupX.getSelectedToggle().equals(positiveRadioX) ? -1 : 1;
@@ -620,7 +615,6 @@ public class AddNewController implements Initializable {
             rotationValueZ = rotationValueZ * -1;
         }
 
-
         // Update active flags
         rotationXBool = Math.abs(rotationValueX) > 0.001 ? 1 : 0;
         rotationYBool = Math.abs(rotationValueY) > 0.001 ? 1 : 0;
@@ -649,16 +643,16 @@ public class AddNewController implements Initializable {
         double translationZ;
 
         if (typeSelection.equals("steering")) {
-            rotationX = rotationXBool * (rotationValueX * 2) / (calcMaxValue - calcMinValue) * rotationDirectionX;
-            rotationY = rotationYBool * (rotationValueY * 2) / (calcMaxValue - calcMinValue) * rotationDirectionY;
-            rotationZ = rotationZBool * (rotationValueZ * 2) / (calcMaxValue - calcMinValue) * rotationDirectionZ;
+            rotationX = rotationXBool * (rotationValueX * 2) / (calcMaxValue - calcMinValue);
+            rotationY = rotationYBool * (rotationValueY * 2) / (calcMaxValue - calcMinValue);
+            rotationZ = rotationZBool * (rotationValueZ * 2) / (calcMaxValue - calcMinValue);
             translationX = translationXBool * ((distanceValueX / scalingValueX) * 2) / (calcMaxValue - calcMinValue) * translationDirectionX;
             translationY = translationYBool * ((distanceValueY / scalingValueY) * 2) / (calcMaxValue - calcMinValue) * translationDirectionY;
             translationZ = translationZBool * ((distanceValueZ / 10) * 2) / (calcMaxValue - calcMinValue) * translationDirectionZ;
         } else if (typeSelection.equals("gearModeIndex")) {
-            rotationX = rotationXBool * (rotationValueX) / (calcMaxValue - calcMinValue - 2) * rotationDirectionX;
-            rotationY = rotationYBool * (rotationValueY) / (calcMaxValue - calcMinValue - 2) * rotationDirectionY;
-            rotationZ = rotationZBool * (rotationValueZ) / (calcMaxValue - calcMinValue - 2) * rotationDirectionZ;
+            rotationX = rotationXBool * (rotationValueX) / (calcMaxValue - calcMinValue - 2);
+            rotationY = rotationYBool * (rotationValueY) / (calcMaxValue - calcMinValue - 2);
+            rotationZ = rotationZBool * (rotationValueZ) / (calcMaxValue - calcMinValue - 2);
             translationX = translationXBool * (distanceValueX / scalingValueX) / (calcMaxValue - calcMinValue - 2) * translationDirectionX;
             translationY = translationYBool * (distanceValueY / scalingValueY) / (calcMaxValue - calcMinValue - 2) * translationDirectionY;
             translationZ = translationZBool * (distanceValueZ / 10) / (calcMaxValue - calcMinValue - 2) * translationDirectionZ;
@@ -708,12 +702,50 @@ public class AddNewController implements Initializable {
         showAlert("", finalString, "black", true);
     }
 
-
     public double[] convertXYZtoYZX(double[] localRotations) {
-        // Convert input (XYZ order) to radians
-        double rx = Math.toRadians(localRotations[0]);
-        double ry = Math.toRadians(localRotations[1]);
-        double rz = Math.toRadians(localRotations[2]);
+        // Check if this is a single-axis rotation that might exceed 180°
+        int nonZeroCount = 0;
+        int nonZeroAxis = -1;
+        for (int i = 0; i < 3; i++) {
+            if (Math.abs(localRotations[i]) > 0.001) {
+                nonZeroCount++;
+                nonZeroAxis = i;
+            }
+        }
+
+        // For single-axis rotations, preserve the full rotation range
+        if (nonZeroCount == 1) {
+            // Single axis rotation - no conversion needed, preserve full angle
+            return localRotations.clone();
+        }
+
+        // For compound rotations, we need to work within ±180° limits
+        // Store the original magnitudes if they exceed 180°
+        boolean exceedsLimits = false;
+        for (double rot : localRotations) {
+            if (Math.abs(rot) > 180) {
+                exceedsLimits = true;
+                break;
+            }
+        }
+
+        if (exceedsLimits) {
+            System.out.println("WARNING: Compound rotation with angles exceeding ±180° detected.");
+            System.out.println("This may not convert correctly between rotation orders.");
+        }
+
+        // Normalize inputs to ±180° for the conversion (required for proper matrix math)
+        double[] normalizedInput = new double[3];
+        for (int i = 0; i < 3; i++) {
+            normalizedInput[i] = localRotations[i];
+            while (normalizedInput[i] > 180) normalizedInput[i] -= 360;
+            while (normalizedInput[i] < -180) normalizedInput[i] += 360;
+        }
+
+        // Convert normalized input (XYZ order) to radians
+        double rx = Math.toRadians(normalizedInput[0]);
+        double ry = Math.toRadians(normalizedInput[1]);
+        double rz = Math.toRadians(normalizedInput[2]);
 
         // Build a Rotation using XYZ order
         Rotation rot = new Rotation(RotationOrder.XYZ, rx, ry, rz);
@@ -756,15 +788,13 @@ public class AddNewController implements Initializable {
 
     // Method to handle the result sent back from TransformCalculatorController
     public void handleTransformResult(TransformData transformData) {
-//        System.out.println("Received transform data: " + transformData);
-
         performCalculations(transformData.getTranslationX(), transformData.getTranslationY(), transformData.getTranslationZ(),
                 transformData.getRotationPitch(), transformData.getRotationYaw(), transformData.getRotationRoll(),
                 transformData.getScaleX(), transformData.getScaleY(), transformData.getScaleZ());
     }
 
     /**
-     * This function sets all of the data values based on the information in the Transformation Calculator
+     * This function sets all the data values based on the information in the Transformation Calculator
      *
      * @param transX
      * @param transY
@@ -1002,7 +1032,6 @@ public class AddNewController implements Initializable {
         minSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && maxSpinner.getValue() != null && newValue >= maxSpinner.getValue()) {
                 minSpinner.getValueFactory().setValue(oldValue); // Revert to previous valid value
-//                System.out.printf("Set min spinner from %,.2f to %,.2f \n", newValue, oldValue);
             }
             if (equalOppositeCheckBox.isSelected()) {
                 offsetSpinner.getValueFactory().setValue(-newValue);
@@ -1012,7 +1041,6 @@ public class AddNewController implements Initializable {
         maxSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && minSpinner.getValue() != null && newValue <= minSpinner.getValue()) {
                 maxSpinner.getValueFactory().setValue(oldValue); // Revert to previous valid value
-//                System.out.printf("Set max spinner from %,.2f to %,.2f \n", newValue, oldValue);
             }
         });
     }
@@ -1042,7 +1070,6 @@ public class AddNewController implements Initializable {
 
             // Step 3: If zero is not allowed, check if the value is zero
             if (!allowZero && value == 0.0) {
-//                System.out.println(value + "value equals 0.0 \n");
                 return true;
             }
 
@@ -1050,14 +1077,12 @@ public class AddNewController implements Initializable {
             // Split text into integer and decimal parts
             String[] parts = text.split("\\.");
             if (parts.length > 2) {
-//                System.out.println("More that one decimal point");
                 return true; // More than one decimal point
             }
 
             // Validate integer part
             String integerPart = parts[0];
             if (integerPart.isEmpty() || (!integerPart.equals("0") && !integerPart.matches("-?\\d+"))) {
-//                System.out.println(integerPart + " is invalid");
                 return true; // Invalid integer part
             }
 
@@ -1065,11 +1090,9 @@ public class AddNewController implements Initializable {
             if (parts.length == 2) {
                 String decimalPart = parts[1];
                 if (decimalPart.length() > 3) {
-//                    System.out.println("too many decimal places");
                     return true; // More than 3 decimal places
                 }
                 if (!decimalPart.matches("\\d{1,3}")) {
-//                    System.out.println(decimalPart + " is invalid");
                     return true; // Invalid decimal part
                 }
             }
@@ -1226,7 +1249,6 @@ public class AddNewController implements Initializable {
 
     private void testConversion(double x, double y, double z, double[] expected) {
         System.out.printf("Input  (XYZ): %.2f, %.2f, %.2f\n", x, y, z);
-//        performCalculationsTest(x, y, z);
 
         // Round the results to remove the small adjustment effects
         double rotationValueX = Math.round(TrotationX * 100) / 100.0;
@@ -1250,173 +1272,6 @@ public class AddNewController implements Initializable {
             System.out.printf("Expected: X:%.2f, Y:%.2f, Z:%.2f\n",
                     expected[0], expected[1], expected[2]);  // YZX order
         }
-
-        /*try {
-            // Convert to radians
-            double[] anglesXYZ = {
-                    Math.toRadians(x),
-                    Math.toRadians(y),
-                    Math.toRadians(z)
-            };
-
-            // Use non-deprecated constructor with explicit convention
-            Rotation r = new Rotation(RotationOrder.XYZ,
-                    RotationConvention.VECTOR_OPERATOR,
-                    anglesXYZ[0],
-                    anglesXYZ[1],
-                    anglesXYZ[2]);
-
-            try {
-                double[] anglesYZX = r.getAngles(RotationOrder.YZX, RotationConvention.VECTOR_OPERATOR);
-
-                double rotationValueX = Math.toDegrees(anglesYZX[2]);
-                double rotationValueY = Math.toDegrees(anglesYZX[0]);
-                double rotationValueZ = Math.toDegrees(anglesYZX[1]);
-
-                // Check for failure if expected values provided
-                if (expected != null) {
-                    if (Math.abs(rotationValueY - expected[1]) > 0.02 ||
-                            Math.abs(rotationValueZ - expected[2]) > 0.02 ||
-                            (Math.abs(rotationValueX - expected[0]) > 0.02 &&
-                                    Math.abs(Math.abs(rotationValueX) - 180) > 0.01)) {
-                        System.out.println("**FAIL**");
-                    }
-                }
-
-                System.out.printf("Output (YZX): X:%.2f, Y:%.2f, Z:%.2f\n",
-                        rotationValueX, rotationValueY, rotationValueZ);
-
-            } catch (CardanEulerSingularityException e) {
-                // Check for common gimbal lock cases first
-                if ((Math.abs(z) == 90 && x == 0 && y == 0) ||        // Case 1: (0, 0, ±90)
-                        (z == 0 && Math.abs(y) == 90 && x == 90) ||       // Case 2: (90, ±90, 0)
-                        (Math.abs(z) == 90 && Math.abs(y) == 90 && x == 0)) {  // Case 3: (0, ±90, ±90)
-
-                    // For these cases, we know the exact YZX values
-                    double rotationValueX = 0;  // X is always 0 in these cases
-                    double rotationValueY = y;  // Y maintains its value
-                    double rotationValueZ = Math.abs(y) == 90 ? 90 : z;  // Fixed Z value for (90, ±90, 0) case
-
-                    System.out.printf("Output (YZX special case): X:%.2f, Y:%.2f, Z:%.2f\n",
-                            rotationValueX, rotationValueY, rotationValueZ);
-
-                    // Check for failure if expected values provided
-                    if (expected != null) {
-                        if (Math.abs(rotationValueY - expected[1]) > 0.02 ||
-                                Math.abs(rotationValueZ - expected[2]) > 0.02 ||
-                                (Math.abs(rotationValueX - expected[0]) > 0.02 &&
-                                        Math.abs(Math.abs(rotationValueX) - 180) > 0.01)) {
-                            System.out.println("**FAIL**");
-                        }
-                    }
-
-                    if (expected != null) {
-                        System.out.printf("Expected (YZX): X:%.2f, Y:%.2f, Z:%.2f\n\n",
-                                expected[0], expected[1], expected[2]);  // YZX order
-                    }
-                    return;
-
-                }
-                // If we hit gimbal lock, adjust Z slightly and try again
-                final double SMALL_ADJUSTMENT = 0.0001;
-
-                // Create new rotation with slightly adjusted Z
-                Rotation adjustedRotation = new Rotation(RotationOrder.XYZ,
-                        RotationConvention.VECTOR_OPERATOR,
-                        anglesXYZ[0],
-                        anglesXYZ[1],
-                        anglesXYZ[2] + SMALL_ADJUSTMENT);
-
-                // Get angles from adjusted rotation
-                double[] anglesYZX = adjustedRotation.getAngles(RotationOrder.YZX, RotationConvention.VECTOR_OPERATOR);
-
-                double rotationValueX = Math.toDegrees(anglesYZX[2]);
-                double rotationValueY = Math.toDegrees(anglesYZX[0]);
-                double rotationValueZ = Math.toDegrees(anglesYZX[1]);
-
-
-                // Round the results to remove the small adjustment effects
-                rotationValueX = Math.round(rotationValueX * 100) / 100.0;
-                rotationValueY = Math.round(rotationValueY * 100) / 100.0;
-                rotationValueZ = Math.round(rotationValueZ * 100) / 100.0;
-
-                // Check for failure if expected values provided
-                if (expected != null) {
-                    if (Math.abs(rotationValueY - expected[1]) > 0.02 ||
-                            Math.abs(rotationValueZ - expected[2]) > 0.02 ||
-                            (Math.abs(rotationValueX - expected[0]) > 0.02 &&
-                                    Math.abs(Math.abs(rotationValueX) - 180) > 0.01)) {
-                        System.out.println("**FAIL**");
-                    }
-                }
-
-                System.out.printf("Output (YZX avoiding gimbal): X:%.2f, Y:%.2f, Z:%.2f\n",
-                        rotationValueX, rotationValueY, rotationValueZ);
-
-            }
-            if (expected != null) {
-                System.out.printf("Expected (YZX): X:%.2f, Y:%.2f, Z:%.2f\n",
-                        expected[0], expected[1], expected[2]);  // YZX order
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error during conversion: " + e.getMessage());
-        }*/
         System.out.println();
-    }
-
-    private void performCalculationsTest(double x, double y, double z) {
-        double rotationValueX = x;
-        double rotationValueY = y;
-        double rotationValueZ = z;
-
-        int rotationXBool = 1;
-        int rotationYBool = 1;
-        int rotationZBool = 1;
-
-        double[] localRotations = new double[3];
-        localRotations[0] = rotationValueX * rotationXBool;
-        localRotations[1] = rotationValueY * rotationYBool;
-        localRotations[2] = rotationValueZ * rotationZBool;
-        double[] newRotations = convertXYZtoYZX(localRotations);
-
-        rotationValueX = newRotations[0];
-        rotationValueY = newRotations[1];
-        rotationValueZ = newRotations[2];
-
-        TrotationX = rotationValueX;
-        TrotationY = rotationValueY;
-        TrotationZ = rotationValueZ;
-    }
-
-    public void testRotationConversion() {
-        System.out.println("\n=== Testing Rotation Conversions ===\n");
-
-        // Test cases from your earlier results
-        double[][] testCases = {
-                {60, 0, 0},     // Single X
-                {0, 60, 0},     // Single Y
-                {0, 0, 60},     // Single Z
-                {60, 60, 0},    // XY combination
-                {60, 0, 60},    // XZ combination
-                {0, 60, 60},    // YZ combination
-                {60, 60, 60},   // XYZ combination
-
-                {-60, 0, 0},    // Single -X
-                {0, -60, 0},    // Single -Y
-                {0, 0, -60},    // Single -Z
-                {-60, -60, 0},  // -XY combination
-                {-60, 0, -60},  // -XZ combination
-                {0, -60, -60},  // -YZ combination
-                {-60, -60, -60} // -XYZ combination
-        };
-
-        for (double[] testCase : testCases) {
-            System.out.printf("\nTest: X=%.0f° Y=%.0f° Z=%.0f°\n",
-                    testCase[0], testCase[1], testCase[2]);
-            double[] result = convertXYZtoYZX(testCase);
-            System.out.printf("Result: X=%.2f° Y=%.2f° Z=%.2f°\n",
-                    result[0], result[1], result[2]);
-        }
     }
 }
