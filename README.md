@@ -509,6 +509,9 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Updates
+Version 0.8.5 - 18 August 2025 - RELEASE
+- Fixed UpdateChecker not communicating with GitHub
+
 Version 0.8.4 - 18 August 2025
 - Updated pom.xml
 - Added workaround for gimbal lock situation. Will now slightly nudge the rotations to clear the conversion code
@@ -530,7 +533,7 @@ Version 0.8.1 - 8 October 2024
 - Corrected the AddNewController for the correct output from the TransformCalculatorController
 - Set Link Offset checkbox to be set on by default for certain functions
 
-Version 0.8.0 - 7 October 2024
+Version 0.8.0 - 7 October 2024 - PRE-RELEASE
 - Added the TransformationCalculator which is opened from the main screen using a button. This takes the copy coordinates from automation and computes the necessary transformations to move from the start to end position
 - Added a checkbox to link the Offset value to the Min value. If linked, the Offset will be the equal but opposite value of the Min.
 - Added dynamic rounding based on value which provides more accurate step values.
@@ -545,11 +548,11 @@ Version 0.8.0 - 7 October 2024
 - Removed unused SceneChanger.java
 - Updated README
 
-Version 0.7.1 - 21 September 2024
+Version 0.7.1 - 21 September 2024 - RELEASE
 - Fixed settings for Manual Gearbox which would prevent setting any offset
 - Fixed the logic for rotation about X being backwards
 
-Version 0.7.0 - 10 September 2024
+Version 0.7.0 - 10 September 2024 - RELEASE
 - Added translation animations
 - Fixed the minimum propID from 1 to 0
 - Fixed the default values not being set for the first function choice
@@ -558,12 +561,12 @@ Version 0.7.0 - 10 September 2024
 - Added the ability to check for an update on launch and offer the update to the user
 - Updated README.md
 
-Version 0.6.1 - 29 August 2024
+Version 0.6.1 - 29 August 2024 - RELEASE
 - Fixed Back to Explanation button appearing when the calculate button was clicked before selecting a function
 - Added logic to prevent unwanted values in the spinners.
 - Fixed an issue where null values would not be caught
 
-Version 0.6 - 28 August 2024
+Version 0.6 - 28 August 2024 - RELEASE
 - First public release
 - Add new name to app "AutoBeam Animation Generator"
 - Added all current functions to README.md
