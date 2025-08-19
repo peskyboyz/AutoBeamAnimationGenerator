@@ -126,7 +126,12 @@ The vehicle with animations will now be present in BeamNG.drive
 When all fields have been entered select Calculate. If there are no issues, the string will appear below. 
 Copy it and paste it in the description field in Automation</br>
 
-New for version 0.8.0, the transform calculator allows the user to copy and paste a fixture's coordinates directly from Automation. </br>
+If you want to return to the description once an error is present or a completed , click the "Back to explanation" button.
+
+If you want to display this Readme guide, click on the "Help" button.
+
+## Transform Calculator
+New for version 0.8.5, the transform calculator allows the user to copy and paste a fixture's coordinates directly from Automation. </br>
 <img src="/README%20Assets/App%20Transform%20Calculator.png" alt="Screenshot of tool's transform calculator" width="734"> </br>
 
 Copy the fixture transform of the using the button in Automation, then click the Add Start Position button.</br>
@@ -137,10 +142,7 @@ Once both are entered, click the Confirm button. Then, if a rotation is needed, 
 The Transform Calculator will then close, and all the transformation will be auto entered into the main screen. </br>
 You can now click Calculate. </br>
 
-If you want to return to the description once an error is present or a completed , click the "Back to explanation" button.
-
-If you want to display this Readme guide, click on the "Help" button.
-
+## Example
 Here is an example of a completed animation list for a car. </br>
 `~prop:7,rpmspin,0,1,0,0,0,0,-360,360,0,1~` </br>
 `~prop:15,rpmTacho,0,-0.03,0,0,0,0,0.0,9000.0,0.0,1~` </br>
