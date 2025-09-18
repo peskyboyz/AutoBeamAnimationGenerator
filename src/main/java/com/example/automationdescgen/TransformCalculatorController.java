@@ -3,11 +3,18 @@ package com.example.automationdescgen;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+
+import java.awt.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +37,10 @@ public class TransformCalculatorController {
     @FXML
     public Button resetButton;
     @FXML
+    public Label versionLabel;
+    @FXML
+    public Button themeToggleButton;
+    @FXML
     private AnchorPane TransCalcAnchorPane;
 
     private String startPositionString;
@@ -37,6 +48,7 @@ public class TransformCalculatorController {
     private PositionData startPosition;
     private PositionData endPosition;
     private TransformData transformResult;
+    private ThemeManager themeManager;
 
     private AutoAnimationApplication mainApp;
 
@@ -45,7 +57,7 @@ public class TransformCalculatorController {
     }
 
     public Parent getView() {
-        return TransCalcAnchorPane; // This should be the root node of your FXML
+        return TransCalcAnchorPane;
     }
 
     private static class PositionData {
@@ -72,6 +84,10 @@ public class TransformCalculatorController {
     @FXML
     public void initialize() {
         validateInputs();  // This will disable the button if inputs are empty
+    }
+
+    public void updateVersion(String versionText) {
+        versionLabel.setText(versionText);
     }
 
     public TransformData calculateTransformation() {
@@ -241,10 +257,38 @@ public class TransformCalculatorController {
             transformResult = calculateTransformation();
 
             if (transformResult != null) {
-                displayRotationChoices();
-                confirmBtn.setText("Apply Choices");
-                confirmBtn.setOnAction(e -> applyRotationChoices());
-                messageTextArea.setText("Transformation calculated. Please choose rotation directions.");
+                // Check if there are any rotations
+                double deltaPitch = endPosition.pitch - startPosition.pitch;
+                double deltaYaw = endPosition.yaw - startPosition.yaw;
+                double deltaRoll = endPosition.roll - startPosition.roll;
+
+                boolean hasRotations = Math.abs(deltaPitch) > 0.001 || Math.abs(deltaYaw) > 0.001 || Math.abs(deltaRoll) > 0.001;
+
+                if (hasRotations) {
+                    displayRotationChoices();
+                    confirmBtn.setText("Apply Choices");
+                    confirmBtn.setOnAction(e -> applyRotationChoices());
+                    messageTextArea.setText("Transformation calculated. Please choose rotation directions.");
+                } else {
+                    // No rotations, proceed directly with translation-only data
+                    TransformData finalTransform = new TransformData(
+                            transformResult.getTranslationX(),
+                            transformResult.getTranslationY(),
+                            transformResult.getTranslationZ(),
+                            0.0, // Pitch
+                            0.0, // Yaw
+                            0.0, // Roll
+                            startPosition.scaleX,
+                            startPosition.scaleY,
+                            startPosition.scaleZ
+                    );
+
+                    // Pass the data back to the main application
+                    mainApp.passTransformDataToAddNew(finalTransform);
+
+                    // Reset the UI for the next use
+                    resetUI();
+                }
             }
         } catch (IllegalArgumentException e) {
             messageTextArea.setText("Error: " + e.getMessage());
@@ -401,7 +445,7 @@ public class TransformCalculatorController {
 
                 // Ensure the smaller angle is always positive
                 double smallAngle = Math.abs(degrees) % 360;
-                double largeAngle = smallAngle > 180 ? smallAngle - 360 : smallAngle - 360;
+                double largeAngle = smallAngle - 360;
 
                 if (degrees < 0) {
                     double temp = smallAngle;
@@ -512,8 +556,34 @@ public class TransformCalculatorController {
     }
 
     @FXML
-    private void backToAddNew(){
+    protected void loadHelpFile() throws IOException {
+        System.out.println("Loading README");
+        Desktop desktop = Desktop.getDesktop();
+        desktop.browse(URI.create("https://github.com/peskyboyz/AutoBeamAnimationGenerator?tab=readme-ov-file#transform-calculator"));
+    }
+
+    @FXML
+    private void backToAddNew() {
         mainApp.showAddNewView();
+    }
+
+    public void setThemeManager(ThemeManager themeManager) {
+        this.themeManager = themeManager;
+        updateThemeButtonText();
+    }
+
+    @FXML
+    private void toggleTheme() {
+        if (themeManager != null) {
+            themeManager.toggleTheme();
+            updateThemeButtonText();
+        }
+    }
+
+    private void updateThemeButtonText() {
+        if (themeToggleButton != null && themeManager != null) {
+            themeToggleButton.setText(themeManager.isDarkMode() ? "☀" : "🌙");
+        }
     }
 
     public void runTests() {
@@ -674,7 +744,9 @@ public class TransformCalculatorController {
             results.add(false);
         System.out.println("\n\n");
     }
+
     public List<Boolean> results = new ArrayList<>();
+
     public void printTestResults(List<Boolean> results) {
         for (int i = 0; i < results.size(); i++) {
             if (results.get(i)) {

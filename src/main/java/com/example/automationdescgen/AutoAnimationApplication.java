@@ -14,8 +14,11 @@ import java.util.Objects;
 
 public class AutoAnimationApplication extends Application {
     private StackPane rootPane;
+    private Scene scene;
+    private ThemeManager themeManager;
     private AddNewController addNewController;
     private TransformCalculatorController transformCalculatorController;
+    private LuaGeneratorController luaGeneratorController;
     private static final String FALLBACK_FONT = "Segoe UI";
     private static final String BACKUP_FALLBACK_FONT = "Arial";
 
@@ -25,9 +28,8 @@ public class AutoAnimationApplication extends Application {
         boolean backupFontAvailable = Font.getFamilies().contains(BACKUP_FALLBACK_FONT);
 
         if (!primaryFontAvailable && !backupFontAvailable) {
-            // Both fallback fonts are unavailable - log this and perhaps show a warning
+            // Both fallback fonts are unavailable - log this
             System.err.println("Warning: Neither primary nor backup fallback fonts are available");
-            // You might want to bundle and load a font here as a last resort
         }
     }
 
@@ -36,13 +38,24 @@ public class AutoAnimationApplication extends Application {
         System.setProperty("file.encoding", "UTF-8");
         initializeFonts();
         rootPane = new StackPane();
-        Scene scene = new Scene(rootPane);
+        scene = new Scene(rootPane);
+
+        // Load CSS stylesheet
+        try {
+            String cssResource = getClass().getResource("/stylesheet.css").toExternalForm();
+            scene.getStylesheets().add(cssResource);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load stylesheet.css: " + e.getMessage());
+        }
+
         stage.setTitle("AutoBeam Animation Generator");
         stage.setMinHeight(625);
         stage.setMinWidth(740);
         stage.getIcons().add(new Image(Objects.requireNonNull(AutoAnimationApplication.class.getResourceAsStream("/icons/AutoBeam.png"))));
         stage.setScene(scene);
+
         loadViews();
+        initializeThemeSystem();
         showAddNewView(); // Initially show the AddNew view
         stage.show();
     }
@@ -62,23 +75,61 @@ public class AutoAnimationApplication extends Application {
         transformCalculatorController = transformLoader.getController();
         transformCalculatorController.setMainApp(this);
 
-        // Initially hide the TransformCalculator view
+        // Load TransformCalculator view
+        FXMLLoader advancedLoader = new FXMLLoader(getClass().getResource("LuaGenerator.fxml"));
+        advancedLoader.setCharset(StandardCharsets.UTF_8);
+        rootPane.getChildren().add(advancedLoader.load());
+        luaGeneratorController = advancedLoader.getController();
+        luaGeneratorController.setMainApp(this);
+
+        // Initially hide the TransformCalculator and AdvancedFunctions views
         transformCalculatorController.getView().setVisible(false);
+        luaGeneratorController.getView().setVisible(false);
     }
 
     public void showAddNewView() {
         addNewController.getView().setVisible(true);
         transformCalculatorController.getView().setVisible(false);
+        luaGeneratorController.getView().setVisible(false);
     }
 
-    public void showTransformCalculatorView() {
+    public void showTransformCalculatorView(String versionText) {
         addNewController.getView().setVisible(false);
         transformCalculatorController.getView().setVisible(true);
+        transformCalculatorController.updateVersion(versionText);
+        luaGeneratorController.getView().setVisible(false);
+    }
+
+    public void showLuaGeneratorView(String versionText){
+        addNewController.getView().setVisible(false);
+        transformCalculatorController.getView().setVisible(false);
+        luaGeneratorController.getView().setVisible(true);
+        luaGeneratorController.updateVersion(versionText);
     }
 
     public void passTransformDataToAddNew(TransformData transformData) {
         addNewController.handleTransformResult(transformData);
         showAddNewView();
+    }
+
+    private void initializeThemeSystem() {
+        // Initialize the theme manager
+        themeManager = new ThemeManager(scene);
+
+        // Initialize theme managers for all controllers that have theme toggle buttons
+        if (addNewController != null) {
+            addNewController.setThemeManager(themeManager);
+        }
+        if (transformCalculatorController != null) {
+            transformCalculatorController.setThemeManager(themeManager);
+        }
+        if (luaGeneratorController != null) {
+            luaGeneratorController.setThemeManager(themeManager);
+        }
+    }
+
+    public ThemeManager getThemeManager() {
+        return themeManager;
     }
 
     public static void main(String[] args) {

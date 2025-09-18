@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class UpdateChecker {
     private static final String REPO_API_URL = "https://api.github.com/repos/peskyboyz/AutoBeamAnimationGenerator/releases/latest";
-    private static final String CURRENT_VERSION = "v0.8.5";
+    private static final String CURRENT_VERSION = "v0.8.6";
     private static StringBuilder debugLog = new StringBuilder();
 
     private static void log(String message) {
@@ -25,7 +25,11 @@ public class UpdateChecker {
         System.out.println(message); // Still print to console if available
     }
 
-    public static void checkForUpdates() {
+    public interface UpdateCheckCallback {
+        void onUpdateCheckComplete(String currentVersion, boolean isLatest, String latestVersion);
+    }
+
+    public static void checkForUpdates(UpdateCheckCallback callback) {
         new Thread(() -> {
             try {
                 debugLog.setLength(0); // Clear previous debug log
@@ -54,8 +58,16 @@ public class UpdateChecker {
 
                 log("Current version: " + CURRENT_VERSION + ", Latest version: " + latestVersion);
 
-                // Compare versions
-                if (!CURRENT_VERSION.equals(latestVersion)) {
+                // Determine if we're on the latest version
+                boolean isLatest = CURRENT_VERSION.equals(latestVersion);
+
+                // Call the callback with the results
+                if (callback != null) {
+                    Platform.runLater(() -> callback.onUpdateCheckComplete(CURRENT_VERSION, isLatest, latestVersion));
+                }
+
+                // Compare versions and show dialog if update available
+                if (!isLatest) {
                     Platform.runLater(() -> showUpdateDialog(latestVersion, releaseUrl, releaseNotes));
                 } else {
                     Platform.runLater(() -> System.out.println("You're using the latest version."));
@@ -63,6 +75,12 @@ public class UpdateChecker {
 
             } catch (Exception e) {
                 log("Exception occurred: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+
+                // If there's an error, we can't determine if it's the latest, so assume it's not
+                if (callback != null) {
+                    Platform.runLater(() -> callback.onUpdateCheckComplete(CURRENT_VERSION, false, "Failed to check"));
+                }
+
                 // Pass the complete debug log to the error dialog
                 Platform.runLater(() -> showErrorDialog("Unable to check for updates. Please check your internet connection.", debugLog.toString()));
                 e.printStackTrace();
@@ -289,7 +307,7 @@ public class UpdateChecker {
 
         content.getChildren().addAll(errorText, suggestionText, githubLink);
 
-        // Add debug information
+/*        // Add debug information
         if (debugInfo != null && !debugInfo.trim().isEmpty()) {
             Text debugLabel = new Text("Debug Information:");
             debugLabel.setStyle("-fx-font-weight: bold;");
@@ -299,7 +317,7 @@ public class UpdateChecker {
             debugArea.setWrapText(true);
             debugArea.setStyle("-fx-font-family: 'Consolas', 'Monaco', monospace;");
             content.getChildren().addAll(debugLabel, debugArea);
-        }
+        }*/
 
         alert.getDialogPane().setContent(content);
         alert.getDialogPane().setPrefWidth(700);  // Wide for debug info

@@ -5,12 +5,14 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -31,6 +33,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.*;
 import static java.lang.Math.abs;
 
 public class AddNewController implements Initializable {
+    @FXML
+    public ComboBox<String> categoryComboBox;
     @FXML
     public ComboBox<Function> functionComboBox;
     @FXML
@@ -134,6 +138,10 @@ public class AddNewController implements Initializable {
     @FXML
     public CheckBox equalOppositeCheckBox;
     @FXML
+    public Label versionLabel;
+    @FXML
+    public Button themeToggleButton;
+    @FXML
     private AnchorPane AddNewAnchorPane;
 
     private final DoubleProperty minDefaultValueProperty = new SimpleDoubleProperty();
@@ -160,6 +168,10 @@ public class AddNewController implements Initializable {
     private double TrotationX;
     private double TrotationY;
     private double TrotationZ;
+    private String versionText;
+    private ObservableList<Function> allFunctions;
+    private ObservableList<Function> filteredFunctions;
+    private ThemeManager themeManager;
 
     public void setMainApp(AutoAnimationApplication mainApp) {
         this.mainApp = mainApp;
@@ -174,10 +186,31 @@ public class AddNewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        UpdateChecker.checkForUpdates();
+        UpdateChecker.checkForUpdates((currentVersion, isLatest, latestVersion) -> {
+            // This runs on the JavaFX Application Thread
+            versionText = "Version: " + currentVersion;
+            if (isLatest) {
+                versionText += " (Latest)";
+            } else {
+                versionText += " (Update available: " + latestVersion + ")";
+            }
+            versionLabel.setText(versionText);
+        });
 
-        ObservableList<Function> functions = FunctionDataProvider.getFunctions();
-        functionComboBox.setItems(functions);
+        ObservableList<String> categories = FXCollections.observableArrayList();
+        categories.add(FunctionDataProvider.ALL_CATEGORIES);
+        categories.addAll(FunctionDataProvider.getCategories());
+        categoryComboBox.setItems(categories);
+        categoryComboBox.setValue(FunctionDataProvider.ALL_CATEGORIES);
+
+        // Initialize functions
+        allFunctions = FunctionDataProvider.getFunctions();
+        filteredFunctions = FXCollections.observableArrayList(allFunctions);
+        functionComboBox.setItems(filteredFunctions);
+
+        // Set up category selection handler
+        categoryComboBox.setOnAction(this::handleCategorySelection);
+
 
         checkboxList = List.of(rotationXCheckBox, rotationYCheckBox, rotationZCheckBox, transXCheckBox, transYCheckBox, transZCheckBox);
 
@@ -574,11 +607,6 @@ public class AddNewController implements Initializable {
         int translationYBool = transYCheckBox.isSelected() ? 1 : 0;
         int translationZBool = transZCheckBox.isSelected() ? 1 : 0;
 
-/*        // Determine rotation directions for final calculation
-        int rotationDirectionX = rotationGroupX.getSelectedToggle().equals(clockwiseRadioX) ? -1 : 1;
-        int rotationDirectionY = rotationGroupY.getSelectedToggle().equals(clockwiseRadioY) ? 1 : -1;
-        int rotationDirectionZ = rotationGroupZ.getSelectedToggle().equals(clockwiseRadioZ) ? 1 : -1;*/
-
         // Determine translation directions
         int translationDirectionX = translationGroupX.getSelectedToggle().equals(positiveRadioX) ? -1 : 1;
         int translationDirectionY = translationGroupY.getSelectedToggle().equals(positiveRadioY) ? 1 : -1;
@@ -596,7 +624,6 @@ public class AddNewController implements Initializable {
 
         boolean hasCompoundRotation = rotationCount > 1;
 
-//        if (hasCompoundRotation) {
         System.out.println("Compound rotation detected - converting from XYZ to YZX");
 
         // Prepare local rotations with signs for conversion
@@ -619,7 +646,6 @@ public class AddNewController implements Initializable {
         rotationXBool = Math.abs(rotationValueX) > 0.001 ? 1 : 0;
         rotationYBool = Math.abs(rotationValueY) > 0.001 ? 1 : 0;
         rotationZBool = Math.abs(rotationValueZ) > 0.001 ? 1 : 0;
-//        }
 
         // Handle unit conversion
         double calcMinValue, calcMaxValue, calcOffsetValue;
@@ -703,38 +729,20 @@ public class AddNewController implements Initializable {
     }
 
     public double[] convertXYZtoYZX(double[] localRotations) {
-        // Check if this is a single-axis rotation that might exceed 180°
+        // Check if this is a single-axis rotation
         int nonZeroCount = 0;
-        int nonZeroAxis = -1;
         for (int i = 0; i < 3; i++) {
             if (Math.abs(localRotations[i]) > 0.001) {
                 nonZeroCount++;
-                nonZeroAxis = i;
             }
         }
 
         // For single-axis rotations, preserve the full rotation range
         if (nonZeroCount == 1) {
-            // Single axis rotation - no conversion needed, preserve full angle
             return localRotations.clone();
         }
 
-        // For compound rotations, we need to work within ±180° limits
-        // Store the original magnitudes if they exceed 180°
-        boolean exceedsLimits = false;
-        for (double rot : localRotations) {
-            if (Math.abs(rot) > 180) {
-                exceedsLimits = true;
-                break;
-            }
-        }
-
-        if (exceedsLimits) {
-            System.out.println("WARNING: Compound rotation with angles exceeding ±180° detected.");
-            System.out.println("This may not convert correctly between rotation orders.");
-        }
-
-        // Normalize inputs to ±180° for the conversion (required for proper matrix math)
+        // Normalize inputs to ±180°
         double[] normalizedInput = new double[3];
         for (int i = 0; i < 3; i++) {
             normalizedInput[i] = localRotations[i];
@@ -742,50 +750,79 @@ public class AddNewController implements Initializable {
             while (normalizedInput[i] < -180) normalizedInput[i] += 360;
         }
 
-        // Detect if we are very close to multiples of 90° or 270° on Y (the middle axis in XYZ)
-        double fudgeThreshold = 0.01;  // how close to count as "at risk"
-        double fudgeAmount = 0.001;      // amount to nudge the angles
+        // Check for the specific case where Y=90 and Z=90 (or similar problematic combinations)
+        boolean isProblematicCase = (Math.abs(Math.abs(normalizedInput[1]) - 90) < 0.1 &&
+                Math.abs(Math.abs(normalizedInput[2]) - 90) < 0.1);
 
-        boolean nearGimbalLock =
-                (Math.abs(Math.abs(normalizedInput[1]) - 90) < fudgeThreshold) ||
-                        (Math.abs(Math.abs(normalizedInput[1]) - 270) < fudgeThreshold);
-
-        if (nearGimbalLock) {
-            System.out.printf("⚠ Gimbal lock risk detected at Y=%.2f°. Applying fudge of ±%.4f°...\n",
-                    normalizedInput[1], fudgeAmount);
-
-            // Apply small nudges to ALL axes so the math stays consistent
-            for (int i = 0; i < 3; i++) {
-                if (normalizedInput[i] > 0) {
-                    normalizedInput[i] -= fudgeAmount;
-                } else if (normalizedInput[i] <= 0){
-                    normalizedInput[i] += fudgeAmount;
-                }
-            }
-            System.out.printf("%f, %f, %f %n", normalizedInput[0], normalizedInput[1], normalizedInput[2]);
+        if (isProblematicCase) {
+            System.out.println("Detected Y=±90°, Z=±90° combination - using special handling");
+            // For this specific case, we know the conversion has issues
+            // Apply a small pre-adjustment to avoid the singularity
+            normalizedInput[1] -= 0.01; // Slight adjustment to Y
         }
 
-        // Convert normalized input (XYZ order) to radians
+        // Convert to radians
         double rx = Math.toRadians(normalizedInput[0]);
         double ry = Math.toRadians(normalizedInput[1]);
         double rz = Math.toRadians(normalizedInput[2]);
 
-        // Build a Rotation using XYZ order
-        Rotation rot = new Rotation(RotationOrder.XYZ, rx, ry, rz);
-
-        // Extract equivalent angles in YZX order
-        double[] angles = rot.getAngles(RotationOrder.YZX);
-
-        // Remap to always return [X, Y, Z]
         double[] outputRotations = new double[3];
-        outputRotations[0] = Math.toDegrees(angles[2]); // X
-        outputRotations[1] = Math.toDegrees(angles[0]); // Y
-        outputRotations[2] = Math.toDegrees(angles[1]); // Z
 
-        // Normalize to [-180, 180]
+        try {
+            Rotation rot = new Rotation(RotationOrder.XYZ, rx, ry, rz);
+            double[] angles = rot.getAngles(RotationOrder.YZX);
+
+            outputRotations[0] = Math.toDegrees(angles[2]); // X
+            outputRotations[1] = Math.toDegrees(angles[0]); // Y
+            outputRotations[2] = Math.toDegrees(angles[1]); // Z
+
+        } catch (CardanEulerSingularityException e) {
+            System.out.println("Gimbal lock detected - applying workaround");
+
+            // Your existing gimbal lock handling code...
+            double adjustment = 0.001;
+            boolean resolved = false;
+
+            // Try small adjustments to find a working configuration
+            for (double adjY : new double[]{adjustment, -adjustment, 0}) {
+                for (double adjX : new double[]{0, adjustment, -adjustment}) {
+                    for (double adjZ : new double[]{0, adjustment, -adjustment}) {
+                        try {
+                            Rotation rot = new Rotation(RotationOrder.XYZ,
+                                    rx + adjX, ry + adjY, rz + adjZ);
+                            double[] angles = rot.getAngles(RotationOrder.YZX);
+
+                            outputRotations[0] = Math.toDegrees(angles[2]);
+                            outputRotations[1] = Math.toDegrees(angles[0]);
+                            outputRotations[2] = Math.toDegrees(angles[1]);
+                            resolved = true;
+                            break;
+                        } catch (CardanEulerSingularityException e2) {
+                            continue;
+                        }
+                    }
+                    if (resolved) break;
+                }
+                if (resolved) break;
+            }
+
+            if (!resolved) {
+                System.out.println("ERROR: Could not resolve gimbal lock - returning original values");
+                return localRotations.clone();
+            }
+        }
+
+        // Clean up near-integer values
         for (int i = 0; i < 3; i++) {
+            // Round values very close to integers
+            if (Math.abs(outputRotations[i] - Math.round(outputRotations[i])) < 0.01) {
+                outputRotations[i] = Math.round(outputRotations[i]);
+            }
+
+            // Normalize to [-180, 180]
             while (outputRotations[i] > 180) outputRotations[i] -= 360;
             while (outputRotations[i] < -180) outputRotations[i] += 360;
+
             if (Math.abs(outputRotations[i]) < 0.001) outputRotations[i] = 0;
         }
 
@@ -806,7 +843,7 @@ public class AddNewController implements Initializable {
 
     // This method opens the TransformCalculator window
     public void openTransformCalculator() {
-        mainApp.showTransformCalculatorView();
+        mainApp.showTransformCalculatorView(versionText);
     }
 
     // Method to handle the result sent back from TransformCalculatorController
@@ -1163,9 +1200,14 @@ public class AddNewController implements Initializable {
 
     private void showAlert(String title, String message, String colour, boolean showButton) {
         descriptionTextArea.setText(title + message);
-        if (colour.equals("red")) descriptionTextArea.setStyle("-fx-text-fill: red;");
-        else if (colour.equals("black")) {
-            descriptionTextArea.setStyle("-fx-text-fill: black;");
+        if (colour.equals("red")) {
+            descriptionTextArea.setStyle("-fx-text-fill: red;");
+        } else if (colour.equals("black")) {
+            if (themeManager != null && themeManager.isDarkMode()) {
+                descriptionTextArea.setStyle("-fx-text-fill: #F5F5F5;"); // Light text for dark mode
+            } else {
+                descriptionTextArea.setStyle("-fx-text-fill: #000000;"); // Dark text for light mode
+            }
         }
         if (showButton) {
             explanationButton.setVisible(true);
@@ -1180,9 +1222,56 @@ public class AddNewController implements Initializable {
     protected void loadHelpFile() throws IOException {
         System.out.println("Loading README");
         Desktop desktop = Desktop.getDesktop();
-        desktop.browse(URI.create("https://github.com/peskyboyz/AutomationDescriptionGenerator/blob/master/README.md"));
+        desktop.browse(URI.create("https://github.com/peskyboyz/AutoBeamAnimationGenerator?tab=readme-ov-file#autobeam-animation-generator"));
     }
 
+    private void handleCategorySelection(ActionEvent event) {
+        String selectedCategory = categoryComboBox.getSelectionModel().getSelectedItem();
+        if (selectedCategory != null) {
+            // Get new filtered functions
+            ObservableList<Function> newFilteredFunctions =
+                    FunctionDataProvider.getFunctionsByCategory(selectedCategory);
+
+            // Store the current prompt text
+            String promptText = functionComboBox.getPromptText();
+
+            // Clear and reset
+            functionComboBox.setItems(newFilteredFunctions);
+            functionComboBox.getSelectionModel().clearSelection();
+            functionComboBox.setValue(null);
+
+            // Force skin refresh
+            Platform.runLater(() -> {
+                functionComboBox.setSkin(null);
+                functionComboBox.setPromptText(promptText);
+            });
+
+            // Reset UI state when category changes
+            resetUIState();
+        }
+    }
+
+    private void resetUIState() {
+        // Clear/reset UI elements when category changes
+        descriptionTextArea.clear();
+
+        // Disable controls until a function is selected
+        minSpinner.setDisable(true);
+        maxSpinner.setDisable(true);
+        offsetSpinner.setDisable(true);
+        rotationXCheckBox.setDisable(true);
+        rotationYCheckBox.setDisable(true);
+        rotationZCheckBox.setDisable(true);
+        transXCheckBox.setDisable(true);
+        transYCheckBox.setDisable(true);
+        transZCheckBox.setDisable(true);
+        explanationButton.setDisable(true);
+        openTransformCalculatorBtn.setDisable(true);
+
+        // Hide explanation button
+        explanationButton.setVisible(false);
+        explanationButton.setManaged(false);
+    }
     public void runConversionTests() {
         // Single axis rotations
         System.out.println("=== Single Axis Rotations ===");
@@ -1296,5 +1385,34 @@ public class AddNewController implements Initializable {
                     expected[0], expected[1], expected[2]);  // YZX order
         }
         System.out.println();
+    }
+
+    public void setThemeManager(ThemeManager themeManager) {
+        this.themeManager = themeManager;
+        updateThemeButtonText();
+    }
+
+    @FXML
+    private void toggleTheme() {
+        if (themeManager != null) {
+            themeManager.toggleTheme();
+            updateThemeButtonText();
+
+            // Refresh the description text area if it has content and isn't showing an error
+            if (!descriptionTextArea.getText().isEmpty() && !descriptionTextArea.getStyle().contains("red")) {
+                // Re-apply the current theme's text color
+                if (themeManager.isDarkMode()) {
+                    descriptionTextArea.setStyle("-fx-text-fill: #F5F5F5;");
+                } else {
+                    descriptionTextArea.setStyle("-fx-text-fill: #000000;");
+                }
+            }
+        }
+    }
+
+    private void updateThemeButtonText() {
+        if (themeToggleButton != null && themeManager != null) {
+            themeToggleButton.setText(themeManager.isDarkMode() ? "☀" : "🌙");
+        }
     }
 }

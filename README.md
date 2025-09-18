@@ -23,7 +23,7 @@ The tool can currently generate the lines needed for the following animations:
  - Throttle
  - Brake
  - Clutch
- - Gear selector for Auto, Manual, Auto Manual, DCT and CVT (Sequential and paddles shifters not supported)
+ - Gear selector for Auto, Manual, Auto Manual, DCT, CVT and Sequential (with jbeam modification)
  - Turn Signal
  - Hazards
  - Headlight switch
@@ -134,8 +134,8 @@ If you want to display this Readme guide, click on the "Help" button.
 New for version 0.8.5, the transform calculator allows the user to copy and paste a fixture's coordinates directly from Automation. </br>
 <img src="/README%20Assets/App%20Transform%20Calculator.png" alt="Screenshot of tool's transform calculator" width="734"> </br>
 
-Copy the fixture transform of the using the button in Automation, then click the Add Start Position button.</br>
-Then clone the fixture and move it to the end position. Copy the new fixture transform and click the Add End Position. </br>
+Copy the fixture transform state of the fixture using the button in Automation, then click the Add Start Position button.</br>
+Then clone the fixture and move it to the end position. Copy the new fixture transform state and click the Add End Position. </br>
 <img src="/README%20Assets/Automation%20Copy%20Coordinates.png" alt="Screenshot of tool's transform calculator" width="734"> </br>
 
 Once both are entered, click the Confirm button. Then, if a rotation is needed, select the range of rotation for each axis and hit Apply Choices. </br>
@@ -251,6 +251,7 @@ and set the other ones base to be invisible. This second one will be the moving 
 
 #### Boost
 
+- This only works for turbos. Does not work for superchargers.
 - Enter your prop ID for the speedometer needle
 - Enter the range of rotation (This should be the angle of rotation of the boost gauge dial)
 - Select the direction of rotation
@@ -276,7 +277,7 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 #### Electric Radiator Fan
 
 - Spin function for the radiator fan,which activates when the radiator fan turns on. Used for props.
-- Note that this only turns on when coolant reaches 105°C
+- Note that this only turns on when coolant reaches 95°C
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - Recommended to leave the range of rotation to 360°.
 </br> `~prop:1,radiatorFanSpin,0.0,1.0,0.0,0,0,0,0.0,360.0,0.0,1~`
@@ -300,21 +301,30 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 
 #### Throttle
 
-- Throttle percentage. Affected by things like rev matching and throttle cut in the transmission shift logic.
+- Raw throttle input percentage. Not affected by things like rev matching and throttle cut in the transmission shift logic.
+- Used for pedals.
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
-  </br> `~prop:1,throttle,0.0,-30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+  </br> `~prop:1,throttle_input,0.0,-30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
 
 #### Brake
 
 - Brake input percentage.
+- Used for pedals.
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
-  </br> `~prop:1,brake,0.0,30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+  </br> `~prop:1,brake_input,0.0,30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
 
 #### Clutch
 
 - Clutch input percentage.
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
   </br> `~prop:1,clutch,0.0,30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+
+#### Throttle Output
+
+- Throttle output percentage. Affected by things like rev matching and throttle cut in the transmission shift logic.
+- Can be used for throttle body plate.
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+  </br> `~prop:1,throttle,0.0,-30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
 
 #### Automatic Gearbox
 
@@ -331,15 +341,21 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - For creating manual gearbox shifters ie: H-pattern
 - IMPORTANT: READ THROUGH THE README OR THE ENTIRE EXPLANATION FOR THIS ANIMATION BY CLICKING THE HELP BUTTON. REFERENCE SCREENSHOT AVAILABLE IN README.
 - This tool will only create one line of the gearbox per use. Each gear follows a pattern where Neutral has a min and max of -1 and 1, First has a min and max of 0 and 2, Second is 1 and 3 but with a offset of -1, Third, is 2 and 4 with and offset of -2 and so on going up. Reverse must have a min and max of -1 and 0 with an offset of 0.
-`~prop:9,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
-`~prop:10,gearIndex,0,180,0,0,0,0,0,2,0,1~` 1st gear </br>
-`~prop:11,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
-`~prop:12,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
-`~prop:13,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
-`~prop:14,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
+- Example for floor shifters
+`~prop:0,gearIndex,0,180,0,0,0,0,-1,1,0,1~` Neutral </br>
+`~prop:1,gearIndex,0,180,0,0,0,0,0,2,0,1~`  1st gear </br>
+`~prop:2,gearIndex,0,180,0,0,0,0,1,3,-1,1~` 2nd gear </br>
+`~prop:3,gearIndex,0,180,0,0,0,0,2,4,-2,1~` 3rd gear </br>
+`~prop:4,gearIndex,0,180,0,0,0,0,3,5,-3,1~` 4th gear </br>
+`~prop:5,gearIndex,0,180,0,0,0,0,4,6,-4,1~` 5th gear </br>
+`~prop:6,gearIndex,0,180,0,0,0,0,5,7,-5,1~` 6th gear </br>
+`~prop:7,gearIndex,0,180,0,0,0,0,6,8,-6,1~` 7th gear </br>
+`~prop:8,gearIndex,0,180,0,0,0,0,7,9,-7,1~` 8th gear </br>
+`~prop:9,gearIndex,0,180,0,0,0,0,-1,0,0,1~` Reverse gear </br>
 - Note that for this to work, you will need to have a separate gear stick for each gear plus neutral.
-- Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...), then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console. As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, before moving the commanded gear's shifter.
-- IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again.
+- FOR FLOOR SHIFTERS: Set every copy of the shifter to its final position (Neutral shifter to center, 1st gear shifter to 1st gear location, etc...), then, EXCEPT FOR NEUTRAL, rotate them 180° from the final position, so they are pointing down and are hidden under the center console. As you move through the gears, each shifter will rotate up to its set position then drop down to be replaced by the neutral shifter, before moving the commanded gear's shifter.
+- FOR COLUMN SHIFTERS: Similar to floor shifters, set each to their final position, then move all but neutral linearly behind the dash. Will be tricky to do, but it must be hidden both front and backwards after moving the same distance from final position. For example in the seat and dash.
+- IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again. Or for column move a set amount into position and the same amount to be hidden again.
   </br> <img src="/README%20Assets/Manual%20shifter%20example.png" alt="Screenshot of an example manual shifter setup in Automation" width="500px">
 
 #### Mode Shifter (Adv Auto/DCT)
@@ -438,6 +454,23 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - For example, the below string move a prop 30° starting at 20% right and ending at 30% right.
 - `~prop:1,steering_input,0.0,300.0,0.0,0,0,0,0.2,0.3,-0.2,1~`
 
+#### Ignition (On/Off+Starter)
+
+- Ignition state.
+- 0 = ignition off, 1 = accessory only, 2 = ignition on (engine running or not), 3 = starter running. 
+- The Min Value, the Max Value, and the Offset are unlocked to allow specialty uses like
+  showing/hiding a screen when the car is at least in accessory (min = 0, max = 1, offset = 0),
+  or creating a push start button (min = 2, max = 3, offset = -2).
+- If you want a normal key with all the positions, leave the min, max, and offset alone.
+- `~prop:1,ignitionLevel,0,-10.0,0,0,0,0,0,3.00,0,1~`
+
+#### Ignition (On/Off)
+
+- Ignition state.
+- 0 = ignition off, 1 = ignition on (engine running or not)
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- `~prop:1,ignition,0,-30.0,0,0,0,0,0,1.00,0,1~`
+
 #### Blank / Dummy
 
 - A blank function for use where one of the others is too restricted
@@ -494,7 +527,7 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
   - By using the brake function you can create a wing that flips up under heavy braking. (See Bugatti Veyron)
     - `~prop:61,brake,-80,0.0,0.0,0.0,0.0,0.0,0.75,0.90,-0.75,1~`
 
-#### Throttle body Butterfly Value
+#### Throttle body Butterfly Valve
 
 - Use the throttle function to move the fixture 90°. Just be sure it rotates about the centre of the fixture
 
@@ -510,7 +543,127 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
+## Adding Brake Glow to Automation cars
+
+### **IMPORTANT** - These changes may affect braking performance, in addition to the visuals. Different pad types will overheat at different temperatures. and glaze according to the pad type selected.                                            
+
+You will need to edit the jbeam files for your export.
+
+In the `camso_suspension_F_carId.jbeam` and `camso_suspension_F_carId.jbeam`, find `"Camso_brake_F_carId"` and `"Camso_brake_R_carId"` respectively. </br></br> 
+  Under that, in both files make note of the front and rear for the brakeType and padMaterial:</br> 
+  `{"brakeType":"vented-disc"}, //Type ("drum", "disc", "vented-disc") `</br> 
+  and     </br> 
+  `{"padMaterial":"semi-race"}, //Pad material ("basic","premium","sport","semi-race","full-race","godmode").`
+</br></br> 
+Under "pressureWheels" in the same files and sections (so under the brakes) you can also add: </br>
+```
+    {"brakeGlowTempStart":600},
+    {"brakeGlowTempEnd":1000},
+```
+to set the glow temperatures. They are in Celsius. </br> </br> 
+
+In the `camso_suspensionmesh_F_carId.jbeam` and `camso_suspensionmesh_F_carId.jbeam` files, under `"Camso_brakemeshes_front_carId"` and `"Camso_brakemeshes_rear_carId"`, you must add
+</br> for the front: </br> 
+```
+"slots": [
+    ["type", "default", "description"],
+    ["brakepad_F","brakepad_F_TYPE", "Front Brake Pads", {"coreSlot":true}],
+], 
+``` 
+and for the rear:
+```
+"slots": [
+    ["type", "default", "description"],
+    ["brakepad_R","brakepad_R_TYPE", "Rear Brake Pads", {"coreSlot":true}],
+],
+```
+The TYPE will be based on the "padMaterial" that you found in step 1. 
+This choice will affect performance of the brakes and their thermal properties. 
+It is highly recommended to use the same setting as found in padMaterial variable.
+
+Use one of the following options:
+```
+"basic" 	-> 	"brakepad_F" or "brakepad_R" (no additional type)
+"premium" 	-> 	"brakepad_F_premium" or "brakepad_R_premium"
+"sport" 	-> 	"brakepad_F_sport" or "brakepad_R_sport"
+"semi-race"     -> 	"brakepad_F_semi_race" or "brakepad_R_semi_race"
+"full-race"     ->	"brakepad_F_race" or "brakepad_R_race
+
+Or you can use this for carbon brakes
+"brakepad_F_carbon" / "brakepad_R_carbon"
+```
+
+Then for both front and rear, you will have to replace the default texture/mesh and add the materialOverride.</br>
+So for under `"flexbodies"` you will have to modify the mesh (`"f6c39_brakedisc_f5" -> "brake_disc_slotted"`) and add the materialOverride (`, "materialOverride":[["disc_brake", "disc_brake_FL"]]`)</br>
+From this
+```
+["f6c39_brakedisc_f5", ["wheel_FL"], [], {"pos":{"x":0.722958, "y":-1.48472, "z":0.913505}, "rot":{"x":-0.0242514, "y":-1.70001, "z":-179.999}, "scale":{"x":1.97484, "y":3.9, "z":3.9}}],
+["f6c39_brakedisc_f5", ["wheel_FR"], [], {"pos":{"x":-0.722958, "y":-1.48472, "z":0.913505}, "rot":{"x":0.0242514, "y":1.70001, "z":0.000671387}, "scale":{"x":1.97484, "y":3.9, "z":3.9}}],
+```
+To this
+```
+["brake_disc_slotted", ["wheel_FL"], [], {"pos":{"x":0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":-0.0245219, "y":-2, "z":-179.999}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FL"]]}],
+["brake_disc_slotted", ["wheel_FR"], [], {"pos":{"x":-0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":0.0245219, "y":2, "z":0.000808716}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FR"]]}],
+```
+
+You will have to do the same for front and rear if they have disc brakes.
+Note that the scaling has to change quite a bit to bring the large BeamNG brakes down to size. You will have to test to find the correct scaling.
+
+The mesh can be one of the following options:
+* brake_disc_solid</br>
+<img src="/README%20Assets/brake_disc_solid.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+* brake_disc_plain</br>
+  <img src="/README%20Assets/brake_disc_plain.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+* brake_disc_drilled</br>
+  <img src="/README%20Assets/brake_disc_drilled.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+* brake_disc_slotted</br>
+  <img src="/README%20Assets/brake_disc_slotted.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+* etk_brakedisc_F_carbon or etk_brakedisc_R_carbon -> ** If you use carbon brakes, you must use `"materialOverride":[["etk_brakedisc_carbon_ttsport", "etk_brakedisc_carbon_ttsport_FL"]]` instead (just specifiy the correct wheel position).
+You will also have to have
+`["brakepad_F","brakepad_F_carbon", "Front Brake Pads", {"coreSlot":true}],`</br>
+  <img src="/README%20Assets/etk_brakedisc_F_carbon.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+
+Each has a different texture and will look different. But they do not make a difference to performance.
+
+Once you are done, the "Camso_brakemeshes_front_carId" (and rear) in the "camso_suspensionmesh_F_carId" should look something like this:
+```
+"Camso_brakemeshes_front_217e0":
+{
+    "information":{
+        "authors":"Camshaft Software",
+        "name":"Wagon - Race Front Brake Meshes"
+    },
+    "slotType" : "Camso_brakemeshes_front",
+    "slots": [
+        ["type", "default", "description"],
+        ["brakepad_F","brakepad_F_semi_race", "Front Brake Pads", {"coreSlot":true}],
+    ],
+    "flexbodies": [
+        ["mesh", "[group]:", "nonFlexMaterials"],
+        ["217e0_brakecaliper_f6", ["hub_F"], [], {"pos":{"x":0.712752, "y":-1.34538, "z":1.03277}, "rot":{"x":44.9755, "y":-1.99918, "z":-179.999}, "scale":{"x":1.97484, "y":4.48, "z":4.48}}],
+        ["217e0_brakecaliper_f27", ["hub_F"], [], {"pos":{"x":-0.712752, "y":-1.34538, "z":1.03277}, "rot":{"x":44.9755, "y":-1.99918, "z":-179.999}, "scale":{"x":1.97484, "y":4.48, "z":4.48}}],
+        ["brake_disc_slotted", ["wheel_FL"], [], {"pos":{"x":0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":-0.0245219, "y":-2, "z":-179.999}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FL"]]}],
+        ["brake_disc_slotted", ["wheel_FR"], [], {"pos":{"x":-0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":0.0245219, "y":2, "z":0.000808716}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FR"]]}],
+    ]
+}
+```
+
 ## Updates
+Version 0.8.6 - 18 September 2025
+- Fixed steering description being backwards.
+- Added Help button to TransformCalculator.fxml
+- Updated Help buttons link
+- Added Sequential Shifter function (require jbeam modification)
+- Updated pedal functions to raw input instead of outputs. Also left in a throttle output
+- Added version number to both windows
+- Added categories to sort functions
+- Added initial framework for Lua Generator
+- Fixed/hid visible UpdateChecker debug
+- Added brakeGlow tutorial to the Readme
+- Attempted to correct compound rotation gimbal lock cases
+- First attempt at Light/Dark mode
+- Added ThemeManager.java to handle dark theme change (light/dark)
+
 Version 0.8.5 - 18 August 2025 - RELEASE
 - Fixed UpdateChecker not communicating with GitHub
 

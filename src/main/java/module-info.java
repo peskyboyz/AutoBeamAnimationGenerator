@@ -4,6 +4,7 @@ module com.example.automationdescgen {
     requires java.desktop;
     requires org.json;
     requires commons.math3;
+    requires javafx.graphics;
 
     opens com.example.automationdescgen to javafx.fxml;
     exports com.example.automationdescgen;

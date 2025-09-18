@@ -1,0 +1,265 @@
+/* Light theme (default) */
+.root {
+    /* Color variables using JavaFX's "looked-up colors" feature */
+    -color1: #000000;
+    -color2: #CCCCCC;
+    -color3: #FFFFFF;
+    -color4: #0087F5;
+    -color5: #005DA8;
+    -color6: #00325C;
+    -white: #FFFFFF;
+    -bg-color: #FFFFFF;
+    -text-color: #000000;
+    -primary: #3273A8;
+    -primary-hover: #235075;
+    -secondary: #686e65;
+    -secondary-hover: #4e524c;
+    -danger: #F44336;
+    -input-bg: #FFFFFF;
+    -input-border: #CCCCCC;
+
+    /* Apply background color to root */
+    -fx-background-color: -bg-color;
+    -fx-text-fill: -text-color;
+}
+
+/* Dark theme */
+.root.dark {
+    -color1: #F5F5F5;
+    -color2: #0E223E;
+    -color3: #FFFFFF;
+    -color4: #3E5678;
+    -color5: #152842;
+    -color6: #0d3575;
+    -white: #FFFFFF;
+    -bg-color: #1D385E;
+    -text-color: #F5F5F5;
+    -primary: #295CA3;
+    -primary-hover: #137799;
+    -secondary: #686e65;
+    -secondary-hover: #4e524c;
+    -danger: #F44336;
+    -input-bg: #2B4A6B;
+    -input-border: #3E5678;
+
+    /* Apply dark theme colors */
+    -fx-background-color: -bg-color;
+    -fx-text-fill: -text-color;
+}
+
+/* Basic components */
+.label {
+    -fx-text-fill: -text-color;
+}
+
+.button {
+    -fx-background-color: -primary;
+    -fx-text-fill: -white;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: -primary-hover;
+}
+
+/* Text Field - comprehensive styling */
+.text-field {
+    -fx-background-color: -input-bg;
+    -fx-text-fill: -text-color;
+    -fx-border-color: -input-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-prompt-text-fill: derive(-text-color, 50%);
+}
+
+/* Text Area - all sub-components */
+.text-area {
+    -fx-background-color: -input-bg;
+    -fx-text-fill: -text-color;
+    -fx-border-color: -input-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-prompt-text-fill: derive(-text-color, 50%);
+}
+
+.text-area .content {
+    -fx-background-color: -input-bg;
+}
+
+.text-area .viewport {
+    -fx-background-color: -input-bg;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: -input-bg;
+}
+
+.text-area .scroll-pane .viewport {
+    -fx-background-color: -input-bg;
+}
+
+.text-area .scroll-pane .content {
+    -fx-background-color: -input-bg;
+}
+
+/* Specific targeting for descriptionTextArea - using ID selector for higher specificity */
+#descriptionTextArea {
+    -fx-background-color: -input-bg;
+    -fx-text-fill: -text-color;
+}
+
+#descriptionTextArea .content {
+    -fx-background-color: -input-bg;
+}
+
+#descriptionTextArea .viewport {
+    -fx-background-color: -input-bg;
+}
+
+#descriptionTextArea .scroll-pane {
+    -fx-background-color: -input-bg;
+}
+
+#descriptionTextArea .scroll-pane .viewport {
+    -fx-background-color: -input-bg;
+}
+
+#descriptionTextArea .scroll-pane .content {
+    -fx-background-color: -input-bg;
+}
+
+/* ComboBox - all parts */
+.combo-box {
+    -fx-background-color: -input-bg;
+    -fx-border-color: -input-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.combo-box:editable > .text-field {
+    -fx-background-color: -input-bg;
+    -fx-text-fill: -text-color;
+}
+
+.combo-box > .list-cell {
+    -fx-background-color: -input-bg;
+    -fx-text-fill: -text-color;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: derive(-input-bg, -10%);
+}
+
+.combo-box .arrow {
+    -fx-background-color: -text-color;
+}
+
+/* ChoiceBox - comprehensive styling */
+.choice-box {
+    -fx-background-color: -input-bg;
+    -fx-border-color: -input-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.choice-box > .label {
+    -fx-text-fill: -text-color;
+}
+
+.choice-box .open-button {
+    -fx-background-color: derive(-input-bg, -10%);
+}
+
+.choice-box .arrow {
+    -fx-background-color: -text-color;
+}
+
+/* Spinner - all sub-components */
+.spinner {
+    -fx-background-color: -input-bg;
+    -fx-border-color: -input-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.spinner > .text-field {
+    -fx-background-color: -input-bg;
+    -fx-text-fill: -text-color;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+.spinner .increment-arrow-button {
+    -fx-background-color: derive(-input-bg, -10%);
+}
+
+.spinner .decrement-arrow-button {
+    -fx-background-color: derive(-input-bg, -10%);
+}
+
+.spinner .increment-arrow {
+    -fx-background-color: -text-color;
+}
+
+.spinner .decrement-arrow {
+    -fx-background-color: -text-color;
+}
+
+/* CheckBox and RadioButton */
+.check-box {
+    -fx-text-fill: -text-color;
+}
+
+.check-box .box {
+    -fx-background-color: -input-bg;
+    -fx-border-color: -input-border;
+}
+
+.radio-button {
+    -fx-text-fill: -text-color;
+}
+
+.radio-button .radio {
+    -fx-background-color: -input-bg;
+    -fx-border-color: -input-border;
+}
+
+/* Separator styling */
+.separator:horizontal .line {
+    -fx-border-color: -input-border;
+    -fx-background-color: -input-border;
+}
+
+.separator:vertical .line {
+    -fx-border-color: -input-border;
+    -fx-background-color: -input-border;
+}
+
+/* Theme toggle button styling */
+.theme-toggle-button {
+    -fx-background-color: -secondary;
+    -fx-text-fill: -white;
+    -fx-background-radius: 15px;
+    -fx-min-width: 60px;
+    -fx-pref-width: 60px;
+    -fx-font-size: 16px;
+}
+
+.theme-toggle-button:hover {
+    -fx-background-color: -secondary-hover;
+}
+
+/* Container styling */
+.vbox, .hbox {
+    -fx-background-color: -bg-color;
+}
+
+.anchor-pane {
+    -fx-background-color: -bg-color;
+}

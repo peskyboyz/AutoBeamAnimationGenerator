@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane
+        fx:id="LuaGeneratorAnchorPane"
+        maxHeight="770.0" maxWidth="1000.0" minWidth="740.0"
+        prefHeight="625.0" prefWidth="740.0"
+        style="-fx-font-family: Segoe UI, Arial"
+        xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.automationdescgen.LuaGeneratorController">
+    <VBox prefHeight="560.0" prefWidth="1003.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="376.0" text="AutoBeam Lua Generator" underline="true" HBox.hgrow="ALWAYS">
+                <font>
+                    <Font name="System Bold" size="18.0" />
+                </font>
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </padding>
+            </Label>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="49.0" prefWidth="600.0" spacing="15.0">
+            <Button fx:id="confirmBtn" onAction="#confirm" text="Confirm" />
+            <Button fx:id="helpButton" alignment="CENTER" contentDisplay="CENTER" layoutX="260.0" layoutY="32.0" mnemonicParsing="false" onAction="#loadHelpFile" prefWidth="100.0" text="Help" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#backToAddNew" text="Back" />
+        </HBox>
+    </VBox>
+    <Button fx:id="themeToggleButton"
+            text="🌙"
+            onAction="#toggleTheme"
+            styleClass="theme-toggle-button"
+            AnchorPane.topAnchor="10.0"
+            AnchorPane.rightAnchor="10.0"/>
+    <Label fx:id="versionLabel" text="v0.0.1" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" />
+</AnchorPane>

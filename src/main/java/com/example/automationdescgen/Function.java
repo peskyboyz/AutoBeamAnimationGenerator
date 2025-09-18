@@ -20,10 +20,11 @@ public class Function {
     private final StringProperty description;
     private final IntegerProperty direction;
     private final IntegerProperty special;
+    private final StringProperty category;
 
     public Function(String name, String type, double rangeAngle, double startMin, double startMax,
                     double startOffset, double min, double max, double offset, boolean decimal, int decimalPlaces,
-                    List<String> unit, String description, int direction, int special) {
+                    List<String> unit, String description, int direction, int special, String category) {
         this.name = new SimpleStringProperty(name);
         this.type = new SimpleStringProperty(type);
         this.rangeAngle = new SimpleDoubleProperty(rangeAngle);
@@ -39,6 +40,7 @@ public class Function {
         this.description = new SimpleStringProperty(description);
         this.direction = new SimpleIntegerProperty(direction);
         this.special = new SimpleIntegerProperty(special);
+        this.category = new SimpleStringProperty(category);
     }
 
     public double getConversionFactor(String unitType) {
@@ -75,6 +77,8 @@ public class Function {
     public int getDirection() { return direction.get(); }
 
     public int getSpecial() { return special.get(); }
+
+    public String getCategory() { return category.get(); }
 
     @Override
     public String toString() {
