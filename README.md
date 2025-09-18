@@ -545,7 +545,8 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 
 ## Adding Brake Glow to Automation cars
 
-### **IMPORTANT** - These changes may affect braking performance, in addition to the visuals. Different pad types will overheat at different temperatures. and glaze according to the pad type selected.                                            
+> [!CAUTION]
+> These changes may affect braking performance, in addition to the visuals. Different pad types will overheat at different temperatures. and glaze according to the pad type selected.                                            
 
 You will need to edit the jbeam files for your export.
 
@@ -611,17 +612,17 @@ Note that the scaling has to change quite a bit to bring the large BeamNG brakes
 
 The mesh can be one of the following options:
 * brake_disc_solid</br>
-<img src="/README%20Assets/brake_disc_solid.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+<img src="/README%20Assets/brake_disc_solid.png" alt="Screenshot of solid disc brake in BeamNG" width="300"> </br>
 * brake_disc_plain</br>
-  <img src="/README%20Assets/brake_disc_plain.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+  <img src="/README%20Assets/brake_disc_plain.png" alt="Screenshot of plain disc brake in BeamNG" width="300"> </br>
 * brake_disc_drilled</br>
-  <img src="/README%20Assets/brake_disc_drilled.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+  <img src="/README%20Assets/brake_disc_drilled.png" alt="Screenshot drilled disc brake in BeamNG" width="300"> </br>
 * brake_disc_slotted</br>
-  <img src="/README%20Assets/brake_disc_slotted.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+  <img src="/README%20Assets/brake_disc_slotted.png" alt="Screenshot slotted disc brake in BeamNG" width="300"> </br>
 * etk_brakedisc_F_carbon or etk_brakedisc_R_carbon -> ** If you use carbon brakes, you must use `"materialOverride":[["etk_brakedisc_carbon_ttsport", "etk_brakedisc_carbon_ttsport_FL"]]` instead (just specifiy the correct wheel position).
 You will also have to have
 `["brakepad_F","brakepad_F_carbon", "Front Brake Pads", {"coreSlot":true}],`</br>
-  <img src="/README%20Assets/etk_brakedisc_F_carbon.png" alt="Screenshot of tool's transform calculator" width="300"> </br>
+  <img src="/README%20Assets/etk_brakedisc_F_carbon.png" alt="Screenshot carbon disc brake in BeamNG" width="300"> </br>
 
 Each has a different texture and will look different. But they do not make a difference to performance.
 
