@@ -545,109 +545,85 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 
 ## Adding Brake Glow to Automation cars
 
-> [!CAUTION]
-> These changes may affect braking performance, in addition to the visuals. Different pad types will overheat at different temperatures. and glaze according to the pad type selected.                                            
+> [!IMPORTANT]
+> The steps were figured out by **furiousfox25** on the Automation Discord and updated by me (peskboyz)                                          
 
 You will need to edit the jbeam files for your export.
 
-In the `camso_suspension_F_carId.jbeam` and `camso_suspension_F_carId.jbeam`, find `"Camso_brake_F_carId"` and `"Camso_brake_R_carId"` respectively. </br></br> 
-  Under that, in both files make note of the front and rear for the brakeType and padMaterial:</br> 
-  `{"brakeType":"vented-disc"}, //Type ("drum", "disc", "vented-disc") `</br> 
-  and     </br> 
-  `{"padMaterial":"semi-race"}, //Pad material ("basic","premium","sport","semi-race","full-race","godmode").`
-</br></br> 
-Under "pressureWheels" in the same files and sections (so under the brakes) you can also add: </br>
-```
-    {"brakeGlowTempStart":600},
-    {"brakeGlowTempEnd":1000},
-```
-to set the glow temperatures. They are in Celsius. </br> </br> 
+1. First, open `carId_main.jbeam`
 
-In the `camso_suspensionmesh_F_carId.jbeam` and `camso_suspensionmesh_F_carId.jbeam` files, under `"Camso_brakemeshes_front_carId"` and `"Camso_brakemeshes_rear_carId"`, you must add
-</br> for the front: </br> 
-```
-"slots": [
-    ["type", "default", "description"],
-    ["brakepad_F","brakepad_F_TYPE", "Front Brake Pads", {"coreSlot":true}],
-], 
-``` 
-and for the rear:
-```
-"slots": [
-    ["type", "default", "description"],
-    ["brakepad_R","brakepad_R_TYPE", "Rear Brake Pads", {"coreSlot":true}],
-],
-```
-The TYPE will be based on the "padMaterial" that you found in step 1. 
-This choice will affect performance of the brakes and their thermal properties. 
-It is highly recommended to use the same setting as found in padMaterial variable.
+    <img src="/README%20Assets/main_jbeam_location.png" alt="Screenshot of solid disc brake in BeamNG" width="900"> </br>
+    
+    Then, under `"glowMap"` add 
+    ```
+    "disc_brake_FR": {"simpleFunction":{"brakeGlow_FR":1}, "off":"disc_brake", "on":"disc_brake_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    "disc_brake_FL": {"simpleFunction":{"brakeGlow_FL":1}, "off":"disc_brake", "on":"disc_brake_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    "disc_brake_RR": {"simpleFunction":{"brakeGlow_RR":1}, "off":"disc_brake", "on":"disc_brake_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    "disc_brake_RL": {"simpleFunction":{"brakeGlow_RL":1}, "off":"disc_brake", "on":"disc_brake_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    ```
+    
+    > [!NOTE]
+    > If you want to use carbon brakes, use this instead:
+    > ```
+    > "etk_brakedisc_carbon_ttsport_FR": {"simpleFunction":{"brakeGlow_FR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >	"etk_brakedisc_carbon_ttsport_FL": {"simpleFunction":{"brakeGlow_FL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >	"etk_brakedisc_carbon_ttsport_RR": {"simpleFunction":{"brakeGlow_RR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >	"etk_brakedisc_carbon_ttsport_RL": {"simpleFunction":{"brakeGlow_RL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    > ```
+    So it should now look like this:</br>
+    <img src="/README%20Assets/glowMap.png" alt="Screenshot of solid disc brake in BeamNG" width="1915"> </br>
 
-Use one of the following options:
-```
-"basic" 	-> 	"brakepad_F" or "brakepad_R" (no additional type)
-"premium" 	-> 	"brakepad_F_premium" or "brakepad_R_premium"
-"sport" 	-> 	"brakepad_F_sport" or "brakepad_R_sport"
-"semi-race"     -> 	"brakepad_F_semi_race" or "brakepad_R_semi_race"
-"full-race"     ->	"brakepad_F_race" or "brakepad_R_race
 
-Or you can use this for carbon brakes
-"brakepad_F_carbon" / "brakepad_R_carbon"
-```
+2. Next, open the `camso_suspensionmesh_F_carId.jbeam` and `camso_suspensionmesh_F_carId.jbeam` files. </br>
+    <img src="/README%20Assets/suspensionmesh_jbeam_location.png" alt="Screenshot of solid disc brake in BeamNG" width="900"> </br>
+    
+    In each of the files, find the following sections respectively: `"Camso_brakemeshes_front_carId"` and `"Camso_brakemeshes_rear_carId"`
+    </br>
+    Then for both front and rear, you will have to replace the default mesh, change the scaling, and add the materialOverride.</br>
+    </br>
+    So under `"flexbodies"` you will have to modify the mesh (`"f6c39_brakedisc_f5" -> "new mesh type"`) and add the materialOverride (`, "materialOverride":[["disc_brake", "disc_brake_FL"]]`)</br>
 
-Then for both front and rear, you will have to replace the default texture/mesh and add the materialOverride.</br>
-So for under `"flexbodies"` you will have to modify the mesh (`"f6c39_brakedisc_f5" -> "brake_disc_slotted"`) and add the materialOverride (`, "materialOverride":[["disc_brake", "disc_brake_FL"]]`)</br>
-From this
-```
-["f6c39_brakedisc_f5", ["wheel_FL"], [], {"pos":{"x":0.722958, "y":-1.48472, "z":0.913505}, "rot":{"x":-0.0242514, "y":-1.70001, "z":-179.999}, "scale":{"x":1.97484, "y":3.9, "z":3.9}}],
-["f6c39_brakedisc_f5", ["wheel_FR"], [], {"pos":{"x":-0.722958, "y":-1.48472, "z":0.913505}, "rot":{"x":0.0242514, "y":1.70001, "z":0.000671387}, "scale":{"x":1.97484, "y":3.9, "z":3.9}}],
-```
-To this
-```
-["brake_disc_slotted", ["wheel_FL"], [], {"pos":{"x":0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":-0.0245219, "y":-2, "z":-179.999}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FL"]]}],
-["brake_disc_slotted", ["wheel_FR"], [], {"pos":{"x":-0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":0.0245219, "y":2, "z":0.000808716}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FR"]]}],
-```
+   > [!NOTE]The mesh can be one of the following options:
+    * `brake_disc_solid`</br>
+      <img src="/README%20Assets/brake_disc_solid.png" alt="Screenshot of solid disc brake in BeamNG" width="300"> </br>
+    * `brake_disc_plain`</br>
+      <img src="/README%20Assets/brake_disc_plain.png" alt="Screenshot of plain disc brake in BeamNG" width="300"> </br>
+    * `brake_disc_drilled`</br>
+      <img src="/README%20Assets/brake_disc_drilled.png" alt="Screenshot drilled disc brake in BeamNG" width="300"> </br>
+    * `brake_disc_slotted`</br>
+      <img src="/README%20Assets/brake_disc_slotted.png" alt="Screenshot slotted disc brake in BeamNG" width="300"> </br>
+    * `etk_brakedisc_F_carbon` or `etk_brakedisc_R_carbon` -> If you use carbon brakes, you must use `"materialOverride":[["etk_brakedisc_carbon_ttsport", "etk_brakedisc_carbon_ttsport_FL"]]` instead (just specifiy the correct wheel position).</br>
+      <img src="/README%20Assets/etk_brakedisc_F_carbon.png" alt="Screenshot carbon disc brake in BeamNG" width="300"> </br>
 
-You will have to do the same for front and rear if they have disc brakes.
-Note that the scaling has to change quite a bit to bring the large BeamNG brakes down to size. You will have to test to find the correct scaling.
+    Each has a different texture and will look different. But they do not make a difference to performance.
 
-The mesh can be one of the following options:
-* brake_disc_solid</br>
-<img src="/README%20Assets/brake_disc_solid.png" alt="Screenshot of solid disc brake in BeamNG" width="300"> </br>
-* brake_disc_plain</br>
-  <img src="/README%20Assets/brake_disc_plain.png" alt="Screenshot of plain disc brake in BeamNG" width="300"> </br>
-* brake_disc_drilled</br>
-  <img src="/README%20Assets/brake_disc_drilled.png" alt="Screenshot drilled disc brake in BeamNG" width="300"> </br>
-* brake_disc_slotted</br>
-  <img src="/README%20Assets/brake_disc_slotted.png" alt="Screenshot slotted disc brake in BeamNG" width="300"> </br>
-* etk_brakedisc_F_carbon or etk_brakedisc_R_carbon -> ** If you use carbon brakes, you must use `"materialOverride":[["etk_brakedisc_carbon_ttsport", "etk_brakedisc_carbon_ttsport_FL"]]` instead (just specifiy the correct wheel position).
-You will also have to have
-`["brakepad_F","brakepad_F_carbon", "Front Brake Pads", {"coreSlot":true}],`</br>
-  <img src="/README%20Assets/etk_brakedisc_F_carbon.png" alt="Screenshot carbon disc brake in BeamNG" width="300"> </br>
+    So for example you will go from this:</br>
+   <img src="/README%20Assets/brakes_jbeam_old.png" alt="Screenshot of solid disc brake in BeamNG" width="1915"> </br>
 
-Each has a different texture and will look different. But they do not make a difference to performance.
+    To this:</br>
+    <img src="/README%20Assets/brakes_jbeam.png" alt="Screenshot of solid disc brake in BeamNG" width="1915"> </br>
 
-Once you are done, the "Camso_brakemeshes_front_carId" (and rear) in the "camso_suspensionmesh_F_carId" should look something like this:
-```
-"Camso_brakemeshes_front_217e0":
-{
-    "information":{
-        "authors":"Camshaft Software",
-        "name":"Wagon - Race Front Brake Meshes"
-    },
-    "slotType" : "Camso_brakemeshes_front",
-    "slots": [
-        ["type", "default", "description"],
-        ["brakepad_F","brakepad_F_semi_race", "Front Brake Pads", {"coreSlot":true}],
-    ],
-    "flexbodies": [
-        ["mesh", "[group]:", "nonFlexMaterials"],
-        ["217e0_brakecaliper_f6", ["hub_F"], [], {"pos":{"x":0.712752, "y":-1.34538, "z":1.03277}, "rot":{"x":44.9755, "y":-1.99918, "z":-179.999}, "scale":{"x":1.97484, "y":4.48, "z":4.48}}],
-        ["217e0_brakecaliper_f27", ["hub_F"], [], {"pos":{"x":-0.712752, "y":-1.34538, "z":1.03277}, "rot":{"x":44.9755, "y":-1.99918, "z":-179.999}, "scale":{"x":1.97484, "y":4.48, "z":4.48}}],
-        ["brake_disc_slotted", ["wheel_FL"], [], {"pos":{"x":0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":-0.0245219, "y":-2, "z":-179.999}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FL"]]}],
-        ["brake_disc_slotted", ["wheel_FR"], [], {"pos":{"x":-0.722964, "y":-1.48473, "z":0.893813}, "rot":{"x":0.0245219, "y":2, "z":0.000808716}, "scale":{"x":1.07484, "y":1.2, "z":1.2}, "materialOverride":[["disc_brake", "disc_brake_FR"]]}],
-    ]
-}
-```
+    Or if you want carbon brakes it would look like this:
+   <img src="/README%20Assets/brakes_jbeam_carbon.png" alt="Screenshot of solid disc brake in BeamNG" width="1915"> </br>
+
+    You will have to do the same for front and rear if they have disc brakes.
+    Note that the scaling has to change quite a bit to bring the large BeamNG brakes down to size. You will have to test to find the correct scaling by making a change then reloading the car in BeamNG by pressing Ctrl + R.
+    
+
+
+3.  If you want to change the glow start and end temperatures, open these two files:</br>
+    <img src="/README%20Assets/suspension_jbeam_location.png" alt="Screenshot of solid disc brake in BeamNG" width="900"> </br>
+
+    In the `camso_suspension_F_carId.jbeam` and `camso_suspension_F_carId.jbeam`, find `pressureWheels`
+    Under "pressureWheels" you can also add the following to set the glow temperatures. The values are in Celsius. </br>
+    ```
+        {"brakeGlowTempStart":600},
+        {"brakeGlowTempEnd":1000},
+    ```
+    To end up like this:</br>
+    <img src="/README%20Assets/brake_temps.png" alt="Screenshot of solid disc brake in BeamNG" width="450"> </br>
+
+4. Finally, ensure all files are saved and reload the car in BeamNG
 
 ## Updates
 Version 0.8.6 - 18 September 2025
