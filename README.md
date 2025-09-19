@@ -625,6 +625,9 @@ You will need to edit the jbeam files for your export.
 4. Finally, ensure all files are saved and reload the car in BeamNG
 
 ## Updates
+Version 0.8.7 - 18 September 2025
+- Update to Brake Glow instruction in the Readme (Thanks to furiousfox25 from the Automation Discord)
+
 Version 0.8.6 - 18 September 2025
 - Fixed steering description being backwards.
 - Added Help button to TransformCalculator.fxml
