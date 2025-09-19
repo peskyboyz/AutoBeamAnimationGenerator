@@ -561,11 +561,10 @@ You will need to edit the jbeam files for your export.
     "disc_brake_RR": {"simpleFunction":{"brakeGlow_RR":1}, "off":"disc_brake", "on":"disc_brake_glow", "materialEmissiveScaling":{"on_max":1.00}},
     "disc_brake_RL": {"simpleFunction":{"brakeGlow_RL":1}, "off":"disc_brake", "on":"disc_brake_glow", "materialEmissiveScaling":{"on_max":1.00}},
     ```
-    
-    > [!NOTE]
+
     > If you want to use carbon brakes, use this instead:
     > ```
-    > "etk_brakedisc_carbon_ttsport_FR": {"simpleFunction":{"brakeGlow_FR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >   "etk_brakedisc_carbon_ttsport_FR": {"simpleFunction":{"brakeGlow_FR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
     >	"etk_brakedisc_carbon_ttsport_FL": {"simpleFunction":{"brakeGlow_FL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
     >	"etk_brakedisc_carbon_ttsport_RR": {"simpleFunction":{"brakeGlow_RR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
     >	"etk_brakedisc_carbon_ttsport_RL": {"simpleFunction":{"brakeGlow_RL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
@@ -583,7 +582,7 @@ You will need to edit the jbeam files for your export.
     </br>
     So under `"flexbodies"` you will have to modify the mesh (`"f6c39_brakedisc_f5" -> "new mesh type"`) and add the materialOverride (`, "materialOverride":[["disc_brake", "disc_brake_FL"]]`)</br>
 
-   > [!NOTE]The mesh can be one of the following options:
+   > The mesh can be one of the following options:
     * `brake_disc_solid`</br>
       <img src="/README%20Assets/brake_disc_solid.png" alt="Screenshot of solid disc brake in BeamNG" width="300"> </br>
     * `brake_disc_plain`</br>
