@@ -613,7 +613,7 @@ You will need to edit the jbeam files for your export.
 3.  If you want to change the glow start and end temperatures, open these two files:</br>
     <img src="/README%20Assets/suspension_jbeam_location.png" alt="Screenshot of solid disc brake in BeamNG" width="900"> </br>
 
-    In the `camso_suspension_F_carId.jbeam` and `camso_suspension_F_carId.jbeam`, find `pressureWheels`
+    In the `camso_suspension_F_carId.jbeam` and `camso_suspension_R_carId.jbeam`, find `pressureWheels`
     Under "pressureWheels" you can also add the following to set the glow temperatures. The values are in Celsius. </br>
     ```
         {"brakeGlowTempStart":600},
