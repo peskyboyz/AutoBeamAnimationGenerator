@@ -573,7 +573,7 @@ You will need to edit the jbeam files for your export.
     <img src="/README%20Assets/glowMap.png" alt="Screenshot of solid disc brake in BeamNG" width="1915"> </br>
 
 
-2. Next, open the `camso_suspensionmesh_F_carId.jbeam` and `camso_suspensionmesh_F_carId.jbeam` files. </br>
+2. Next, open the `camso_suspensionmesh_F_carId.jbeam` and `camso_suspensionmesh_R_carId.jbeam` files. </br>
     <img src="/README%20Assets/suspensionmesh_jbeam_location.png" alt="Screenshot of solid disc brake in BeamNG" width="900"> </br>
     
     In each of the files, find the following sections respectively: `"Camso_brakemeshes_front_carId"` and `"Camso_brakemeshes_rear_carId"`
