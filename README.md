@@ -8,32 +8,46 @@ Note that the video is showing version 0.7.1 </br>
 ## Description
 This tool allows you to quickly generate the lines needed to animated basic props in cars exported from Automation to BeamNG.drive. 
 
-The tool can currently generate the lines needed for the following animations:
- - Steering
- - Speedometer
- - Tachometer
- - Water temperature gauge (radiator)
- - Oil temperature gauge
- - Fuel gauge
- - Boost gauge
- - Engine load
- - Radiator fan
- - Engine pulleys
- - Parking brake
- - Throttle
- - Brake
- - Clutch
- - Gear selector for Auto, Manual, Auto Manual, DCT, CVT and Sequential (with jbeam modification)
- - Turn Signal
- - Hazards
- - Headlight switch
- - Fog lights
- - Altitude gauge
- - Air speed
-</br></br>
- - Other types of animations are possible with some creative use of the above functions (active aero, shift lights, etc.) 
+I also have a tutorial for adding brake glow to Automation cars.
 
-Note that this tool can now generate animation for rotations and translations
+The tool can currently generate the lines needed for wide variety of animations
+
+# Table of Contents
+
+## Getting Started
+- [Description](#description)
+- [How to Use](#how-to-use)
+- [Using the tool](#using-the-tool)
+- [Transform Calculator](#transform-calculator)
+- [Examples](#example)
+
+## Functions by Category
+**Controls & Inputs**
+- [Steering (Wheel)](#steering-wheel)
+- [Throttle](#throttle) / [Throttle Output](#throttle-output)
+- [Brake](#brake) / [Clutch](#clutch)
+- [Parking/Hand Brake](#parkinghand-brake)
+
+**Gauges & Meters**
+- [RPM](#rpm) / [Speed](#speed)
+- [Water Temp](#water-temp) / [Oil Temp](#oil-temp)
+- [Fuel](#fuel) / [Boost](#boost)
+- [Altitude](#altitude) / [Air Speed](#air-speed)
+
+**Transmission Systems**
+- [Automatic Gearbox](#automatic-gearbox)
+- [Manual Gearbox](#manual-gearbox)
+- [Mode Shifters](#mode-shifter-adv-autodct) (DCT/CVT/Auto Manual)
+
+**Lighting & Electrical**
+- [Headlights](#headlights-offon) / [Fog Lights](#fog-lights)
+- [Turn Signals](#turn-signal-2-way) / [Hazards](#hazards-switch)
+- [Ignition](#ignition-onoff)
+
+## Advanced Topics
+- [Special Uses](#special-uses)
+- [Adding Brake Glow](#adding-brake-glow-to-automation-cars)
+- [Updates](#updates)
 
 Many other animations are possible and details can be found in the BeamNG.drive documentation </br>
 https://documentation.beamng.com/modding/vehicle/vehicle_system/electrics/  
@@ -544,9 +558,10 @@ https://github.com/user-attachments/assets/fe46213d-6d00-4713-a0a2-ca27ae250acb
 - There are other functions not added to this tool such as the isSportActive that have not been tested. Refer to the BeamNG documentation and try it out.
 
 ## Adding Brake Glow to Automation cars
-
 > [!IMPORTANT]
-> The steps were figured out by **furiousfox25** on the Automation Discord and updated by me (peskboyz)                                          
+> The steps were figured out by **furiousfox25** on the Automation Discord and updated by me (peskboyz)
+
+[![Link to YouTube video](/README%20Assets/BrakeGlowThumbnail.png)](https://youtu.be/baG5c45AdoE)
 
 You will need to edit the jbeam files for your export.
 
@@ -625,6 +640,10 @@ You will need to edit the jbeam files for your export.
 4. Finally, ensure all files are saved and reload the car in BeamNG
 
 ## Updates
+Version 0.8.8 - 21 September 2025
+- Added table of contents to README.md
+- Added new brake glow video to README.md
+
 Version 0.8.7 - 18 September 2025
 - Update to Brake Glow instruction in the Readme (Thanks to furiousfox25 from the Automation Discord)
 
