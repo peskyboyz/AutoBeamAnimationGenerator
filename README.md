@@ -564,10 +564,10 @@ You will need to edit the jbeam files for your export.
 
     > If you want to use carbon brakes, use this instead:
     > ```
-    >   "etk_brakedisc_carbon_ttsport_FR": {"simpleFunction":{"brakeGlow_FR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
-    >	"etk_brakedisc_carbon_ttsport_FL": {"simpleFunction":{"brakeGlow_FL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
-    >	"etk_brakedisc_carbon_ttsport_RR": {"simpleFunction":{"brakeGlow_RR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
-    >	"etk_brakedisc_carbon_ttsport_RL": {"simpleFunction":{"brakeGlow_RL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >"etk_brakedisc_carbon_ttsport_FR": {"simpleFunction":{"brakeGlow_FR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >"etk_brakedisc_carbon_ttsport_FL": {"simpleFunction":{"brakeGlow_FL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >"etk_brakedisc_carbon_ttsport_RR": {"simpleFunction":{"brakeGlow_RR":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
+    >"etk_brakedisc_carbon_ttsport_RL": {"simpleFunction":{"brakeGlow_RL":1}, "off":"etk_brakedisc_carbon_ttsport", "on":"etk_brakedisc_carbon_ttsport_glow", "materialEmissiveScaling":{"on_max":1.00}},
     > ```
     So it should now look like this:</br>
     <img src="/README%20Assets/glowMap.png" alt="Screenshot of solid disc brake in BeamNG" width="1915"> </br>
