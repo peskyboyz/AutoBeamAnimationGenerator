@@ -8,7 +8,7 @@ Note that the video is showing version 0.7.1 </br>
 ## Description
 This tool allows you to quickly generate the lines needed to animated basic props in cars exported from Automation to BeamNG.drive. 
 
-I also have a tutorial for adding brake glow to Automation cars.
+I also have a tutorial for adding brake glow to Automation cars [HERE](https://youtu.be/baG5c45AdoE).
 
 The tool can currently generate the lines needed for wide variety of animations
 
