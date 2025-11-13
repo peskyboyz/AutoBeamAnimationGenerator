@@ -22,7 +22,7 @@ public class UpdateChecker {
 
     private static void log(String message) {
         debugLog.append(message).append("\n");
-        System.out.println(message); // Still print to console if available
+        System.out.println(message);
     }
 
     public interface UpdateCheckCallback {
