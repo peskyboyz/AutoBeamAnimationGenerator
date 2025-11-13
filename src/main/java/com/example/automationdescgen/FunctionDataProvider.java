@@ -2,32 +2,67 @@ package com.example.automationdescgen;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import java.util.stream.Collectors;
 
 import java.util.List;
 
 public class FunctionDataProvider {
     public static final String ALL_CATEGORIES = "All";
+    private static final String LUA_PREFIX = "LUA";
+
     public static ObservableList<String> getCategories() {
+        return getCategories(true); // By default, include LUA categories
+    }
+
+    public static ObservableList<String> getCategories(boolean includeLUA) {
         ObservableList<Function> functions = getFunctions();
         List<String> categories = functions.stream()
                 .map(Function::getCategory)
                 .distinct()
-                .sorted()
+                .filter(category -> includeLUA || !category.startsWith(LUA_PREFIX))
+                .sorted((cat1, cat2) -> {
+                    // Check if categories are LUA categories
+                    boolean isLua1 = cat1.startsWith(LUA_PREFIX);
+                    boolean isLua2 = cat2.startsWith(LUA_PREFIX);
+
+                    // If one is LUA and the other isn't, LUA goes to the bottom
+                    if (isLua1 && !isLua2) {
+                        return 1; // cat1 (LUA) comes after cat2
+                    } else if (!isLua1 && isLua2) {
+                        return -1; // cat1 comes before cat2 (LUA)
+                    } else {
+                        // Both are LUA or both are non-LUA, sort alphabetically
+                        return cat1.compareTo(cat2);
+                    }
+                })
                 .collect(Collectors.toList());
         return FXCollections.observableArrayList(categories);
     }
 
     public static ObservableList<Function> getFunctionsByCategory(String category) {
+        return getFunctionsByCategory(category, true); // By default, include LUA functions
+    }
+
+    public static ObservableList<Function> getFunctionsByCategory(String category, boolean includeLUA) {
         ObservableList<Function> allFunctions = getFunctions();
         if (ALL_CATEGORIES.equals(category)) {
-            return allFunctions;
+            if (includeLUA) {
+                return allFunctions;
+            } else {
+                // Filter out LUA functions when showing "All"
+                List<Function> filtered = allFunctions.stream()
+                        .filter(function -> !function.getCategory().startsWith(LUA_PREFIX))
+                        .collect(Collectors.toList());
+                return FXCollections.observableArrayList(filtered);
+            }
         }
         List<Function> filteredFunctions = allFunctions.stream()
                 .filter(function -> category.equals(function.getCategory()))
                 .collect(Collectors.toList());
         return FXCollections.observableArrayList(filteredFunctions);
     }
+
     public static ObservableList<Function> getFunctions() {
         return FXCollections.observableArrayList(
                 /*
@@ -35,7 +70,7 @@ public class FunctionDataProvider {
                  Special value of 1 - Enable all options with link offset selected
                  Special value of 2 - Disable value spinners
                  Special value of 3 - Disable all options
-                 Special value of 4 - Disable value spinners and translations
+                 Special value of 4 - Disable value spinners including for rotation and translations
 
                  List of categories:
                  - Control Inputs
@@ -45,6 +80,10 @@ public class FunctionDataProvider {
                  - Gear Display
                  - Engine/Mechanical
                  - Special/Utility
+                 - LUA Gauges
+                 - LUA Gear Display
+                 - LUA Special
+                 - LUA Drivemodes
                  */
                 new Function(
                         "Steering (Wheel)",
@@ -181,7 +220,7 @@ public class FunctionDataProvider {
                         "Gauges"
                 ),
                 new Function(
-                        "Boost",
+                        "Boost (Turbo)",
                         "turboBoost",
                         110,
                         -15,
@@ -195,6 +234,28 @@ public class FunctionDataProvider {
                         List.of("psi", "bar", "kPa"),
                         """
                                 - Select the appropriate unit for boost (bar, psi, kPa)
+                                - The Min Value is set to the lowest value that can be shown on the gauge
+                                - The Max Value should be the highest value that can be shown on the gauge
+                                - The Offset should be the opposite value of the Min to compensate and move the starting point of the dial to 0""",
+                        0,
+                        1,
+                        "Gauges"
+                ),
+                new Function(
+                        "Boost (Supercharger)",
+                        "superchargerBoost",
+                        110,
+                        -15,
+                        30,
+                        15,
+                        -20,
+                        100,
+                        50,
+                        true,
+                        4,
+                        List.of("psi_", "bar_", "kPa_"),
+                        """
+                                - Select the appropriate unit for boost (bar, psi, kPa) By default the data is in pa Pa so it is being converted
                                 - The Min Value is set to the lowest value that can be shown on the gauge
                                 - The Max Value should be the highest value that can be shown on the gauge
                                 - The Offset should be the opposite value of the Min to compensate and move the starting point of the dial to 0""",
@@ -398,8 +459,8 @@ public class FunctionDataProvider {
                         """
                                 - Ignition state.
                                 - 0 = ignition off, 1 = accessory only, 2 = ignition on (engine running or not), 3 = starter running.
-                                - The Min Value, the Max Value, and the Offset are unlocked to allow specialty uses like 
-                                showing/hiding a screen when the car is at least in accessory (min = 0, max = 1, offset = 0), 
+                                - The Min Value, the Max Value, and the Offset are unlocked to allow specialty uses like
+                                showing/hiding a screen when the car is at least in accessory (min = 0, max = 1, offset = 0),
                                 or creating a push start button (min = 2, max = 3, offset = -2).
                                 - If you want a normal key with all the positions, leave the min, max, offset alone.
                                 """,
@@ -429,7 +490,7 @@ public class FunctionDataProvider {
                         "Control Inputs"
                 ),
                 new Function(
-                        "Automatic Shifter",
+                        "Automatic Shifter + Electric",
                         "gear_A",
                         30,
                         0,
@@ -444,6 +505,7 @@ public class FunctionDataProvider {
                         """
                                 - For creating Automatic gearbox shifters and dash gear indicators
                                 - Default position is park; Auto goes P, R, N, D, 2, 1
+                                - Will also work for electric cars which go P, R, N, D.
                                 - The Min will be 0 which is Park, and the max will be 1.
                                 - Enter the range of movement as the entire movement range
                                 """,
@@ -565,29 +627,33 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For creating sequential gearbox shifters. Will work for lever shifters. May work for paddle shifters if they don't turn with some messing around.
-                                - IMPORTANT NOTE: As of September 11th, 2025 this function will not work without a minor change to the jbeam.
-                                - You must add the following to the controller in the file \\car_file_name\\vehicles\\car_name\\car_id\\car_id_main.jbeam from your export, where the car name will be what you exported from Automation and the car_id will be a set of numbers and letters like 8d8a3.
-                                                                
-                                ["propAnimation/sequentialLever", {"name":"sequentialLever"}], (line to be added) 
+                                - For creating sequential gearbox shifters. Will work for lever shifters. Will also work for paddle shifters if they don't rotate with the wheel.
+                                - If you want to do a paddle shifter, restrict the min and max to a difference of 1. For the downshift paddle set min to 0 and max to 1. For an upshift paddle, set min to -1 and max to 0;
+                                - To select the rotation, remember that -1 is upshift, 1 is downshift. So pick the rotation direction that you want to downshift.
+                                - IMPORTANT NOTE: As of October 1st, 2025 this function will not work without a minor change to the jbeam.
+                                  - You must add the following to the controller in the file \\car_file_name\\vehicles\\car_name\\car_id\\car_id_main.jbeam from your export, where the car name will be what you exported from Automation and the car_id will be a set of numbers and letters like 8d8a3.
                                 
-                                Which goes here:
-                                		
-                                	"controller": [
-                                	        ["fileName"],
-                                	        ["vehicleController", {}],
-                                	        ["cefaero"],
-                                		["propAnimation/sequentialLever", {"name":"sequentialLever"}],
-                                	    ],
+                                      ["propAnimation/sequentialLever", {"name":"sequentialLever"}], (line to be added)
+                                
+                                  Which goes here:
+                                
+                                "controller": [
+                                      ["fileName"],
+                                      ["vehicleController", {}],
+                                      ["cefaero"],
+                                      ["propAnimation/sequentialLever", {"name":"sequentialLever"}],
+                                ],
+                                
                                 - You can also add this just below the controller to add sound effects when shifting.
                                 
-                                    "sequentialLever": {
-                                            "shiftSoundNode:":["int_shft"],
-                                            "shiftSoundEventSequentialGearUp": "event:>Vehicle>Interior>Gearshift>sequential_03_out",
-                                            "shiftSoundEventSequentialGearDown": "event:>Vehicle>Interior>Gearshift>sequential_03_in",
-                                            "shiftSoundVolumeSequentialGearUp": 0.5,
-                                            "shiftSoundVolumeSequentialGearDown": 0.5,
-                                            }
+                                "sequentialLever": {
+                                    "shiftSoundNode:":["int_shft"],
+                                    "shiftSoundEventSequentialGearUp": "event:>Vehicle>Interior>Gearshift>sequential_03_out",
+                                    "shiftSoundEventSequentialGearDown": "event:>Vehicle>Interior>Gearshift>sequential_03_in",
+                                    "shiftSoundVolumeSequentialGearUp": 0.5,
+                                    "shiftSoundVolumeSequentialGearDown": 0.5,
+                                },
+                                
                                 """,
                         0,
                         0,
@@ -819,50 +885,6 @@ public class FunctionDataProvider {
                         "Control Inputs"
                 ),
                 new Function(
-                        "Clock Hour",
-                        "clockh",
-                        10,
-                        0,
-                        360,
-                        -360,
-                        0,
-                        360,
-                        360,
-                        true,
-                        2,
-                        List.of("Unit"),
-                        """
-                                - Clock hour position
-                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car. 
-                                - Place the clock.lua from BeamNG into the folder \\car_file_name\\vehicles\\car_name\\lua
-                                """,
-                        0,
-                        2,
-                        "Special/Utility"
-                ),
-                new Function(
-                        "Clock Minute",
-                        "clockmin",
-                        360,
-                        0,
-                        360,
-                        -360,
-                        0,
-                        360,
-                        360,
-                        true,
-                        2,
-                        List.of("Unit"),
-                        """
-                                - Clock minute position
-                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car. 
-                                - Place the clock.lua from BeamNG into the folder \\car_file_name\\vehicles\\car_name\\lua
-                                """,
-                        0,
-                        2,
-                        "Special/Utility"
-                ),
-                new Function(
                         "Blank",
                         "dummy",
                         360,
@@ -884,7 +906,153 @@ public class FunctionDataProvider {
                         "Special/Utility"
                 ),
                 new Function(
-                        "Display Park (Auto)",
+                        "Odometer",
+                        "odo_digit_0",
+                        360,
+                        0,
+                        360,
+                        0,
+                        0,
+                        360,
+                        0,
+                        true,
+                        3,
+                        List.of("Unit"),
+                        """
+                                - Odometer function. Will need to generate the code for each digit wheel (0.1, 1, 10, 100, etc., kms/miles)
+                                - ~prop:1,odo_digit_0,0,1,0,0,0,0,0,360,0,1~ - 100m digit wheel
+                                  ~prop:2,odo_digit_1,0,1,0,0,0,0,0,360,0,1~ - 1km digit wheel
+                                  ~prop:3,odo_digit_2,0,1,0,0,0,0,0,360,0,1~ - 10km digit wheel
+                                  ~prop:4,odo_digit_3,0,1,0,0,0,0,0,360,0,1~ - 100km digit wheel
+                                  ~prop:5,odo_digit_4,0,1,0,0,0,0,0,360,0,1~ - 1000km digit wheel
+                                  ~prop:6,odo_digit_5,0,1,0,0,0,0,0,360,0,1~ - 10000km digit wheel
+                                  ~prop:7,odo_digit_6,0,1,0,0,0,0,0,360,0,1~ - 100000km digit wheel
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the odometer_trip.lua into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Special"
+                ),
+                new Function(
+                        "Trip",
+                        "trip_digit_0",
+                        360,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        true,
+                        3,
+                        List.of("Unit"),
+                        """
+                                - Odometer function. Will need to generate the code for each digit wheel (0.1, 1, 10, 100, etc., kms/miles)
+                                - ~prop:1,trip_digit_0,0,1,0,0,0,0,0,360,0,1~ - 100m digit wheel
+                                  ~prop:2,trip_digit_1,0,1,0,0,0,0,0,360,0,1~ - 1km digit wheel
+                                  ~prop:3,trip_digit_2,0,1,0,0,0,0,0,360,0,1~ - 10km digit wheel
+                                  ~prop:4,trip_digit_3,0,1,0,0,0,0,0,360,0,1~ - 100km digit wheel
+                                  ~prop:5,trip_digit_4,0,1,0,0,0,0,0,360,0,1~ - 1000km digit wheel
+                                  ~prop:6,trip_digit_5,0,1,0,0,0,0,0,360,0,1~ - 10000km digit wheel
+                                  ~prop:7,trip_digit_6,0,1,0,0,0,0,0,360,0,1~ - 100000km digit wheel
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the odometer_trip.lua into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Special"
+                ),
+                new Function(
+                        "Clock Hour",
+                        "clockh",
+                        10,
+                        0,
+                        360,
+                        -360,
+                        0,
+                        360,
+                        360,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Clock hour position
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the clock.lua into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Clock Minute",
+                        "clockmin",
+                        360,
+                        0,
+                        360,
+                        -360,
+                        0,
+                        360,
+                        360,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Clock minute position
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the clock.lua into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Clock Hour - Electric",
+                        "clockh_elec",
+                        10,
+                        0,
+                        360,
+                        -360,
+                        0,
+                        360,
+                        360,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Clock hour position that only move when the ignition is on. When off it doesn't move.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the clock.lua into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Clock Minute - Electric",
+                        "clockmin_elec",
+                        360,
+                        0,
+                        360,
+                        -360,
+                        0,
+                        360,
+                        360,
+                        true,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Clock minute position that only move when the ignition is on. When off it doesn't move.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the clock.lua into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Display Park",
                         "disp_P",
                         10,
                         0,
@@ -897,14 +1065,16 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For displaying park gear indicator with an automatic transmission
+                                - For displaying park gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
-                        "Display Reverse (Manual)",
+                        "Display Reverse",
                         "disp_R",
                         10,
                         0,
@@ -917,34 +1087,16 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For displaying reverse gear indicator with a manual transmission
+                                - For displaying reverse gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
-                        "Display Reverse (Auto)",
-                        "disp_Ra",
-                        10,
-                        0,
-                        1,
-                        0,
-                        -1,
-                        1,
-                        0,
-                        false,
-                        2,
-                        List.of("Unit"),
-                        """
-                                - For displaying reverse gear indicator with an automatic transmission
-                                """,
-                        0,
-                        2,
-                        "Gear Display"
-                ),
-                new Function(
-                        "Display Neutral (Manual)",
+                        "Display Neutral",
                         "disp_N",
                         10,
                         0,
@@ -957,34 +1109,16 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For displaying neutral gear indicator with a manual transmission
+                                - For displaying neutral gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
-                        "Display Neutral (Auto)",
-                        "disp_Na",
-                        10,
-                        0,
-                        1,
-                        0,
-                        -1,
-                        1,
-                        0,
-                        false,
-                        2,
-                        List.of("Unit"),
-                        """
-                                - For displaying neutral gear indicator with a automatic transmission
-                                """,
-                        0,
-                        2,
-                        "Gear Display"
-                ),
-                new Function(
-                        "Display Drive (Auto)",
+                        "Display Drive",
                         "disp_D",
                         10,
                         0,
@@ -997,14 +1131,16 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For displaying drive gear indicator with a automatic transmission
+                                - For displaying drive gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
-                        "Display Sport (Auto)",
+                        "Display Sport",
                         "disp_S",
                         10,
                         0,
@@ -1017,11 +1153,13 @@ public class FunctionDataProvider {
                         2,
                         List.of("Unit"),
                         """
-                                - For displaying Sport gear indicator with a automatic transmission
+                                - For displaying Sport gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display First",
@@ -1038,10 +1176,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying first gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Second",
@@ -1058,10 +1198,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying second gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Third",
@@ -1078,10 +1220,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying third gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Fourth",
@@ -1098,10 +1242,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying fourth gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Fifth",
@@ -1118,10 +1264,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying fifth gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Sixth",
@@ -1138,10 +1286,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying sixth gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Seventh",
@@ -1158,10 +1308,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying seventh gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Eighth",
@@ -1178,10 +1330,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying eighth gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Ninth",
@@ -1198,10 +1352,12 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying ninth gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
                 ),
                 new Function(
                         "Display Tenth",
@@ -1218,10 +1374,424 @@ public class FunctionDataProvider {
                         List.of("Unit"),
                         """
                                 - For displaying tenth gear indicator
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the appropriate gear display lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
                                 """,
                         0,
                         2,
-                        "Gear Display"
+                        "LUA Gear Display"
+                ),
+                new Function(
+                        "Boost Turbo Asymmetric",
+                        "turboboost_asym",
+                        110,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        true,
+                        4,
+                        List.of("Unit"),
+                        """
+                                - This is for boost gauges that are not linear scales from min to max. Set the values in the lua file.
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the turboboost_asymmetric.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Boost Supercharger Asymmetric",
+                        "superchargerboost_asym",
+                        110,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        true,
+                        4,
+                        List.of("Unit"),
+                        """
+                                - This is for boost gauges that are not linear scales from min to max. Set the values in the lua file.
+                                - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the superchargerboost_asymmetric.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Constant Spin",
+                        "constant_spin",
+                        360,
+                        0,
+                        360,
+                        0,
+                        0,
+                        360,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Constant speed spin function based on speed set in lua file.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the constant_spin.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        4,
+                        "LUA Special"
+                ),
+                new Function(
+                        "Drive mode Dial",
+                        "drivemode_dial",
+                        180,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Drive mode constant travel. Can be used for dials. By default shows comfort as 0, sport as 0.5 and off as 1. Other positions can be modified in the lua file.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the drivemode_indicator.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Drive modes"
+                ),
+                new Function(
+                        "Drive mode Comfort",
+                        "drivemode_comfort",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Comfort drive mode indicator that is active when the comfort mode is active.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the drivemode_indicator.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Drive modes"
+                ),
+                new Function(
+                        "Drive mode Sport",
+                        "drivemode_sport",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Sport drive mode indicator that is active when the sport mode is active.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the drivemode_indicator.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Drive modes"
+                ),
+                new Function(
+                        "Drive mode Offroad",
+                        "drivemode_offroad",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Offroad drive mode indicator that is active when the offroad mode is active.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the drivemode_indicator.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Drive modes"
+                ),
+                new Function(
+                        "Drive mode Off",
+                        "drivemode_off",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Off drive mode indicator that is active when the off mode is active.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the drivemode_indicator.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Drive modes"
+                ),
+                new Function(
+                        "Voltage Gauge",
+                        "voltage_gauge",
+                        90,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Voltage gauge that is normalized 0-1. The value is not normally in BeamNG so is being
+                                simply modeled in the lua file. Battery charge and load (ignition/headlights) is modeled
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the electricity.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Ammeter",
+                        "ammeter",
+                        90,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Ammeter (ampere meter) that is normalized 0-1. The value is not normally in BeamNG so is being
+                                simply modeled in the lua file. Battery charge and load (ignition/headlights) is modeled
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the electricity.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Oil Pressure",
+                        "oil_pressure",
+                        90,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Oil pressure that is normalized 0-1. The value is not normally in BeamNG so is being
+                                simply modeled in the lua file. Idle, max, and pressure per 1000 rpm can be set in the lua.
+                                - Is affected by temperature and engine load.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the oilpressure.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Oil Pressure (PSI)",
+                        "oil_pressure_psi",
+                        90,
+                        0,
+                        80,
+                        0,
+                        0,
+                        150,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Oil pressure that shows the PSI. The value is not normally in BeamNG so is being
+                                simply modeled in the lua file. Idle, max, and pressure per 1000 rpm can be set in the lua.
+                                - Is affected by temperature and engine load.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the oilpressure.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        0,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Shift Lights",
+                        "shift_led_1",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Single shift light with flash functionality if enabled in the lua. Can specify number of lights. If more than one, use like this:
+                                  ~prop:1,shift_led_1,0.0,0.0,0.0,0.0,0.0,0.008,0,1,0,1~
+                                  ~prop:2,shift_led_2,0.0,0.0,0.0,0.0,0.0,0.008,0,1,0,1~
+                                  ~prop:3,shift_led_3,0.0,0.0,0.0,0.0,0.0,0.008,0,1,0,1~
+                                  ~prop:4,shift_led_4,0.0,0.0,0.0,0.0,0.0,0.008,0,1,0,1~
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the shiftLights_auto.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Special"
+                ),
+                new Function(
+                        "Spoiler Active",
+                        "spoiler_active",
+                        30,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        false,
+                        2,
+                        List.of("Unit"),
+                        """
+                                - Spoiler that can have set positions per drivemode and will move when a set speed is reached or when the brakes are pressed. All settings can be changed in the lua file.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the spoiler_auto.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        2,
+                        "LUA Special"
+                ),
+                new Function(
+                        "Torque Gauge (0-1)",
+                        "torque_gauge",
+                        270,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        1,
+                        true,
+                        3,
+                        List.of("Unit"),
+                        """
+                                - Torque output normalized to 0-1. For torque gauges. Values must be specified in the lua file. By default uses flywheel torque.
+                                - It is recommended that the Min Value is left at 0. If the gauge starts higher than 0, set it here.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the torque_power.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        1,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Torque Gauge (Nm)",
+                        "torque_nm",
+                        270,
+                        0,
+                        300,
+                        0,
+                        -200,
+                        10000,
+                        200,
+                        true,
+                        3,
+                        List.of("Nm", "lb-ft"),
+                        """
+                                - Torque output in Nm. For torque gauges. Values must be specified in the lua file. By default uses flywheel torque.
+                                - It is recommended that the Min Value is left at 0. If the gauge starts higher than 0, set it here.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the torque_power.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        1,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Power Gauge (0-1)",
+                        "power_gauge_hp",
+                        270,
+                        0,
+                        300,
+                        0,
+                        0,
+                        10000,
+                        0,
+                        true,
+                        3,
+                        List.of("Unit"),
+                        """
+                                - Power output normalized to 0-1. For power gauges. Values must be specified in the lua file. By default uses flywheel torque.
+                                - It is recommended that the Min Value is left at 0. If the gauge starts higher than 0, set it here.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the torque_power.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        1,
+                        "LUA Gauges"
+                ),
+                new Function(
+                        "Power Gauge (Hp)",
+                        "power_hp",
+                        270,
+                        0,
+                        300,
+                        0,
+                        0,
+                        10000,
+                        0,
+                        true,
+                        3,
+                        List.of("HP", "kW", "PS"),
+                        """
+                                - Power output in HP. For torque gauges. Values must be specified in the lua file. By default uses flywheel torque.
+                                - It is recommended that the Min Value is left at 0. If the gauge starts higher than 0, set it here.
+                                - IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+                                - Place the torque_power.lua file into the folder \\car_file_name\\vehicles\\car_name\\lua
+                                """,
+                        0,
+                        1,
+                        "LUA Gauges"
                 )
         );
     }

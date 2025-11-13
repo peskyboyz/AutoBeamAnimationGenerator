@@ -32,20 +32,39 @@ The tool can currently generate the lines needed for wide variety of animations
 - [RPM](#rpm) / [Speed](#speed)
 - [Water Temp](#water-temp) / [Oil Temp](#oil-temp)
 - [Fuel](#fuel) / [Boost](#boost)
-- [Altitude](#altitude) / [Air Speed](#air-speed)
+- [Engine Load (Torque)](#engine-load-torque)
+- [Altitude](#altitude) / [Air Speed](#air-speed) / [Air Speed + Wind](#air-speed--wind)
+
+**Engine & Mechanical**
+- [Electric Radiator Fan](#electric-radiator-fan)
+- [RPM Spin (Pulleys)](#rpm-spin-pulleys)
 
 **Transmission Systems**
-- [Automatic Gearbox](#automatic-gearbox)
-- [Manual Gearbox](#manual-gearbox)
-- [Mode Shifters](#mode-shifter-adv-autodct) (DCT/CVT/Auto Manual)
+- [Automatic Transmission](#automatic-transmission)
+- [Manual Transmission](#manual-transmission)
+- [Adv Auto/DCT](#adv-autodct)
+- [Auto Manual Transmission](#auto-manual-transmission)
+- [CVT](#cvt)
+- [Sequential Shifter](#sequential-shifter)
 
 **Lighting & Electrical**
-- [Headlights](#headlights-offon) / [Fog Lights](#fog-lights)
-- [Turn Signals](#turn-signal-2-way) / [Hazards](#hazards-switch)
-- [Ignition](#ignition-onoff)
+- [Headlights (off/on)](#headlights-offon) / [Headlights (3 way)](#headlights-3-way)
+- [Fog Lights](#fog-lights)
+- [Turn Signals (2 way)](#turn-signal-2-way) / [Hazards](#hazards-switch)
+- [Ignition (On/Off)](#ignition-onoff) / [Ignition (On/Off+Starter)](#ignition-onoffstarter)
+
+**Time & Special Functions**
+- [Clock Hour](#clock-hour) / [Clock Minute](#clock-minute)
+- [Steering (Percentage)](#steering-percentage)
+- [Blank / Dummy](#blank--dummy)
 
 ## Advanced Topics
 - [Special Uses](#special-uses)
+    - [Shift Lights](#shift-lights)
+    - [Active Aero](#active-aero)
+    - [Throttle Body Butterfly Valve](#throttle-body-butterfly-valve)
+    - [Cooling Vents](#cooling-vents-that-open-when-the-car-is-overheating)
+    - [Other Creative Uses](#others-are-possible---think-creatively)
 - [Adding Brake Glow](#adding-brake-glow-to-automation-cars)
 - [Updates](#updates)
 
@@ -188,12 +207,11 @@ All following descriptions that are based on a gauge cluster will include an exa
 <img src="/README%20Assets/Test%20Gauge%20Cluster.png" alt="Screenshot of gauge cluster in Automation">
 #### Steering (Wheel)
 
-- Enter your prop ID for the moving part of the steering wheel. (With several steering wheels in which the base and 
-the wheel are one fixture, you will have to duplicate the fixture, set the wheel of one to be invisible via the material,
-and set the other ones base to be invisible. This second one will be the moving fixture while the first one will remain still)
-- Enter a range of rotation; It is recommended to leave this set to 900° which means 450° each way. Changing the value here will change the ratio between the physical prop and BeamNG's steering wheel, providing the appearance of the correct rotation for the steering wheel.
-- The default steering rotation in BeamNG is 900°. If you desire this can be changed by selecting the "Advanced Tuning Parameters" in BeamNG's "Vehicle Config" and changing it under "Tuning". If you do change the steering angle in BeamNG, ensure that the step value for the rotation is set to 1
-- The direction of rotation, the Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- Enter your prop ID for the moving part of the steering wheel. (With several steering wheels in which the base and the wheel are one fixture, you will have to duplicate the fixture, set the wheel of one to be invisible via the material, and set the other ones base to be invisible. This second one will be the moving fixture while the first one will remain still)
+- IMPORTANT: The steering rotation is always clockwise if the green arrow is pointing from the steering column to the face of the driver. In other words when the steering function is positive you are turning right. The option has been left enabled to allow other uses.
+- Enter a range of rotation; It is recommended to leave this set to 900° which means 450° each way. Changing the value here will change the ratio between the physical prop and BeamNG's steering wheel, providing the appearance of the correct rotation for the steering wheel.)
+- The default steering rotation in BeamNG is 900°. If you desire this can be changed by selecting the "Advanced Tuning Parameters" in BeamNG's "Vehicle Config" and changing it under "Tuning".
+- The Min Value, the Max Value, and the Offset are locked as a change will have no effect or result in errors for the animation.
 - Select Calculate.
 - Example: Using the default value of 900° we get 1.5 rotations of the wheel each way.
 </br> `~prop:98,steering,0,1.0,0,0,0,0,-900.0,900.0,0.0,1~`
@@ -284,8 +302,7 @@ and the Offset at 1 to compensate for the -1 for the startMin
 - Enter the prop id
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - Enter the direction and range of rotation.
-- NOTE: Doesn't seem to work as described in documentation. Seems to show load percentage,based on current torque compared 
-to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
+- NOTE: Doesn't seem to work as described in documentation. May lead to some odd functionality.
 </br> `~prop:1,engineLoad,0.0,270.0,0.0,0,0,0,0.0,1.0,0.0,1~`
 
 #### Electric Radiator Fan
@@ -340,7 +357,25 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
   </br> `~prop:1,throttle,0.0,-30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
 
-#### Automatic Gearbox
+#### Ignition (On/Off+Starter)
+
+- Ignition state.
+- 0 = ignition off, 1 = accessory only, 2 = ignition on (engine running or not), 3 = starter running.
+- The Min Value, the Max Value, and the Offset are unlocked to allow specialty uses like
+  showing/hiding a screen when the car is at least in accessory (min = 0, max = 1, offset = 0),
+  or creating a push start button (min = 2, max = 3, offset = -2).
+- If you want a normal key with all the positions, leave the min, max, and offset alone.
+- `~prop:1,ignitionLevel,0,-10.0,0,0,0,0,0,3.00,0,1~`
+
+#### Ignition (On/Off)
+
+- Ignition state.
+- 0 = ignition off, 1 = ignition on (engine running or not)
+- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
+- `~prop:1,ignition,0,-30.0,0,0,0,0,0,1.00,0,1~`
+
+
+#### Automatic Transmission
 
 - For creating Automatic gearbox shifters and dash gear indicators
 - Default position is park; Auto goes P, R, N, D, 2, 1
@@ -350,7 +385,7 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - `~prop:135,gear_A,0,-25,0,0,0,0,0,1,0,1~` For column shifter
 - `~prop:143,gear_A,0,0,0,-0.9,0,0,0,1,0,1~` For dash indicator
 
-#### Manual Gearbox
+#### Manual Transmission
 
 - For creating manual gearbox shifters ie: H-pattern
 - IMPORTANT: READ THROUGH THE README OR THE ENTIRE EXPLANATION FOR THIS ANIMATION BY CLICKING THE HELP BUTTON. REFERENCE SCREENSHOT AVAILABLE IN README.
@@ -372,26 +407,56 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - IMPORTANT - For each gear that has a difference of 2 between the [Min] and [Max] (everyone but reverse and final gear) ensure that 360° is entered for range of rotation because the gear must move 180° to its active position then another 180° to be hidden again. Or for column move a set amount into position and the same amount to be hidden again.
   </br> <img src="/README%20Assets/Manual%20shifter%20example.png" alt="Screenshot of an example manual shifter setup in Automation" width="500px">
 
-#### Mode Shifter (Adv Auto/DCT)
+#### Adv Auto/DCT
 
 - For creating Advanced Automatic or DCT gearbox shifters and dash gear indicators when the gearbox can be manually shifted. The movement on moves through the automatic portion of the gearbox, not the manual gears.
 - Default position is park; Auto goes P, R, N, D, S
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - `~prop:1,gearModeIndex,0.0,45.0,0.0,0,0,0,-1.0,5.0,-1.0,1~`
 
-#### Mode Shifter (Auto Manual)
+#### Auto Manual Transmission
 
 - For creating Auto Manual gearbox shifters and dash gear indicators
 - Default position is reverse; Auto portion goes R, N, D, S
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - `~prop:1,gearModeIndex,0,-60.0,0,0,0,0,-1.00,4.00,-1.00,1~`
 
-#### Mode Shifter (CVT)
+#### CVT
 
 - For creating CVT shifters and dash gear indicators
 - Default position is park; Pattern goes P, R, N, D
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - `~prop:1,gearModeIndex,0,-60.0,0,0,0,0,-1.00,4.00,-1.00,1~`
+
+#### Sequential Shifter
+
+- For creating sequential gearbox shifters. Will work for lever shifters. Will also work for paddle shifters if they don't rotate with the wheel.
+- If you want to do a paddle shifter, restrict the min and max to a difference of 1. For the downshift paddle set min to 0 and max to 1. For an upshift paddle, set min to -1 and max to 0;
+- To select the rotation, remember that -1 is upshift, 1 is downshift. So pick the rotation direction that you want to downshift.
+- IMPORTANT NOTE: As of October 1st, 2025 this function will not work without a minor change to the jbeam.
+  - You must add the following to the controller in the file \car_file_name\vehicles\car_name\car_id\car_id_main.jbeam from your export, where the car name will be what you exported from Automation and the car_id will be a set of numbers and letters like 8d8a3.
+
+      `["propAnimation/sequentialLever", {"name":"sequentialLever"}], (line to be added)`
+
+      Which goes here:
+```
+"controller": [
+      ["fileName"],
+      ["vehicleController", {}],
+      ["cefaero"],
+  ["propAnimation/sequentialLever", {"name":"sequentialLever"}],
+],
+```
+- You can also add this just below the controller to add sound effects when shifting.
+```
+"sequentialLever": {
+    "shiftSoundNode:":["int_shft"],
+    "shiftSoundEventSequentialGearUp": "event:>Vehicle>Interior>Gearshift>sequential_03_out",
+    "shiftSoundEventSequentialGearDown": "event:>Vehicle>Interior>Gearshift>sequential_03_in",
+    "shiftSoundVolumeSequentialGearUp": 0.5,
+    "shiftSoundVolumeSequentialGearDown": 0.5,
+},
+```
 
 #### Turn Signal (2 way)
 
@@ -407,13 +472,13 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 
 - Indicates the hazards have been turned on
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
-- `~prop:1,hazard_enabled,0.0,0.0,0.0,0,0,0.00500,0.0,1.0,0.0,1~`
+- `~prop:1,hazard_enabled,0,0,0,0,0,0.00500,0.0,1.0,0.0,1~`
 
 #### Hazards Flashing
 
 - Flashing function when hazards are on.
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
-- `~prop:1,hazard,0.0,0.0,0.0,0,0,0.00500,0.0,1.0,0.0,1~`
+- `~prop:1,hazard,0,0,0,0,0,0.00500,0,1.0,0.0,1~`
 
 #### Headlights (off/on)
 
@@ -429,21 +494,21 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - Useful for light switches that have 3 positions (off, low, high).
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
 - Use a range that will encompass the whole range of motion from off to highbeams.
-- `~prop:1,lights,0.0,15.0,0.0,0,0,0,0.0,2.0,0.0,1~`
+- `~prop:1,lights,0,15,0,0,0,0,0.0,2.0,0.0,1~`
 
 #### Fog Lights
 
 - Indicates the fog lights are turned on.
 - Can be used for special function since fog light cannot currently export
 - The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
-- `~prop:1,fog,0.0,30.0,0.0,0,0,0,0.0,1.0,0.0,1~`
+- `~prop:1,fog,0,30,0,0,0,0,0,1.0,0.0,1~`
 
 #### Altitude
 
 - Altitude of the vehicle in meters.
 - Set [Min] to the lowest value on the gauge; Set [Max] to the highest value on the gauge; Set [Offset] to the opposite value of the [Min] to bring the start to 0;
 - Set the needle to the lowest position on the gauge.
-- `~prop:1,altitude,0.0,0.36,0.0,0,0,0,0.0,1000.0,0.0,1~`
+- `~prop:1,altitude,0,0.36,0,0,0,0,0,1000.0,0,1~`
 
 #### Air Speed
 
@@ -451,7 +516,7 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - It is recommended that the Min Value is left at 0. If the speedometer starts higher than 0, set it here.
 - The Max Value should be the highest speed that is available at the end of the speedometer not the max speed of the car.
 - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.
-- `~prop:1,airspeed,0.0,4.86,0.0,0,0,0,0.0,55.556,0.0,1~`
+- `~prop:1,airspeed,0,4.86,0,0,0,0,0,55.556,0,1~`
 
 #### Air Speed + Wind
 
@@ -459,31 +524,27 @@ to the maximum amount of torque the engine can produce AT THE CURRENT RPM.
 - It is recommended that the Min Value is left at 0. If the speedometer starts higher than 0, set it here.
 - The Max Value should be the highest speed that is available at the end of the speedometer not the max speed of the car.
 - The Offset should be left alone unless the Min has been increased from 0. If the Min has been changed, set the opposite value here (Ex: Min set to 20; offset should be set to -20.
-- `~prop:1,airflowspeed,0.0,4.86,0.0,0,0,0,0.0,55.556,0.0,1~`
+- `~prop:1,airflowspeed,0,4.86,0,0,0,0,0,55.556,0,1~`
 
 #### Steering (Percentage)
 
 - Steering input percentage.
 - Can be used for steering or special functions like flaps that actuate when you turn.
 - For example, the below string move a prop 30° starting at 20% right and ending at 30% right.
-- `~prop:1,steering_input,0.0,300.0,0.0,0,0,0,0.2,0.3,-0.2,1~`
+- `~prop:1,steering_input,0,300,0,0,0,0,0.2,0.3,-0.2,1~`
 
-#### Ignition (On/Off+Starter)
+#### Clock Hour
 
-- Ignition state.
-- 0 = ignition off, 1 = accessory only, 2 = ignition on (engine running or not), 3 = starter running. 
-- The Min Value, the Max Value, and the Offset are unlocked to allow specialty uses like
-  showing/hiding a screen when the car is at least in accessory (min = 0, max = 1, offset = 0),
-  or creating a push start button (min = 2, max = 3, offset = -2).
-- If you want a normal key with all the positions, leave the min, max, and offset alone.
-- `~prop:1,ignitionLevel,0,-10.0,0,0,0,0,0,3.00,0,1~`
+- Clock hour position
+- IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+- Place the clock.lua from BeamNG into the folder \car_file_name\vehicles\car_name\lua
 
-#### Ignition (On/Off)
+#### Clock Minute
 
-- Ignition state.
-- 0 = ignition off, 1 = ignition on (engine running or not)
-- The Min Value, the Max Value, and the Offset are locked as a change will result in errors for the animation.
-- `~prop:1,ignition,0,-30.0,0,0,0,0,0,1.00,0,1~`
+- Clock minute position
+- IMPORTANT NOTE: This function relies on you coping a lua file to your exported car.
+- Place the clock.lua from BeamNG into the folder \car_file_name\vehicles\car_name\lua
+
 
 #### Blank / Dummy
 
@@ -640,6 +701,15 @@ You will need to edit the jbeam files for your export.
 4. Finally, ensure all files are saved and reload the car in BeamNG
 
 ## Updates
+Version 0.9.0 - 12 November 2025
+- Added first version of the LUA files for additional functionality in Beam
+- Added the new electrics to the FunctionDataProvider
+- Added dark mode with persistent state stored in the documents folder
+- Added font scaling with persistent state stored in the documents folder
+- Updates to all three views with new font and dark mode buttons
+- Added checkbox to show Advanced/Lua functions. Confirmation is stored in persistent state in the documents folder
+- Created new stylesheet.css
+
 Version 0.8.8 - 21 September 2025
 - Added table of contents to README.md
 - Added new brake glow video to README.md

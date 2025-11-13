@@ -3,26 +3,24 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="AddNewAnchorPane" maxHeight="770.0" maxWidth="1000.0" minWidth="740.0" prefHeight="625.0" prefWidth="740.0" style="-fx-font-family: Segoe UI, Arial" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.automationdescgen.AddNewController">
+<AnchorPane fx:id="AddNewAnchorPane" minWidth="800.0" prefHeight="625.0" prefWidth="800.0" style="-fx-font-family: Segoe UI, Arial;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.automationdescgen.AddNewController">
     <VBox prefHeight="560.0" prefWidth="1003.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <HBox alignment="CENTER">
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="376.0"
-                   text="AutoBeam Animation Generator" underline="true" HBox.hgrow="ALWAYS"
-                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'System Bold', 'Segoe UI', Arial;">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="376.0" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'System Bold', 'Segoe UI', Arial;" text="AutoBeam Animation Generator" underline="true" HBox.hgrow="ALWAYS">
                 <padding>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </padding>
             </Label>
         </HBox>
-        <HBox alignment="TOP_CENTER" prefHeight="46.0" prefWidth="600.0" spacing="15.0">
+        <HBox alignment="CENTER" prefHeight="46.0" prefWidth="600.0" spacing="15.0">
             <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
             </padding>
-         <ComboBox fx:id="categoryComboBox" prefHeight="25.0" prefWidth="99.0" />
-            <ComboBox fx:id="functionComboBox" prefHeight="25.0" prefWidth="224.0" promptText="Select a function" />
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <CheckBox fx:id="advancedFunctionCheckBox" text="Show Advanced/LUA" />
+            <ComboBox fx:id="categoryComboBox" prefHeight="25.0" prefWidth="99.0" visibleRowCount="15"/>
+            <ComboBox fx:id="functionComboBox" prefHeight="25.0" prefWidth="224.0" promptText="Select a function" visibleRowCount="15"/>
+            <Separator orientation="VERTICAL" />
             <Label text="Prop ID">
                 <padding>
                     <Insets top="5.0" />
@@ -30,30 +28,42 @@
             </Label>
             <TextField fx:id="propTextField" prefWidth="100.0" text="1" />
         </HBox>
-
-        <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0" spacing="15.0">
-            <Label text="Unit" />
-            <ChoiceBox fx:id="unitChoiceBox" prefWidth="75.0" />
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Label text="Min Value" />
-            <Spinner fx:id="minSpinner" prefWidth="75.0" />
-            <Label text="Max Value" />
-            <Spinner fx:id="maxSpinner" prefWidth="75.0" />
-            <CheckBox fx:id="equalOppositeCheckBox" text="Link Offset" />
-            <Label text="Offset" />
-            <Spinner fx:id="offsetSpinner" prefWidth="75.0" />
-        </HBox>
-        <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="50.0" prefWidth="600.0" spacing="15.0">
+        <Separator prefWidth="200.0" />
+        <FlowPane alignment="CENTER" hgap="15.0" minHeight="-Infinity" vgap="10.0">
             <VBox.margin>
-                <Insets />
+                <Insets top="10.0" bottom="10.0" />
             </VBox.margin>
-            <CheckBox fx:id="rotationXCheckBox" mnemonicParsing="false" text="Rotation X (Red)" />
-            <CheckBox fx:id="rotationYCheckBox" mnemonicParsing="false" text="Rotation Y (Green)" />
-            <CheckBox fx:id="rotationZCheckBox" mnemonicParsing="false" text="Rotation Z (Blue)" />
-            <CheckBox fx:id="transXCheckBox" mnemonicParsing="false" text="Trans X (Red)" />
-            <CheckBox fx:id="transYCheckBox" mnemonicParsing="false" text="Trans Y (Blue)" />
-            <CheckBox fx:id="transZCheckBox" mnemonicParsing="false" text="Trans Z (Green)" />
-        </HBox>
+            <Label text="Unit" />
+            <ChoiceBox fx:id="unitChoiceBox" prefWidth="90.0" />
+            <Separator orientation="VERTICAL" />
+            <Label text="Min Value" />
+            <Spinner fx:id="minSpinner" prefWidth="100.0" />
+            <HBox alignment="CENTER" spacing="15.0">
+                <Label text="Max Value" />
+                <Spinner fx:id="maxSpinner" prefWidth="100.0" />
+            </HBox>
+            <HBox alignment="CENTER" spacing="15.0">
+                <CheckBox fx:id="equalOppositeCheckBox" text="Link Offset" />
+                <Label text="Offset" />
+                <Spinner fx:id="offsetSpinner" prefWidth="100.0" />
+            </HBox>
+        </FlowPane>
+        <Separator prefWidth="200.0" />
+        <FlowPane alignment="CENTER" hgap="15.0" minHeight="-Infinity" vgap="10.0">
+            <VBox.margin>
+                <Insets top="10.0" bottom="10.0" />
+            </VBox.margin>
+            <HBox spacing="15.0">
+                <CheckBox fx:id="rotationXCheckBox" mnemonicParsing="false" text="Rotation X (Red)" />
+                <CheckBox fx:id="rotationYCheckBox" mnemonicParsing="false" text="Rotation Y (Green)" />
+                <CheckBox fx:id="rotationZCheckBox" mnemonicParsing="false" text="Rotation Z (Blue)" />
+            </HBox>
+            <HBox spacing="15.0">
+                <CheckBox fx:id="transXCheckBox" mnemonicParsing="false" text="Trans X (Red)" />
+                <CheckBox fx:id="transYCheckBox" mnemonicParsing="false" text="Trans Y (Blue)" />
+                <CheckBox fx:id="transZCheckBox" mnemonicParsing="false" text="Trans Z (Green)" />
+            </HBox>
+        </FlowPane>
         <Separator fx:id="rotationXSeparator" prefWidth="200.0" />
         <HBox fx:id="rotationXHbox" minHeight="-Infinity" prefHeight="45.0">
             <Label minWidth="95.0" text="Rotation X" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
@@ -68,7 +78,7 @@
                 <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
                     <RadioButton fx:id="counterClockwiseRadioX" mnemonicParsing="false" text="Counter Clockwise" />
                     <RadioButton fx:id="clockwiseRadioX" mnemonicParsing="false" text="Clockwise" />
-                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                    <Separator orientation="VERTICAL" />
                     <Label text="Range of Rotation (Degrees)" />
                     <Spinner fx:id="rotationSpinnerX" editable="true" prefWidth="100.0" />
                 </HBox>
@@ -85,7 +95,7 @@
                 <HBox alignment="CENTER" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
                     <RadioButton fx:id="counterClockwiseRadioY" mnemonicParsing="false" text="Counter Clockwise" />
                     <RadioButton fx:id="clockwiseRadioY" mnemonicParsing="false" text="Clockwise" />
-                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                    <Separator orientation="VERTICAL" />
                     <Label text="Range of Rotation (Degrees)" />
                     <Spinner fx:id="rotationSpinnerY" editable="true" prefWidth="100.0" />
                 </HBox>
@@ -102,7 +112,7 @@
                 <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
                     <RadioButton fx:id="counterClockwiseRadioZ" mnemonicParsing="false" text="Counter Clockwise" />
                     <RadioButton fx:id="clockwiseRadioZ" mnemonicParsing="false" text="Clockwise" />
-                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                    <Separator orientation="VERTICAL" />
                     <Label text="Range of Rotation (Degrees)" />
                     <Spinner fx:id="rotationSpinnerZ" editable="true" prefWidth="100.0" />
                 </HBox>
@@ -119,7 +129,7 @@
                 <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
                     <RadioButton fx:id="negativeRadioX" mnemonicParsing="false" text="Negative" />
                     <RadioButton fx:id="positiveRadioX" mnemonicParsing="false" text="Positive" />
-                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                    <Separator orientation="VERTICAL" />
                     <Label text="Distance (cm)" />
                     <Spinner fx:id="distanceSpinnerX" editable="true" prefWidth="100.0" />
                     <Label text="Scaling" />
@@ -138,7 +148,7 @@
                 <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
                     <RadioButton fx:id="negativeRadioY" mnemonicParsing="false" text="Negative" />
                     <RadioButton fx:id="positiveRadioY" mnemonicParsing="false" text="Positive" />
-                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                    <Separator orientation="VERTICAL" />
                     <Label text="Distance (cm)" />
                     <Spinner fx:id="distanceSpinnerY" editable="true" prefWidth="100.0" />
                     <Label text="Scaling" />
@@ -157,7 +167,7 @@
                 <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="ALWAYS">
                     <RadioButton fx:id="negativeRadioZ" mnemonicParsing="false" text="Negative" />
                     <RadioButton fx:id="positiveRadioZ" mnemonicParsing="false" text="Positive" />
-                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                    <Separator orientation="VERTICAL" />
                     <Label text="Distance (cm)" />
                     <Spinner fx:id="distanceSpinnerZ" editable="true" prefWidth="100.0" />
                     <Label text="Scaling" />
@@ -170,10 +180,11 @@
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
-            <Button fx:id="calculateButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#calculateButtonClick" prefWidth="100.0" text="Calculate" />
+            <Button fx:id="calculateButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#calculateButtonClick" text="Calculate" />
             <Button fx:id="helpButton" alignment="CENTER" contentDisplay="CENTER" layoutX="260.0" layoutY="32.0" mnemonicParsing="false" onAction="#loadHelpFile" prefWidth="100.0" text="Help" />
             <Button fx:id="explanationButton" mnemonicParsing="false" onAction="#explanationButtonClick" text="Back to explanation" />
             <Button fx:id="openTransformCalculatorBtn" onAction="#openTransformCalculator" text="Open Transform Calculator" />
+            <Button fx:id="openLuaGeneratorBtn" onAction="#openLuaGenerator" text="LUA Generator" />
         </HBox>
         <TextArea fx:id="descriptionTextArea" editable="false" minHeight="100.0" prefHeight="100.0" prefWidth="674.0" promptText="Select a function to start" wrapText="true" VBox.vgrow="ALWAYS">
             <VBox.margin>
@@ -181,6 +192,10 @@
             </VBox.margin>
         </TextArea>
     </VBox>
-    <Button fx:id="themeToggleButton" onAction="#toggleTheme" styleClass="theme-toggle-button" text="🌙" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+    <HBox alignment="CENTER_RIGHT" spacing="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <Button fx:id="decreaseFontButton" onAction="#decreaseFont" styleClass="font-scale-button" text="A-" />
+        <Button fx:id="increaseFontButton" onAction="#increaseFont" styleClass="font-scale-button" text="A+" />
+        <Button fx:id="themeToggleButton" onAction="#toggleTheme" styleClass="theme-toggle-button" text="🌙" />
+    </HBox>
     <Label fx:id="versionLabel" text="v0.0.1" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" />
 </AnchorPane>

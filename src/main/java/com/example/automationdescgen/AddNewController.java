@@ -26,6 +26,7 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.commons.math3.geometry.euclidean.threed.*;
@@ -142,6 +143,10 @@ public class AddNewController implements Initializable {
     @FXML
     public Button themeToggleButton;
     @FXML
+    public CheckBox advancedFunctionCheckBox;
+    @FXML
+    public Button openLuaGeneratorBtn;
+    @FXML
     private AnchorPane AddNewAnchorPane;
 
     private final DoubleProperty minDefaultValueProperty = new SimpleDoubleProperty();
@@ -171,7 +176,13 @@ public class AddNewController implements Initializable {
     private String versionText;
     private ObservableList<Function> allFunctions;
     private ObservableList<Function> filteredFunctions;
+    private double fontScale = 1.0;
     private ThemeManager themeManager;
+    private String currentAlertTitle = "";
+    private String currentAlertMessage = "";
+    private String currentAlertColour = "black";
+    private boolean currentAlertShowButton = false;
+    private boolean hasActiveAlert = false;
 
     public void setMainApp(AutoAnimationApplication mainApp) {
         this.mainApp = mainApp;
@@ -197,20 +208,78 @@ public class AddNewController implements Initializable {
             versionLabel.setText(versionText);
         });
 
-        ObservableList<String> categories = FXCollections.observableArrayList();
-        categories.add(FunctionDataProvider.ALL_CATEGORIES);
-        categories.addAll(FunctionDataProvider.getCategories());
-        categoryComboBox.setItems(categories);
-        categoryComboBox.setValue(FunctionDataProvider.ALL_CATEGORIES);
+        // Initialize checkbox to false by default (will be updated when themeManager is set)
+        advancedFunctionCheckBox.setSelected(false);
+        openLuaGeneratorBtn.setVisible(false);
+        openLuaGeneratorBtn.setManaged(false);
+
+        advancedFunctionCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && themeManager != null && themeManager.shouldShowAdvancedWarning()) {
+                // Show warning dialog when enabling advanced content
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Advanced Content Warning");
+                alert.setHeaderText("Enable Advanced LUA Functions?");
+                alert.setContentText("Advanced functions include Lua-based animations that may be more complex. " +
+                        "These functions require you to add LUA files, which will add new functionality, to your Automation mod. " +
+                        "The LUA files can be generated within the LUA Generator portion of this app. \n\n" +
+                        "Are you sure you want to enable advanced content?");
+
+                // Apply theme and font scaling to the dialog
+                DialogPane dialogPane = alert.getDialogPane();
+                dialogPane.getStylesheets().add(getClass().getResource("/stylesheet.css").toExternalForm());
+
+                // Apply dark theme if active
+                if (themeManager != null && themeManager.isDarkMode()) {
+                    dialogPane.getStyleClass().add("dark");
+                }
+
+                // Apply font scaling
+                String fontSizeStyle = String.format("-fx-font-size: %.1fpx;", 13 * fontScale);
+                dialogPane.setStyle(fontSizeStyle);
+
+                // Create custom buttons
+                ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+                ButtonType yesNeverShowButton = new ButtonType("Yes, don't show again", ButtonBar.ButtonData.OK_DONE);
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                alert.getButtonTypes().setAll(yesButton, yesNeverShowButton, cancelButton);
+
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.isPresent()) {
+                    if (result.get() == yesNeverShowButton) {
+                        // Save preference to never show again
+                        themeManager.setShowAdvancedWarning(false);
+                    } else if (result.get() == cancelButton) {
+                        // User cancelled, uncheck the checkbox
+                        advancedFunctionCheckBox.setSelected(false);
+                        return;
+                    }
+                    // If "Yes" was clicked, just proceed without saving preference
+                } else {
+                    // Dialog was closed without selection, treat as cancel
+                    advancedFunctionCheckBox.setSelected(false);
+                    return;
+                }
+            }
+
+            handleAdvancedFunctionsToggle(newValue);
+        });
 
         // Initialize functions
-        allFunctions = FunctionDataProvider.getFunctions();
-        filteredFunctions = FXCollections.observableArrayList(allFunctions);
+        filteredFunctions = FXCollections.observableArrayList();
         functionComboBox.setItems(filteredFunctions);
+        functionComboBox.setPromptText("Select a function");
 
         // Set up category selection handler
         categoryComboBox.setOnAction(this::handleCategorySelection);
 
+        // Initialize with default state (LUA functions hidden)
+        // This will be updated when setThemeManager() is called
+        Platform.runLater(() -> {
+            updateCategories();
+            updateFunctionList(FunctionDataProvider.ALL_CATEGORIES, false);
+        });
 
         checkboxList = List.of(rotationXCheckBox, rotationYCheckBox, rotationZCheckBox, transXCheckBox, transYCheckBox, transZCheckBox);
 
@@ -331,6 +400,7 @@ public class AddNewController implements Initializable {
         openTransformCalculatorBtn.setDisable(true);
     }
 
+
     /**
      * This function handles the event triggered when the user selects a function from the combo box.
      * This function sets the data fields to the default values stored in the function object.
@@ -345,15 +415,26 @@ public class AddNewController implements Initializable {
                 updateDefaultValue();
                 firstTimeFunction = false;
             }
+            unitChoiceBox.setDisable(false);
             minSpinner.setDisable(false);
             maxSpinner.setDisable(false);
             offsetSpinner.setDisable(false);
+            equalOppositeCheckBox.setDisable(false);
             rotationXCheckBox.setDisable(false);
             rotationYCheckBox.setDisable(false);
             rotationZCheckBox.setDisable(false);
+            rotationSpinnerX.setDisable(false);
+            rotationSpinnerY.setDisable(false);
+            rotationSpinnerZ.setDisable(false);
             transXCheckBox.setDisable(false);
             transYCheckBox.setDisable(false);
             transZCheckBox.setDisable(false);
+            distanceSpinnerX.setDisable(false);
+            distanceSpinnerY.setDisable(false);
+            distanceSpinnerZ.setDisable(false);
+            scalingSpinnerX.setDisable(false);
+            scalingSpinnerY.setDisable(false);
+            scalingSpinnerZ.setDisable(false);
             explanationButton.setDisable(false);
             openTransformCalculatorBtn.setDisable(false);
             equalOppositeCheckBox.setDisable(false);
@@ -415,65 +496,105 @@ public class AddNewController implements Initializable {
                 case 0 -> {// Enable all options with link offset not selected
                     counterClockwiseRadioY.setDisable(false);
                     clockwiseRadioY.setDisable(false);
+                    rotationSpinnerX.setDisable(false);
                     rotationSpinnerY.setDisable(false);
+                    rotationSpinnerZ.setDisable(false);
                     minSpinner.setDisable(false);
                     maxSpinner.setDisable(false);
                     offsetSpinner.setDisable(false);
                     transXCheckBox.setDisable(false);
                     transYCheckBox.setDisable(false);
                     transZCheckBox.setDisable(false);
+                    distanceSpinnerX.setDisable(false);
+                    distanceSpinnerY.setDisable(false);
+                    distanceSpinnerZ.setDisable(false);
+                    scalingSpinnerX.setDisable(false);
+                    scalingSpinnerY.setDisable(false);
+                    scalingSpinnerZ.setDisable(false);
                     equalOppositeCheckBox.setDisable(false);
                     equalOppositeCheckBox.setSelected(false);
                 }
                 case 1 -> {// Enable all options with link offset selected
                     counterClockwiseRadioY.setDisable(false);
                     clockwiseRadioY.setDisable(false);
+                    rotationSpinnerX.setDisable(false);
                     rotationSpinnerY.setDisable(false);
+                    rotationSpinnerZ.setDisable(false);
                     minSpinner.setDisable(false);
                     maxSpinner.setDisable(false);
                     offsetSpinner.setDisable(false);
                     transXCheckBox.setDisable(false);
                     transYCheckBox.setDisable(false);
                     transZCheckBox.setDisable(false);
+                    distanceSpinnerX.setDisable(false);
+                    distanceSpinnerY.setDisable(false);
+                    distanceSpinnerZ.setDisable(false);
+                    scalingSpinnerX.setDisable(false);
+                    scalingSpinnerY.setDisable(false);
+                    scalingSpinnerZ.setDisable(false);
                     equalOppositeCheckBox.setDisable(false);
                     equalOppositeCheckBox.setSelected(true);
                 }
                 case 2 -> { // Disable value spinners
                     counterClockwiseRadioY.setDisable(false);
                     clockwiseRadioY.setDisable(false);
+                    rotationSpinnerX.setDisable(false);
                     rotationSpinnerY.setDisable(false);
+                    rotationSpinnerZ.setDisable(false);
                     minSpinner.setDisable(true);
                     maxSpinner.setDisable(true);
                     offsetSpinner.setDisable(true);
                     transXCheckBox.setDisable(false);
                     transYCheckBox.setDisable(false);
                     transZCheckBox.setDisable(false);
+                    distanceSpinnerX.setDisable(false);
+                    distanceSpinnerY.setDisable(false);
+                    distanceSpinnerZ.setDisable(false);
+                    scalingSpinnerX.setDisable(false);
+                    scalingSpinnerY.setDisable(false);
+                    scalingSpinnerZ.setDisable(false);
                     equalOppositeCheckBox.setDisable(true);
                     equalOppositeCheckBox.setSelected(false);
                 }
                 case 3 -> { // Disable all options
                     counterClockwiseRadioY.setDisable(true);
                     clockwiseRadioY.setDisable(true);
+                    rotationSpinnerX.setDisable(true);
                     rotationSpinnerY.setDisable(true);
+                    rotationSpinnerZ.setDisable(true);
                     minSpinner.setDisable(true);
                     maxSpinner.setDisable(true);
                     offsetSpinner.setDisable(true);
                     transXCheckBox.setDisable(true);
                     transYCheckBox.setDisable(true);
                     transZCheckBox.setDisable(true);
+                    distanceSpinnerX.setDisable(true);
+                    distanceSpinnerY.setDisable(true);
+                    distanceSpinnerZ.setDisable(true);
+                    scalingSpinnerX.setDisable(true);
+                    scalingSpinnerY.setDisable(true);
+                    scalingSpinnerZ.setDisable(true);
                     equalOppositeCheckBox.setDisable(true);
                     equalOppositeCheckBox.setSelected(false);
                 }
-                case 4 -> { // Disable value spinners and translations
+                case 4 -> { // Disable value spinners including for rotation and translations
                     counterClockwiseRadioY.setDisable(false);
                     clockwiseRadioY.setDisable(false);
-                    rotationSpinnerY.setDisable(false);
+                    rotationSpinnerX.setDisable(true);
+                    rotationSpinnerY.setDisable(true);
+                    rotationSpinnerZ.setDisable(true);
                     minSpinner.setDisable(true);
                     maxSpinner.setDisable(true);
                     offsetSpinner.setDisable(true);
-                    transXCheckBox.setDisable(true);
-                    transYCheckBox.setDisable(true);
-                    transZCheckBox.setDisable(true);
+                    transXCheckBox.setDisable(false);
+                    transYCheckBox.setDisable(false);
+                    transZCheckBox.setDisable(false);
+                    distanceSpinnerX.setDisable(true);
+                    distanceSpinnerY.setDisable(true);
+                    distanceSpinnerZ.setDisable(true);
+                    scalingSpinnerX.setDisable(true);
+                    scalingSpinnerY.setDisable(true);
+                    scalingSpinnerZ.setDisable(true);
                     equalOppositeCheckBox.setDisable(true);
                     equalOppositeCheckBox.setSelected(false);
                 }
@@ -826,7 +947,7 @@ public class AddNewController implements Initializable {
             if (Math.abs(outputRotations[i]) < 0.001) outputRotations[i] = 0;
         }
 
-        System.out.printf("XYZ → YZX Conversion:\n");
+        System.out.print("XYZ → YZX Conversion:\n");
         System.out.printf("  Input (XYZ):  X=%.2f° Y=%.2f° Z=%.2f°\n",
                 localRotations[0], localRotations[1], localRotations[2]);
         System.out.printf("  Output (YZX as XYZ array): X=%.2f° Y=%.2f° Z=%.2f°\n",
@@ -1152,9 +1273,7 @@ public class AddNewController implements Initializable {
                 if (decimalPart.length() > 3) {
                     return true; // More than 3 decimal places
                 }
-                if (!decimalPart.matches("\\d{1,3}")) {
-                    return true; // Invalid decimal part
-                }
+                return !decimalPart.matches("\\d{1,3}"); // Invalid decimal part
             }
             return false; // Valid number
         } catch (NumberFormatException e) {
@@ -1199,22 +1318,41 @@ public class AddNewController implements Initializable {
     }
 
     private void showAlert(String title, String message, String colour, boolean showButton) {
+        // Store the current alert state
+        currentAlertTitle = title;
+        currentAlertMessage = message;
+        currentAlertColour = colour;
+        currentAlertShowButton = showButton;
+        hasActiveAlert = true;
+
         descriptionTextArea.setText(title + message);
+
+        String fontSizeStyle = String.format("-fx-font-size: %.1fpx; ", 14 * fontScale);
+
         if (colour.equals("red")) {
-            descriptionTextArea.setStyle("-fx-text-fill: red;");
+            // Use brighter red for dark mode, standard red for light mode
+            String redColor = (themeManager != null && themeManager.isDarkMode()) ? "#FFB3B3" : "#B80000";
+            descriptionTextArea.setStyle(fontSizeStyle + "-fx-text-fill: " + redColor + ";");
         } else if (colour.equals("black")) {
             if (themeManager != null && themeManager.isDarkMode()) {
-                descriptionTextArea.setStyle("-fx-text-fill: #F5F5F5;"); // Light text for dark mode
+                descriptionTextArea.setStyle(fontSizeStyle + "-fx-text-fill: #E8E8E8;"); // Light text for dark mode
             } else {
-                descriptionTextArea.setStyle("-fx-text-fill: #000000;"); // Dark text for light mode
+                descriptionTextArea.setStyle(fontSizeStyle + "-fx-text-fill: #000000;"); // Dark text for light mode
             }
         }
+
         if (showButton) {
             explanationButton.setVisible(true);
             explanationButton.setManaged(true);
         } else {
             explanationButton.setVisible(false);
             explanationButton.setManaged(false);
+        }
+    }
+
+    private void reapplyAlert() {
+        if (hasActiveAlert) {
+            showAlert(currentAlertTitle, currentAlertMessage, currentAlertColour, currentAlertShowButton);
         }
     }
 
@@ -1225,40 +1363,105 @@ public class AddNewController implements Initializable {
         desktop.browse(URI.create("https://github.com/peskyboyz/AutoBeamAnimationGenerator?tab=readme-ov-file#autobeam-animation-generator"));
     }
 
+    private void updateCategories() {
+        boolean includeLUA = advancedFunctionCheckBox.isSelected();
+
+        ObservableList<String> categories = FXCollections.observableArrayList();
+        categories.add(FunctionDataProvider.ALL_CATEGORIES);
+        categories.addAll(FunctionDataProvider.getCategories(includeLUA));
+
+        // Store current selection if it's not a LUA category
+        String currentSelection = categoryComboBox.getValue();
+
+        categoryComboBox.setItems(categories);
+
+        // Restore selection if it's still valid, otherwise default to "All"
+        if (currentSelection != null && categories.contains(currentSelection)) {
+            categoryComboBox.setValue(currentSelection);
+        } else {
+            categoryComboBox.setValue(FunctionDataProvider.ALL_CATEGORIES);
+        }
+    }
+
+    private void handleAdvancedFunctionsToggle(boolean showLUA) {
+        String currentCategory = categoryComboBox.getValue();
+
+        // Update the category list
+        updateCategories();
+
+        openLuaGeneratorBtn.setVisible(showLUA);
+        openLuaGeneratorBtn.setManaged(showLUA);
+
+        // Check if current category is a LUA category that should now be hidden
+        if (!showLUA && currentCategory != null && currentCategory.startsWith("LUA")) {
+            // Switch to "All" category since current category is no longer available
+            categoryComboBox.setValue(FunctionDataProvider.ALL_CATEGORIES);
+            currentCategory = FunctionDataProvider.ALL_CATEGORIES;
+        }
+
+        // Update the function list based on current category
+        if (currentCategory != null) {
+            updateFunctionList(currentCategory, showLUA);
+        }
+    }
+
     private void handleCategorySelection(ActionEvent event) {
         String selectedCategory = categoryComboBox.getSelectionModel().getSelectedItem();
         if (selectedCategory != null) {
-            // Get new filtered functions
-            ObservableList<Function> newFilteredFunctions =
-                    FunctionDataProvider.getFunctionsByCategory(selectedCategory);
-
-            // Store the current prompt text
-            String promptText = functionComboBox.getPromptText();
-
-            // Clear and reset
-            functionComboBox.setItems(newFilteredFunctions);
-            functionComboBox.getSelectionModel().clearSelection();
-            functionComboBox.setValue(null);
-
-            // Force skin refresh
-            Platform.runLater(() -> {
-                functionComboBox.setSkin(null);
-                functionComboBox.setPromptText(promptText);
-            });
-
-            // Reset UI state when category changes
-            resetUIState();
+            boolean includeLUA = advancedFunctionCheckBox.isSelected();
+            updateFunctionList(selectedCategory, includeLUA);
         }
+    }
+
+    private void updateFunctionList(String category, boolean includeLUA) {
+        // Get new filtered functions
+        ObservableList<Function> newFilteredFunctions =
+                FunctionDataProvider.getFunctionsByCategory(category, includeLUA);
+
+        // Store the current prompt text and height
+        String promptText = functionComboBox.getPromptText();
+        double currentHeight = functionComboBox.getHeight();
+
+        // Lock the height temporarily
+        functionComboBox.setMinHeight(currentHeight);
+        functionComboBox.setPrefHeight(currentHeight);
+        functionComboBox.setMaxHeight(currentHeight);
+
+        // Clear and reset
+        functionComboBox.setItems(newFilteredFunctions);
+        functionComboBox.getSelectionModel().clearSelection();
+        functionComboBox.setValue(null);
+
+        // Force skin refresh
+        Platform.runLater(() -> {
+            functionComboBox.setSkin(null);
+            Platform.runLater(() -> {
+                functionComboBox.setPromptText(promptText);
+                String style = String.format("-fx-font-size: %.1fpx;", 13 * fontScale);
+                functionComboBox.setStyle(style);
+
+                // Unlock the height after the refresh is complete
+                functionComboBox.setMinHeight(Control.USE_COMPUTED_SIZE);
+                functionComboBox.setPrefHeight(Control.USE_COMPUTED_SIZE);
+                functionComboBox.setMaxHeight(Control.USE_COMPUTED_SIZE);
+            });
+        });
+
+        // Reset UI state when category changes
+        resetUIState();
     }
 
     private void resetUIState() {
         // Clear/reset UI elements when category changes
         descriptionTextArea.clear();
+        hasActiveAlert = false;
 
         // Disable controls until a function is selected
+        unitChoiceBox.setDisable(true);
         minSpinner.setDisable(true);
         maxSpinner.setDisable(true);
         offsetSpinner.setDisable(true);
+        equalOppositeCheckBox.setDisable(true);
         rotationXCheckBox.setDisable(true);
         rotationYCheckBox.setDisable(true);
         rotationZCheckBox.setDisable(true);
@@ -1272,6 +1475,8 @@ public class AddNewController implements Initializable {
         explanationButton.setVisible(false);
         explanationButton.setManaged(false);
     }
+
+/*
     public void runConversionTests() {
         // Single axis rotations
         System.out.println("=== Single Axis Rotations ===");
@@ -1386,10 +1591,23 @@ public class AddNewController implements Initializable {
         }
         System.out.println();
     }
+*/
 
     public void setThemeManager(ThemeManager themeManager) {
         this.themeManager = themeManager;
         updateThemeButtonText();
+
+        // Initialize advanced functions checkbox based on saved preference
+        if (themeManager != null && advancedFunctionCheckBox != null) {
+            boolean hasAcceptedAdvanced = !themeManager.shouldShowAdvancedWarning();
+            advancedFunctionCheckBox.setSelected(hasAcceptedAdvanced);
+
+            // Update the UI to reflect the checkbox state
+            Platform.runLater(() -> {
+                updateCategories();
+                updateFunctionList(FunctionDataProvider.ALL_CATEGORIES, hasAcceptedAdvanced);
+            });
+        }
     }
 
     @FXML
@@ -1398,15 +1616,8 @@ public class AddNewController implements Initializable {
             themeManager.toggleTheme();
             updateThemeButtonText();
 
-            // Refresh the description text area if it has content and isn't showing an error
-            if (!descriptionTextArea.getText().isEmpty() && !descriptionTextArea.getStyle().contains("red")) {
-                // Re-apply the current theme's text color
-                if (themeManager.isDarkMode()) {
-                    descriptionTextArea.setStyle("-fx-text-fill: #F5F5F5;");
-                } else {
-                    descriptionTextArea.setStyle("-fx-text-fill: #000000;");
-                }
-            }
+            // Reapply alert if one is active
+            reapplyAlert();
         }
     }
 
@@ -1414,5 +1625,103 @@ public class AddNewController implements Initializable {
         if (themeToggleButton != null && themeManager != null) {
             themeToggleButton.setText(themeManager.isDarkMode() ? "☀" : "🌙");
         }
+    }
+
+    public void setFontScale(double scale) {
+        this.fontScale = scale;
+        // Only apply if the view is visible, otherwise it will be applied when shown
+        if (returnView().isVisible()) {
+            Platform.runLater(() -> applyFontScale());
+        }
+    }
+
+    // Add a method to get the view's root node
+    public javafx.scene.Node returnView() {
+        return AddNewAnchorPane; // or whatever your root pane is called
+    }
+
+    @FXML
+    private void increaseFont() {
+        if (fontScale < 1.5) { // Max 150% scaling
+            fontScale += 0.1;
+            applyFontScale();
+            if (themeManager != null) {
+                themeManager.setFontScale(fontScale);
+                updateAllViewsFontScale();
+            }
+        }
+    }
+
+    @FXML
+    private void decreaseFont() {
+        if (fontScale > 0.7) { // Min 70% scaling
+            fontScale -= 0.1;
+            applyFontScale();
+            if (themeManager != null) {
+                themeManager.setFontScale(fontScale);
+                updateAllViewsFontScale();
+            }
+        }
+    }
+
+    private void updateAllViewsFontScale() {
+        // Get the main app and update all controllers
+        if (mainApp != null) {
+            mainApp.updateAllControllersFontScale(fontScale);
+        }
+    }
+
+    public void setFontScaleWithoutApply(double scale) {
+        this.fontScale = scale;
+    }
+
+    public void applyFontScale() {
+        applyFontScaleToNode(AddNewAnchorPane);
+        reapplyAlert();
+    }
+
+    private void applyFontScaleToNode(javafx.scene.Node node) {
+        // Skip the version label
+        if (node.getId() != null && node.getId().equals("versionLabel")) {
+            return;
+        }
+
+        // Skip font scale buttons and theme toggle
+        if (node.getId() != null && (node.getId().equals("increaseFontButton") ||
+                node.getId().equals("decreaseFontButton") ||
+                node.getId().equals("themeToggleButton"))) {
+            return;
+        }
+
+        if (node instanceof Labeled labeled) {
+            double baseSize = 13;
+            if (node.getId() != null && node.getId().equals("descriptionTextArea")) {
+                baseSize = 14;
+            }
+            labeled.setStyle(labeled.getStyle() + String.format("-fx-font-size: %.1fpx;", baseSize * fontScale));
+        } else if (node instanceof TextInputControl textInput) {
+            double baseSize = 13;
+            if (node.getId() != null && node.getId().equals("descriptionTextArea")) {
+                baseSize = 14;
+            }
+            textInput.setStyle(textInput.getStyle() + String.format("-fx-font-size: %.1fpx;", baseSize * fontScale));
+        } else if (node instanceof Spinner<?> spinner) {
+            spinner.getEditor().setStyle(String.format("-fx-font-size: %.1fpx;", 13 * fontScale));
+        } else if (node instanceof ComboBox<?> comboBox) {
+            comboBox.setStyle(String.format("-fx-font-size: %.1fpx;", 13 * fontScale));
+        } else if (node instanceof ChoiceBox<?> choiceBox) {
+            choiceBox.setStyle(String.format("-fx-font-size: %.1fpx;", 13 * fontScale));
+        }
+
+        // Recursively apply to children
+        if (node instanceof Parent parent) {
+            for (javafx.scene.Node child : parent.getChildrenUnmodifiable()) {
+                applyFontScaleToNode(child);
+            }
+        }
+    }
+
+    public void openLuaGenerator() {
+        mainApp.showLuaGeneratorView(versionText);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.automationdescgen;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -49,8 +50,8 @@ public class AutoAnimationApplication extends Application {
         }
 
         stage.setTitle("AutoBeam Animation Generator");
-        stage.setMinHeight(625);
-        stage.setMinWidth(740);
+        stage.setMinHeight(700);
+        stage.setMinWidth(900);
         stage.getIcons().add(new Image(Objects.requireNonNull(AutoAnimationApplication.class.getResourceAsStream("/icons/AutoBeam.png"))));
         stage.setScene(scene);
 
@@ -91,6 +92,8 @@ public class AutoAnimationApplication extends Application {
         addNewController.getView().setVisible(true);
         transformCalculatorController.getView().setVisible(false);
         luaGeneratorController.getView().setVisible(false);
+
+        Platform.runLater(() -> addNewController.applyFontScale());
     }
 
     public void showTransformCalculatorView(String versionText) {
@@ -98,6 +101,8 @@ public class AutoAnimationApplication extends Application {
         transformCalculatorController.getView().setVisible(true);
         transformCalculatorController.updateVersion(versionText);
         luaGeneratorController.getView().setVisible(false);
+
+        Platform.runLater(() -> transformCalculatorController.applyFontScale());
     }
 
     public void showLuaGeneratorView(String versionText){
@@ -105,6 +110,9 @@ public class AutoAnimationApplication extends Application {
         transformCalculatorController.getView().setVisible(false);
         luaGeneratorController.getView().setVisible(true);
         luaGeneratorController.updateVersion(versionText);
+
+        Platform.runLater(() -> luaGeneratorController.applyFontScale());
+
     }
 
     public void passTransformDataToAddNew(TransformData transformData) {
@@ -116,20 +124,38 @@ public class AutoAnimationApplication extends Application {
         // Initialize the theme manager
         themeManager = new ThemeManager(scene);
 
+        // Load and apply saved font scale to all controllers
+        double savedFontScale = themeManager.getFontScale();
+
         // Initialize theme managers for all controllers that have theme toggle buttons
         if (addNewController != null) {
             addNewController.setThemeManager(themeManager);
+            addNewController.setFontScale(savedFontScale);
         }
         if (transformCalculatorController != null) {
             transformCalculatorController.setThemeManager(themeManager);
+            transformCalculatorController.setFontScale(savedFontScale);
         }
         if (luaGeneratorController != null) {
             luaGeneratorController.setThemeManager(themeManager);
+            luaGeneratorController.setFontScale(savedFontScale);
         }
     }
 
     public ThemeManager getThemeManager() {
         return themeManager;
+    }
+
+    public void updateAllControllersFontScale(double scale) {
+        if (addNewController != null) {
+            addNewController.setFontScaleWithoutApply(scale);
+        }
+        if (transformCalculatorController != null) {
+            transformCalculatorController.setFontScaleWithoutApply(scale);
+        }
+        if (luaGeneratorController != null) {
+            luaGeneratorController.setFontScaleWithoutApply(scale);
+        }
     }
 
     public static void main(String[] args) {
