@@ -3,6 +3,7 @@
 -- file, You can obtain one at http://beamng.com/bCDDL-1.1.txt
 -- Modified by peskyboyz - added ignition level check
 -- CVT/Electric Transmission Gear Indicator (P, R, N, D only)
+
 local M = {}
 
 local gearA = 0

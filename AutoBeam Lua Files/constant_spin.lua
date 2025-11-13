@@ -2,6 +2,8 @@
 -- If a copy of the bCDDL was not distributed with this
 -- file, You can obtain one at http://beamng.com/bCDDL-1.1.txt
 -- Constant Speed Spinner
+-- Created by peskyboyz
+
 local M = {}
 
 -- USER CONFIGURABLE VARIABLES
