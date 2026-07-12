@@ -701,6 +701,9 @@ You will need to edit the jbeam files for your export.
 4. Finally, ensure all files are saved and reload the car in BeamNG
 
 ## Updates
+Version 0.9.1 - 12 July 2026 - RELEASE
+- Advanced Lua functions checkbox disabled
+
 Version 0.9.0 - 12 November 2025
 - Added first version of the LUA files for additional functionality in Beam
 - Added the new electrics to the FunctionDataProvider
