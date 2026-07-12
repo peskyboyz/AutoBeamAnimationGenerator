@@ -210,6 +210,7 @@ public class AddNewController implements Initializable {
 
         // Initialize checkbox to false by default (will be updated when themeManager is set)
         advancedFunctionCheckBox.setSelected(false);
+        advancedFunctionCheckBox.setVisible(false);
         openLuaGeneratorBtn.setVisible(false);
         openLuaGeneratorBtn.setManaged(false);
 

@@ -18,8 +18,8 @@
                 <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
             </padding>
             <CheckBox fx:id="advancedFunctionCheckBox" text="Show Advanced/LUA" />
-            <ComboBox fx:id="categoryComboBox" prefHeight="25.0" prefWidth="99.0" visibleRowCount="15"/>
-            <ComboBox fx:id="functionComboBox" prefHeight="25.0" prefWidth="224.0" promptText="Select a function" visibleRowCount="15"/>
+            <ComboBox fx:id="categoryComboBox" prefHeight="25.0" prefWidth="99.0" visibleRowCount="15" />
+            <ComboBox fx:id="functionComboBox" prefHeight="25.0" prefWidth="224.0" promptText="Select a function" visibleRowCount="15" />
             <Separator orientation="VERTICAL" />
             <Label text="Prop ID">
                 <padding>
@@ -31,7 +31,7 @@
         <Separator prefWidth="200.0" />
         <FlowPane alignment="CENTER" hgap="15.0" minHeight="-Infinity" vgap="10.0">
             <VBox.margin>
-                <Insets top="10.0" bottom="10.0" />
+                <Insets bottom="10.0" top="10.0" />
             </VBox.margin>
             <Label text="Unit" />
             <ChoiceBox fx:id="unitChoiceBox" prefWidth="90.0" />
@@ -51,7 +51,7 @@
         <Separator prefWidth="200.0" />
         <FlowPane alignment="CENTER" hgap="15.0" minHeight="-Infinity" vgap="10.0">
             <VBox.margin>
-                <Insets top="10.0" bottom="10.0" />
+                <Insets bottom="10.0" top="10.0" />
             </VBox.margin>
             <HBox spacing="15.0">
                 <CheckBox fx:id="rotationXCheckBox" mnemonicParsing="false" text="Rotation X (Red)" />
